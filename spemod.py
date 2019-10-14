@@ -4,9 +4,11 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import string
+import sys, string
 
 # Globals
+
+prepass   = string.ascii_letters * 4
 
 UPPERFLAG   = 0x80000
 CAPFLAG     = 0x100000
@@ -182,7 +184,7 @@ class  spellencrypt():
                 #if self.verbose :
                 #    print ("chh ", chh, end=" ")
 
-                #passidx += 1
+                passidx += 1
                 if passidx >= len(passwd):
                     passidx = 0
 
@@ -299,29 +301,130 @@ def xsum(passwd):
     sss = 0
     for aa in passwd:
         sss += ord(aa)
-    return chr(sss & 0x7f)
+    return chr(sss & 0xff)
 
 def fwstr(passwd):
     passwd2 = passwd + " "
     sss = ""
     for bb in range(0, len(passwd)):
         #print ("c", passwd[bb])
-        sss += chr( (ord(passwd2[bb]) + ord(passwd2[bb+1])) & 0x7f)
+        sss += chr( (ord(passwd2[bb]) + ord(passwd2[bb+1])) & 0xff)
     return sss
 
-def xostr(passwd):
+def xorstr(passwd):
     sss = ""
     for bb in range(0, len(passwd)):
         #print ("c", passwd[bb])
-        sss += chr((ord(passwd[bb]) ^ 0x55) & 0x7f)
+        sss += chr((ord(passwd[bb]) ^ 0x55) & 0xff)
     return sss
+
+def butter(passwd):
+    sss = ""; rrr = ""
+    for bb in range(0, len(passwd)/2):
+        #print ("c", passwd[bb])
+        sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
+        rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
+    return sss + rrr
 
 def bwstr(passwd):
     sss = ""
     for bb in range(len(passwd)-1, -1, -1):
         #print ("c", passwd[bb])
-        sss += chr( (ord(passwd[bb]) + ord(passwd[bb-1])) & 0x7f)
+        sss += chr( (ord(passwd[bb]) + ord(passwd[bb-1])) & 0xff)
     return sss
+
+# ------------------------------------------------------------------------
+# corrected to handle unicode accidental
+
+ctrlchar = "\n\r| "
+
+def isprint(chh):
+
+    try:
+        if ord(chh) > 127:
+            return False
+        if ord(chh) < 32:
+            return False
+        if chh in ctrlchar:
+            return False
+        if chh in string.ascii_letters:
+            return True
+    except:
+        pass
+
+    return False
+
+# ------------------------------------------------------------------------
+# Return a hex dump formatted string
+
+def hexdump(strx, llen = 16):
+
+    lenx = len(strx)
+    outx = ""
+
+    try:
+        for aa in range(lenx/16):
+            outx += " "
+            for bb in range(16):
+                try:
+                    outx += "%02x " % ord(strx[aa * 16 + bb])
+                except:
+                    pass
+                    out +=  "?? "
+                    #outx += "%02x " % strx[aa * 16 + bb]
+
+            outx += " | "
+            for cc in range(16):
+                chh = strx[aa * 16 + cc]
+                if isprint(chh):
+                    outx += "%c" % chh
+                else:
+                    outx += "."
+            outx += " | \n"
+
+        # Print remainder on last line
+        remn = lenx % 16 ;   divi = lenx / 16
+        if remn:
+            outx += " "
+            for dd in range(remn):
+                try:
+                    outx += "%02x " % ord(strx[divi * 16 + dd])
+                except:
+                    outx +=  "?? "
+                    pass
+                    #outx += "%02x " % int(strx[divi * 16 + dd])
+
+            outx += " " * ((16 - remn) * 3)
+            outx += " | "
+            for cc in range(remn):
+                chh = strx[divi * 16 + cc]
+                if isprint(chh):
+                    outx += "%c" % chh
+                else:
+                    outx += "."
+            outx += " " * ((16 - remn))
+            outx += " | \n"
+    except:
+        print("Error on hexdump", sys.exc_info())
+        #print_exc("hexdump")
+
+    return(outx)
+
+
+def     genpass(passwd):
+
+    #print ("'" + prepass + "'" )
+
+    passwd = passwd + prepass + passwd + prepass + passwd
+
+    for aa in range(5):
+
+        passwd = bwstr(passwd)
+        passwd = xorstr(passwd)
+        passwd = fwstr(passwd)
+        passwd = butter(passwd)
+
+    return passwd
 
 # EOF
 

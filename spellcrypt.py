@@ -60,20 +60,12 @@ if __name__ == '__main__':
     sssmod.verbose = options.verbose
     verbose =  options.verbose
 
-    sssmod.getlen()
+    #sssmod.getlen()
 
-    for aa in range(5):
-        options.passwd = spemod.xsum(options.passwd) + options.passwd
-        options.passwd = spemod.fwstr(options.passwd)
-        options.passwd = spemod.bwstr(options.passwd)
+    newpass = spemod.genpass(options.passwd)
+    #print("pass:", len(newpass), newpass)
 
-    #if verbose > 2:
-    #    print("Pass:", "'" + options.passwd + "'", type(options.passwd))
-    #for aa in range(len(options.passwd)):
-        #print ("'" + options.passwd[aa] + "' ", ord(options.passwd[aa]), end="")
-    #    print ("", ord(options.passwd[aa]), end="")
-    #print ()
-
+    #print(spemod.hexdump(newpass))
     #sys.exit (1)
 
     wfp = None
@@ -99,10 +91,10 @@ if __name__ == '__main__':
         arrx = args
 
     if options.enc:
-        strx = sssmod.enc_dec(True, arrx, options.passwd)
+        strx = sssmod.enc_dec(True, arrx, newpass)
 
     if options.dec:
-        strx = sssmod.enc_dec(False, arrx, options.passwd)
+        strx = sssmod.enc_dec(False, arrx, newpass)
 
     if wfp:
         wfp.write(strx)
