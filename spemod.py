@@ -161,6 +161,9 @@ class  spellencrypt():
 
         strx = "";  cnt = 0; passidx = 0;
 
+        if len(passwd) == 0:
+            raise ValueError("Password Cannot be Empty")
+
         #print(arrx)
         arr2 = self._convert(arrx)
         #print (arr2)
@@ -427,6 +430,7 @@ def     genpass(passwd):
     return passwd
 
 # EOF
+
 
 
 
