@@ -106,16 +106,21 @@ class MainWin():
         sp11 = Spacer(1)
         hbox2.pack_start(sp11, 0, 0, False)
         hbox2.pack_start(lab3, 0, 0, False)
-        self.entry = Gtk.Entry();
+        self.entry = Gtk.Entry(); self.entry.set_visibility(False)
         sp12 = Spacer(1)
         hbox2.pack_start(sp12, 0, 0, False)
         hbox2.pack_start(self.entry, 0, 0, 0)
 
         sp13 = Spacer(1)
         hbox2.pack_start(sp13, 0, 0, False)
-        butt3 = Gtk.Button.new_with_mnemonic(" Load _File ")
-        butt3.connect("clicked", self.load, window)
+        butt3 = Gtk.Button.new_with_mnemonic(" _Reveal ")
+        butt3.connect("clicked", self.reveal, window)
         hbox2.pack_start(butt3, 0, 0, False)
+
+        hbox2.pack_start(Spacer(1), 0, 0, False)
+        butt3f = Gtk.Button.new_with_mnemonic(" Load _File ")
+        butt3f.connect("clicked", self.load, window, 0)
+        hbox2.pack_start(butt3f, 0, 0, False)
 
         sp2 = Spacer(1)
         hbox2.pack_start(sp2, 0, 0, False)
@@ -143,9 +148,10 @@ class MainWin():
 
         hbox5a = Gtk.HBox(); hbox5a.set_spacing(2)
         hbox5a.pack_start(sc1, True, True, True)
-        butt5 = Gtk.Button.new_with_mnemonic(" P_aste ")
-        butt5.connect("clicked", self.paste, window)
-        hbox5a.pack_start(butt5, 0, 0, 0)
+
+        #hbox5a.pack_start(hbox5v, 0, 0, 0)
+
+        hbox5a.pack_start(self.buttcol(0), 0, 0, 0)
         hbox3.pack_start(hbox5a, True, True, True)
 
         sc2 = Gtk.ScrolledWindow()
@@ -153,21 +159,16 @@ class MainWin():
         sc2.add_with_viewport(self.text2)
         hbox6a = Gtk.HBox(); hbox6a.set_spacing(2)
         hbox6a.pack_start(sc2, True, True, True)
-        butt6 = Gtk.Button.new_with_mnemonic(" _Copy ")
-        butt6.connect("clicked", self.copy, window)
-        hbox6a.pack_start(butt6, 0, 0, 0)
+        hbox6a.pack_start(self.buttcol(1), 0, 0, 0)
         hbox3.pack_start(hbox6a, True, True, padding = 2)
 
         sc3 = Gtk.ScrolledWindow()
         self.text3 = Gtk.TextView();    self.text3.set_wrap_mode(True)
         sc3.add_with_viewport(self.text3)
         hbox7a = Gtk.HBox(); hbox7a.set_spacing(2)
-        hbox7a.pack_start(sc3, True, True, True)
-        butt7 = Gtk.Button.new_with_mnemonic(" Copy ")
-        butt7.connect("clicked", self.copy3, window)
-        hbox7a.pack_start(butt7, 0, 0, 0)
+        hbox7a.pack_start(sc3, True, True, padding = 2)
+        hbox7a.pack_start(self.buttcol(2), 0, 0, 0)
         hbox3.pack_start(hbox7a, True, True, padding = 2)
-        hbox3.pack_start(sc3, True, True, padding = 2)
 
         lab1 = Gtk.Label(label="");  hbox.pack_start(lab1, True, True, 0)
 
@@ -183,19 +184,42 @@ class MainWin():
         window.add(vbox)
         window.show_all()
 
+    def buttcol(self, idx):
+
+        window = self.window
+
+        hbox5v = Gtk.VBox(); hbox5v.set_spacing(2)
+        hbox5v.pack_start(Spacer(), True, True, True)
+        butt5 = Gtk.Button.new_with_mnemonic(" Load ")
+        butt5.connect("clicked", self.load, window, idx)
+        hbox5v.pack_start(butt5, 0, 0, 0)
+
+        butt5a = Gtk.Button.new_with_mnemonic(" Copy ")
+        butt5a.connect("clicked", self.paste, window, idx)
+        hbox5v.pack_start(butt5a, 0, 0, 0)
+
+        butt5b = Gtk.Button.new_with_mnemonic(" Paste ")
+        butt5b.connect("clicked", self.copy, window, idx)
+        hbox5v.pack_start(butt5b, 0, 0, 0)
+
+        butt5c = Gtk.Button.new_with_mnemonic(" SelAll ")
+        butt5c.connect("clicked", self.paste,idx, window, idx)
+        hbox5v.pack_start(butt5c, 0, 0, 0)
+        hbox5v.pack_start(Spacer(), True, True, True)
+
+        return hbox5v
+
+    def reveal(self, arg1, arg2):
+        self.entry.set_visibility(not self.entry.get_visibility())
+
     # --------------------------------------------------------------------
 
-    def copy(self, win, butt):
+    def copy(self, win, butt, idx):
         #print("Copy clip")
         clip = Gtk.Clipboard.get_default(Gdk.Display().get_default())
         self.text2.get_buffer().copy_clipboard(clip)
 
-    def copy3(self, win, butt):
-        #print("Copy clip3")
-        clip = Gtk.Clipboard.get_default(Gdk.Display().get_default())
-        self.text3.get_buffer().copy_clipboard(clip)
-
-    def paste(self, win, butt):
+    def paste(self, win, butt, idx):
         clip = Gtk.Clipboard.get_default(Gdk.Display().get_default())
         self.text1.get_buffer().paste_clipboard(clip, None, True)
 
@@ -297,7 +321,7 @@ class MainWin():
                 print("Cannot load file", sys.exc_info())
         win.destroy()
 
-    def load(self, win, butt):
+    def load(self, win, butt, idx):
         #print("Loading file:")
 
         old = os.getcwd()
@@ -380,6 +404,7 @@ if __name__ == '__main__':
 
     mainwin = MainWin()
     Gtk.main()
+
 
 
 
