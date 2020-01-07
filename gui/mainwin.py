@@ -10,18 +10,23 @@ import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 from gi.repository import Gdk
+from gi.repository import GLib
 from gi.repository import GObject
 
 sys.path.append('..')
 
 import spemod
 
-def message(strx):
+def message(strx, title=None):
 
-        dialog = Gtk.MessageDialog(None, None,
+        dialog = Gtk.MessageDialog(title, None,
             Gtk.ButtonsType.NONE , Gtk.ButtonsType.CLOSE,
             'Message: \n\n%s' % (strx) )
+
         # Close dialog on user response
+
+        dialog.set_transient_for(mainwin.window)
+
         dialog.connect ("response", lambda d, r: d.destroy())
         dialog.show()
 
@@ -58,26 +63,31 @@ class MainWin():
     def __init__(self):
 
         self.sssmod = None
-        self.window = window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+        self.orig = None;  self.encr = None;  self.decr = None
+
+        self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
 
         #if not self.sssmod:
         self.sssmod =  spemod.spellencrypt("../data/spell.txt")
 
         #os.chdir( os.path.dirname(os.getcwd()) )
 
-        window.set_title("Spell Encryptor UI")
-        window.set_position(Gtk.WindowPosition.CENTER)
+        self.window.set_title("Spell Encryptor UI")
+        self.window.set_position(Gtk.WindowPosition.CENTER)
 
         #ic = Gtk.Image(); ic.set_from_stock(Gtk.STOCK_DIALOG_INFO, Gtk.IconSize.BUTTON)
-        #window.set_icon(ic.get_pixbuf())
+        #self.window.set_icon(ic.get_pixbuf())
 
         www = Gdk.Screen.width(); hhh = Gdk.Screen.height();
-        #window.set_default_size(6*www/8, 6*hhh/8)
-        window.set_default_size(800, 600)
+        #self.window.set_default_size(6*www/8, 6*hhh/8)
 
-        #window.set_flags(Gtk.CAN_FOCUS | Gtk.SENSITIVE)
+        self.window.set_default_size(8*hhh/8, 6*hhh/8)
 
-        window.set_events(  Gdk.EventMask.POINTER_MOTION_MASK |
+        #self.window.set_default_size(1024, 768)
+
+        #self.window.set_flags(Gtk.CAN_FOCUS | Gtk.SENSITIVE)
+
+        self.window.set_events(  Gdk.EventMask.POINTER_MOTION_MASK |
                             Gdk.EventMask.POINTER_MOTION_HINT_MASK |
                             Gdk.EventMask.BUTTON_PRESS_MASK |
                             Gdk.EventMask.BUTTON_RELEASE_MASK |
@@ -85,59 +95,56 @@ class MainWin():
                             Gdk.EventMask.KEY_RELEASE_MASK |
                             Gdk.EventMask.FOCUS_CHANGE_MASK )
 
-        window.connect("destroy", self.OnExit)
-        window.connect("key-press-event", self.key_press_event)
-        window.connect("button-press-event", self.button_press_event)
+        self.window.connect("destroy", self.OnExit)
+        self.window.connect("key-press-event", self.key_press_event)
+        self.window.connect("button-press-event", self.button_press_event)
 
         try:
-            window.set_icon_from_file("icon.png")
+            self.window.set_icon_from_file("icon.png")
         except:
             pass
 
         vbox = Gtk.VBox();
-        sp33 = Spacer(1)
-        vbox.pack_start(sp33, 0, 0, 0)
+        vbox.pack_start( Spacer(1), 0, 0, 0)
 
         hbox = Gtk.HBox();  hbox2 = Gtk.HBox(); hbox3 = Gtk.VBox();
 
-        sp1 = Spacer(1)
-        hbox2.pack_start(sp1, 0, 0, False)
+        hbox2.pack_start( Spacer(1), 0, 0, False)
         lab3 = Gtk.Label(label="  Enter PassWord: ");
-        sp11 = Spacer(1)
-        hbox2.pack_start(sp11, 0, 0, False)
+        hbox2.pack_start( Spacer(1), 0, 0, False)
         hbox2.pack_start(lab3, 0, 0, False)
         self.entry = Gtk.Entry(); self.entry.set_visibility(False)
-        sp12 = Spacer(1)
-        hbox2.pack_start(sp12, 0, 0, False)
+        hbox2.pack_start( Spacer(1), 0, 0, False)
         hbox2.pack_start(self.entry, 0, 0, 0)
 
-        sp13 = Spacer(1)
-        hbox2.pack_start(sp13, 0, 0, False)
+        hbox2.pack_start( Spacer(1), 0, 0, False)
         butt3 = Gtk.Button.new_with_mnemonic(" _Reveal ")
-        butt3.connect("clicked", self.reveal, window)
+        butt3.connect("clicked", self.reveal, self.window)
         hbox2.pack_start(butt3, 0, 0, False)
 
         hbox2.pack_start(Spacer(1), 0, 0, False)
         butt3f = Gtk.Button.new_with_mnemonic(" Load _File ")
-        butt3f.connect("clicked", self.load, window, 0)
+        butt3f.connect("clicked", self.load, self.window, 0)
         hbox2.pack_start(butt3f, 0, 0, False)
 
-        sp2 = Spacer(1)
-        hbox2.pack_start(sp2, 0, 0, False)
+        hbox2.pack_start( Spacer(1), 0, 0, False)
         butt3e = Gtk.Button.new_with_mnemonic(" _Encrypt ")
-        butt3e.connect("clicked", self.encrypt, window)
+        butt3e.connect("clicked", self.encrypt, self.window)
         hbox2.pack_start(butt3e, 0, 0, False)
 
-        sp21 = Spacer(1)
-        hbox2.pack_start(sp21, 0, 0, False)
+        hbox2.pack_start( Spacer(1), 0, 0, False)
         butt3e = Gtk.Button.new_with_mnemonic(" _Decrypt ")
-        butt3e.connect("clicked", self.decrypt, window)
+        butt3e.connect("clicked", self.decrypt, self.window)
         hbox2.pack_start(butt3e, 0, 0, False)
 
-        sp3 = Spacer(1)
-        hbox2.pack_start(sp3, 0, 0, False)
+        hbox2.pack_start( Spacer(1), 0, 0, False)
+        butt3f = Gtk.Button.new_with_mnemonic(" _Check ")
+        butt3f.connect("clicked", self.check, self.window)
+        hbox2.pack_start(butt3f, 0, 0, False)
+
+        hbox2.pack_start( Spacer(1), 0, 0, False)
         butt2 = Gtk.Button.new_with_mnemonic(" E_xit ")
-        butt2.connect("clicked", self.OnExit, window)
+        butt2.connect("clicked", self.OnExit, self.window)
         hbox2.pack_start(butt2, 1, 1, True)
 
         lab4 = Gtk.Label(label="  ");   hbox2.pack_start(lab4, 0,0, False)
@@ -150,8 +157,7 @@ class MainWin():
         hbox5a.pack_start(sc1, True, True, True)
 
         #hbox5a.pack_start(hbox5v, 0, 0, 0)
-
-        hbox5a.pack_start(self.buttcol(0), 0, 0, 0)
+        #hbox5a.pack_start(self.buttcol(0), 0, 0, 0)
         hbox3.pack_start(hbox5a, True, True, True)
 
         sc2 = Gtk.ScrolledWindow()
@@ -159,7 +165,8 @@ class MainWin():
         sc2.add_with_viewport(self.text2)
         hbox6a = Gtk.HBox(); hbox6a.set_spacing(2)
         hbox6a.pack_start(sc2, True, True, True)
-        hbox6a.pack_start(self.buttcol(1), 0, 0, 0)
+
+        #hbox6a.pack_start(self.buttcol(1), 0, 0, 0)
         hbox3.pack_start(hbox6a, True, True, padding = 2)
 
         sc3 = Gtk.ScrolledWindow()
@@ -167,43 +174,58 @@ class MainWin():
         sc3.add_with_viewport(self.text3)
         hbox7a = Gtk.HBox(); hbox7a.set_spacing(2)
         hbox7a.pack_start(sc3, True, True, padding = 2)
-        hbox7a.pack_start(self.buttcol(2), 0, 0, 0)
+
+        #hbox7a.pack_start(self.buttcol(2), 0, 0, 0)
         hbox3.pack_start(hbox7a, True, True, padding = 2)
 
         lab1 = Gtk.Label(label="");  hbox.pack_start(lab1, True, True, 0)
-
         lab2 = Gtk.Label(label="");  hbox.pack_start(lab2, True, True, 0)
 
-        vbox.pack_start(sp1, 0,0, False)
+        vbox.pack_start( Spacer(1), 0,0, False)
         vbox.pack_start(hbox2, 0,0, False)
-        sp34 = Spacer(1)
-        vbox.pack_start(sp34, 0, 0, 0)
+        vbox.pack_start(Spacer(1), 0, 0, 0)
 
         vbox.pack_start(hbox3, True, True, 0)
 
-        window.add(vbox)
-        window.show_all()
+        hbox8 = Gtk.HBox()
+        lab1a = Gtk.Label(label="");
+        lab2a = Gtk.Label(label="");
+        lab3a = Gtk.Label(label=" Status:  ");
+        self.statlab =  Gtk.Label(label="  Idle ");
+
+        #self.statlab.set_justify(Gtk.Justification.LEFT)
+        #self.statlab.set_xalign(Gtk.Align.START)
+        self.statlab.set_xalign(0)
+        #self.statlab.set_yalign(Gtk.Align.START)
+
+        hbox8.pack_start(lab1a, False, False, 0)
+        hbox8.pack_start(lab3a, False, False, 0)
+        hbox8.pack_start(self.statlab, True, True, 0)
+        hbox8.pack_start(lab2a, False, False, 0)
+
+        vbox.pack_start(hbox8, False, True, 0)
+
+        self.window.add(vbox)
+        self.window.show_all()
 
     def buttcol(self, idx):
-
-        window = self.window
 
         hbox5v = Gtk.VBox(); hbox5v.set_spacing(2)
         hbox5v.pack_start(Spacer(), True, True, True)
         butt5 = Gtk.Button.new_with_mnemonic(" Load ")
-        butt5.connect("clicked", self.load, window, idx)
+        butt5.connect("clicked", self.load, self.window, idx)
         hbox5v.pack_start(butt5, 0, 0, 0)
 
         butt5a = Gtk.Button.new_with_mnemonic(" Copy ")
-        butt5a.connect("clicked", self.paste, window, idx)
+        butt5a.connect("clicked", self.paste, self.window, idx)
         hbox5v.pack_start(butt5a, 0, 0, 0)
 
         butt5b = Gtk.Button.new_with_mnemonic(" Paste ")
-        butt5b.connect("clicked", self.copy, window, idx)
+        butt5b.connect("clicked", self.copy, self.window, idx)
         hbox5v.pack_start(butt5b, 0, 0, 0)
 
         butt5c = Gtk.Button.new_with_mnemonic(" SelAll ")
-        butt5c.connect("clicked", self.paste,idx, window, idx)
+        butt5c.connect("clicked", self.paste,idx, self.window, idx)
         hbox5v.pack_start(butt5c, 0, 0, 0)
         hbox5v.pack_start(Spacer(), True, True, True)
 
@@ -223,10 +245,43 @@ class MainWin():
         clip = Gtk.Clipboard.get_default(Gdk.Display().get_default())
         self.text1.get_buffer().paste_clipboard(clip, None, True)
 
+    def check(self, win, butt):
+
+        #print ("check", self.orig)
+
+        if not self.orig:
+            message("No text loaded")
+            return
+
+        if not self.encr:
+            message("No encrypted text.")
+            return
+
+        if not self.decr:
+            message("No decrypted text.")
+            return
+
+        s1 = spemod.rmspace(self.orig); s2 = spemod.rmspace(self.decr)
+        if  s1 == s2:
+            message("Original and decrypted texts match.")
+        else:
+            offs = 0
+            for aa in range(len(s1)):
+                if s1[aa] != s2[aa]:
+                    offs = aa
+                    break
+
+            message("Error on decryption. DIFF at offset %d" % aa)
+            print("orig", "'" + self.orig[aa:aa+66] + "'")
+            print("decr", "'" + self.decr[aa:aa+66] + "'")
+
     # --------------------------------------------------------------------
 
     def encrypt(self, win, butt):
         #print ("encrypt", self.orig)
+
+        self.show_stat("Started Encryption")
+
         ppp = self.entry.get_text()
         if len(ppp) == 0:
             message("Cannot have an empty password.")
@@ -254,6 +309,7 @@ class MainWin():
             for cc in ss:
                 #print("cc=", ("'"+cc+"'", end=" ")
                 arrx.append(cc)
+
             arrx.append("\n")
 
         self.encr = self.sssmod.enc_dec(True, arrx, self.newpass)
@@ -263,6 +319,8 @@ class MainWin():
 
     def decrypt(self, win, butt):
         #print ("encrypt", self.orig)
+
+        self.show_stat("Started Decryption")
 
         ppp = self.entry.get_text()
         if len(ppp) == 0:
@@ -287,19 +345,24 @@ class MainWin():
             aa = buff.get_text(iter, iter2, False)
             #print ("buff", , "eee")
 
-            ss = spemod.ascsplit(aa.strip())
+            aa = aa.strip()
+            ss = spemod.ascsplit(aa)
             for cc in ss:
                 #print("cc=", ("'"+cc+"'", end=" ")
                 arrx.append(cc)
             arrx.append("\n")
 
-        self.encr = self.sssmod.enc_dec(False, arrx, self.newpass)
+        self.decr = self.sssmod.enc_dec(False, arrx, self.newpass)
 
-        self.text3.get_buffer().set_text(self.encr)
+        self.text3.get_buffer().set_text(self.decr)
+
+    def show_stat(self, strx):
+        global time_label
+        self.statlab.set_text(strx);
+        time_label = 0;
 
     # --------------------------------------------------------------------
-
-    def     done_mac_open_fc(self, win, resp, old):
+    def exec_open(self, win, resp, old):
 
         #print  ("done_mac_fc", resp)
 
@@ -312,10 +375,23 @@ class MainWin():
                 if not fname:
                     print("Must have filename")
                 else:
-                    fh = open(fname, "rb")
-                    self.orig = fh.read()
+                    self.show_stat("Loading file: '%s' " % fname)
+                    fh = open(fname, "rb"); buff2 = fh.read()
                     fh.close()
+
+                    if sys.version_info.major < 3:
+                        self.orig  = buff2
+                    else:
+                        try:
+                            self.orig  = buff2.decode('UTF-8')
+                        except UnicodeDecodeError:
+                            self.orig  = buff2.decode('cp437')
+
+                    #print("type", type(self.orig))
+
+                    self.orig = spemod.rmjunk(self.orig)
                     self.text1.get_buffer().set_text(self.orig)
+                    self.show_stat("Loaded %d bytes" % len(self.orig))
 
             except:
                 print("Cannot load file", sys.exc_info())
@@ -324,6 +400,9 @@ class MainWin():
     def load(self, win, butt, idx):
         #print("Loading file:")
 
+        global time_label
+        self.show_stat("Opening File");
+
         old = os.getcwd()
         but =   "Cancel", Gtk.ButtonsType.CANCEL, "Load Macro", Gtk.ButtonsType.OK
         fc = Gtk.FileChooserDialog("Load file for encryption:", None, Gtk.FileChooserAction.OPEN, \
@@ -331,7 +410,7 @@ class MainWin():
         #fc.set_current_folder(xfile)
         fc.set_current_folder(old)
         fc.set_default_response(Gtk.ButtonsType.OK)
-        fc.connect("response", self.done_mac_open_fc, old)
+        fc.connect("response", self.exec_open, old)
         fc.run()
 
     def lookup(self):
@@ -398,21 +477,47 @@ class MainWin():
         #print ("button_press_event", win, event)
         pass
 
+time_done = 0
+time_label = 0
+
+mainwin =  None
+
+# ------------------------------------------------------------------------
+# App timer tick
+
+def handler_tick():
+
+    global time_done, time_label, mainwin
+
+    try:
+        #print ("Tick %d" % time_done)
+
+        time_done += 1; time_label += 1
+
+        if time_label == 5:
+            mainwin.statlab.set_text("")
+
+        if time_label == 7:
+            mainwin.statlab.set_text("Idle.")
+
+    except:
+        print("Exception in timer handler", sys.exc_info())
+
+    try:
+        GLib.timeout_add(1000, handler_tick)
+    except:
+        print("Exception starting new timer handler", sys.exc_info())
+
+
 # Start of program:
 
 if __name__ == '__main__':
 
     mainwin = MainWin()
+    GLib.timeout_add(1000, handler_tick)
     Gtk.main()
 
-
-
-
-
-
-
-
-
+# EOF
 
 
 

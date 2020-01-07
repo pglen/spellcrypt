@@ -1,6 +1,5 @@
 # Return a tuple of coordinates for this word
 
-
 from __future__ import absolute_import
 from __future__ import print_function
 
@@ -76,8 +75,13 @@ class  spellencrypt():
 
         for bb in self.boundsig:
             if bb == cc:
-                cnt3 = self.boundarr[cnt2]
-                cnt4 = self.boundarr[cnt2+1]
+                try:
+                    cnt3 = self.boundarr[cnt2]
+                    cnt4 = self.boundarr[cnt2+1]
+                except:
+                    print("Err boundsig", sys.exc_info())
+                    continue
+
                 #print  ("got:", cc, bb, cnt2, self.bigarr[cnt3], "range:", cnt4-cnt3)
                 # The dictionary was broken had foreign characters, so we overscanned
                 limx = cnt4-cnt3 + 100
@@ -323,7 +327,7 @@ def xorstr(passwd):
 
 def butter(passwd):
     sss = ""; rrr = ""
-    for bb in range(0, len(passwd)/2):
+    for bb in range(0, (int)(len(passwd)/2)):
         #print ("c", passwd[bb])
         sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
         rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
@@ -429,9 +433,33 @@ def     genpass(passwd):
 
     return passwd
 
+# ------------------------------------------------------------------------
+# Clean string from non ascii (non 7 bit) chars
+
+def rmjunk(strx):
+
+    stry = ""
+    for aa in strx:
+        if ord(aa) >= 127:        pass
+        else:                    stry += aa
+
+    return stry
+
+
+# ------------------------------------------------------------------------
+# Make the test white space neutral
+
+def rmspace(strx):
+
+    stry = ""
+    for aa in strx:
+        if aa == " ":            pass
+        elif aa == "\r":         pass
+        elif aa == "\n":         pass
+        else:                    stry += aa
+
+    return stry
+
 # EOF
-
-
-
 
 
