@@ -13,7 +13,7 @@ from gi.repository import Gdk
 from gi.repository import GLib
 from gi.repository import GObject
 
-sys.path.append('..')
+#sys.path.append('..')
 
 import spemod
 

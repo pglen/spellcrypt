@@ -7,6 +7,8 @@ import os, sys, string, zlib, struct
 from datetime import date
 from optparse import OptionParser
 
+sys.path.append("gui")
+
 import spemod
 
 verbose = 0
