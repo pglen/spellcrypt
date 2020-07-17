@@ -27,10 +27,15 @@
    uses plain text intermediary, it is can be deployed seamlessly into
    any context, including email, text message, document or attachment.
 
+## Screen Shot:
  
+    The screen shot below shows a text file loaded into the top window. The middle window shows the encrypted text after pressing the 'Encrypt' button. The 'Decrypt' feature allows verification of text, an the 'Check' button compares the top edit box text with the buttom edit vox text.
+
+  The encrypted content than can be copied from the middle window into an email / document or any transmission. 
+
 ![Screen Shot](screen.png)
 
-Note: Under Construction.
+Note: Under Construction. GUI is fine, command line needs more fine tuning.
 
 License:    Open Source, FreeWare
 
