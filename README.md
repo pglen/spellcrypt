@@ -27,4 +27,10 @@
    uses plain text intermediary, it is can be deployed seamlessly into
    any context, including email, text message, document or attachment.
 
- Note: Under Construction.
+ 
+![Screen Shot](screen.png)
+
+Note: Under Construction.
+
+License:    Open Source, FreeWare
+

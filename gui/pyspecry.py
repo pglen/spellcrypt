@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from __future__ import absolute_import
+from __future__ import print_function
+
 # ------------------------------------------------------------------------
 # Voice recognition
 
@@ -18,26 +21,25 @@ from mainwin import  *
 
 version = "0.00"
 
-
 # ------------------------------------------------------------------------
 
 def phelp():
 
-    print
-    print "Usage: " + os.path.basename(sys.argv[0]) + " [options]"
-    print
-    print "Options:    -d level  - Debug level 0-10"
-    print "            -p        - Port to use (default: 9999)"
-    print "            -v        - Verbose"
-    print "            -V        - Version"
-    print "            -q        - Quiet"
-    print "            -h        - Help"
-    print
+    print()
+    print( "Usage: " + os.path.basename(sys.argv[0]) + " [options]")
+    print()
+    print( "Options:    -d level  - Debug level 0-10")
+    print( "            -p        - Port to use (default: 9999)")
+    print( "            -v        - Verbose")
+    print( "            -V        - Version")
+    print( "            -q        - Quiet")
+    print( "            -h        - Help")
+    print()
     sys.exit(0)
 
 # ------------------------------------------------------------------------
 def pversion():
-    print os.path.basename(sys.argv[0]), "Version", version
+    print( os.path.basename(sys.argv[0]), "Version", version)
     sys.exit(0)
 
     # option, var_name, initial_val, function
@@ -59,6 +61,7 @@ if __name__ == '__main__':
     mw = MainWin()
     Gtk.main()
     sys.exit(0)
+
 
 
 

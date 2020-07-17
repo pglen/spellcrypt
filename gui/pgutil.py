@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from __future__ import absolute_import
+from __future__ import print_function
+
 import os, sys, glob, getopt, time, string, signal, stat, shutil
 import traceback
 import warnings; warnings.simplefilter("ignore");
@@ -17,9 +20,9 @@ class Config:
         optletters = ""
         for aa in self.optarr:
             if aa[0] in optletters:
-                print "Warning: duplicate option", "'" + aa[0] + "'"
+                print( "Warning: duplicate option", "'" + aa[0] + "'")
             optletters += aa[0]
-        #print optletters
+        #print( optletters)
 
         # Create defaults:
         for bb in range(len(self.optarr)):
@@ -31,27 +34,27 @@ class Config:
                     self.__dict__[self.optarr[bb][1]] = str(self.optarr[bb][2])
         try:
             opts, args = getopt.getopt(argv, optletters)
-        except getopt.GetoptError, err:
-            print "Invalid option(s) on command line:", err
-            return ()
+        except getopt.GetoptError as err:
+            print( "Invalid option(s) on command line:", err)
+            return
 
-        #print "opts", opts, "args", args
+        #print( "opts", opts, "args", args)
         for aa in opts:
             for bb in range(len(self.optarr)):
                 if aa[0][1] == self.optarr[bb][0][0]:
-                    #print "match", aa, self.optarr[bb]
+                    #print( "match", aa, self.optarr[bb])
                     if len(self.optarr[bb][0]) > 1:
-                        #print "arg", self.optarr[bb][1], aa[1]
+                        #print( "arg", self.optarr[bb][1], aa[1])
                         if self.optarr[bb][2] != None:
                             if type(self.optarr[bb][2]) == type(0):
                                 self.__dict__[self.optarr[bb][1]] = int(aa[1])
                             if type(self.optarr[bb][2]) == type(""):
                                 self.__dict__[self.optarr[bb][1]] = str(aa[1])
                     else:
-                        #print "set", self.optarr[bb][1], self.optarr[bb][2]
+                        #print( "set", self.optarr[bb][1], self.optarr[bb][2])
                         if self.optarr[bb][2] != None:
                             self.__dict__[self.optarr[bb][1]] = 1
-                        #print "call", self.optarr[bb][3]
+                        #print( "call", self.optarr[bb][3])
                         if self.optarr[bb][3] != None:
                             self.optarr[bb][3]()
         return args
@@ -72,8 +75,8 @@ def print_exception(xstr):
                         " Line: " + str(aa[1]) + "\n" +  \
                     "   Context: " + aa[2] + " -> " + aa[3] + "\n"
         except:
-            print "Could not print trace stack. ", sys.exc_info()
-    print cumm
+            print( "Could not print trace stack. ", sys.exc_info())
+    print( cumm)
 
 # ------------------------------------------------------------------------
 # Never mind
@@ -87,7 +90,7 @@ def cmp(aa, bb):
     if(ss1 and ss2):
         aaaa = float(aaa[ss1.start(): ss1.end()])
         bbbb = float(bbb[ss2.start(): ss2.end()])
-        #print aaa, bbb, aaaa, bbbb
+        #print( aaa, bbb, aaaa, bbbb)
         if aaaa == bbbb:
             return 0
         elif aaaa < bbbb:
@@ -95,7 +98,7 @@ def cmp(aa, bb):
         elif aaaa > bbbb:
             return 1
         else:
-            #print "crap"
+            #print( "crap")
             pass
     else:
         if aaa == bbb:
@@ -105,7 +108,7 @@ def cmp(aa, bb):
         elif aaa > bbb:
             return 1
         else:
-            #print "crap"
+            #print( "crap")
             pass
 
 # ------------------------------------------------------------------------
@@ -133,7 +136,7 @@ def message(strx, title = None, icon = None):
 def  usleep(msec):
 
     got_clock = time.clock() + float(msec) / 1000
-    #print got_clock
+    #print( got_clock)
     while True:
         if time.clock() > got_clock:
             break
@@ -173,7 +176,7 @@ def find(self):
     try:
         dialog.set_icon_from_file("epub.png")
     except:
-        print "Cannot load find dialog icon", sys.exc_info()
+        print( "Cannot load find dialog icon", sys.exc_info())
 
     self.dialog = dialog
 

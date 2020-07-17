@@ -26,10 +26,10 @@ class  spellencrypt():
         self.arrlen = 0
 
         cnt = 0
-        fpi = open(fname, "r")
+        self.fpi = open(fname, "r")
 
         # Load to memory
-        for aa in fpi:
+        for aa in self.fpi:
             aa = aa.strip().lower()
             if len(aa) > 1:
                 self.bigarr.append(aa)

@@ -14,14 +14,19 @@ verbose = 0
 def cmdline():
 
     parser = OptionParser()
-    parser.add_option("-f", "--file", dest="filename", default="",
+
+    parser.add_option("-f", "--force",
+                  action="store_true", dest="force",
+                  help="Force overwrite")
+
+    parser.add_option("-i", "--in", dest="filename", default="",
                   help="Read from file", metavar="FILE")
 
     parser.add_option("-o", "--out", dest="outname", default="",
-                  help="Write to file", metavar="FILE")
+                  help="Write to file; stdout if none specified.", metavar="FILE")
 
     parser.add_option("-p", "--pass", dest="passwd", default="1234",
-                  help="Password to use", metavar="FILE")
+                  help="Password to use", metavar="STR")
 
     parser.add_option("-q", "--quiet",
                   action="store_true", dest="quiet",
@@ -70,7 +75,13 @@ if __name__ == '__main__':
 
     wfp = None
     if options.outname:
+        if os.access(options.outname, os.F_OK):
+            if not options.force:
+                print ("Cannot overwrite file:", options.outname," use -f to force");
+            sys.exit(1)
         wfp = open(options.outname, "w")
+    else:
+        wfp = sys.stdout
 
     arrx = []
     if options.filename:
@@ -85,9 +96,8 @@ if __name__ == '__main__':
             arrx.append("\n")
     else:
         if not args:
-            print("Must use file option or pass command line arguments")
+            print("Must use input file option or pass command line arguments")
             sys.exit(0)
-
         arrx = args
 
     if options.enc:

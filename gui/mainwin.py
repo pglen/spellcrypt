@@ -25,7 +25,7 @@ def message(strx, title=None):
 
         # Close dialog on user response
 
-        dialog.set_transient_for(mainwin.window)
+        #dialog.set_transient_for(mainwin.window)
 
         dialog.connect ("response", lambda d, r: d.destroy())
         dialog.show()
@@ -65,7 +65,7 @@ class MainWin():
         self.sssmod = None
         self.orig = None;  self.encr = None;  self.decr = None
 
-        self.window = Gtk.Window(Gtk.WindowType.TOPLEVEL)
+        self.window = Gtk.Window(type=Gtk.WindowType.TOPLEVEL)
 
         #if not self.sssmod:
         self.sssmod =  spemod.spellencrypt("../data/spell.txt")
@@ -110,7 +110,7 @@ class MainWin():
         hbox = Gtk.HBox();  hbox2 = Gtk.HBox(); hbox3 = Gtk.VBox();
 
         hbox2.pack_start( Spacer(1), 0, 0, False)
-        lab3 = Gtk.Label(label="  Enter PassWord: ");
+        lab3 = Gtk.Label.new_with_mnemonic("  Enter Pa_ssWord: ");
         hbox2.pack_start( Spacer(1), 0, 0, False)
         hbox2.pack_start(lab3, 0, 0, False)
         self.entry = Gtk.Entry(); self.entry.set_visibility(False)
@@ -403,11 +403,13 @@ class MainWin():
         global time_label
         self.show_stat("Opening File");
 
+        but =  ("Cancel", Gtk.ButtonsType.CANCEL, "Load Macro", Gtk.ButtonsType.OK)
         old = os.getcwd()
-        but =   "Cancel", Gtk.ButtonsType.CANCEL, "Load Macro", Gtk.ButtonsType.OK
-        fc = Gtk.FileChooserDialog("Load file for encryption:", None, Gtk.FileChooserAction.OPEN, \
-            but)
+        fc = Gtk.FileChooserDialog("Load file for encryption:", None, Gtk.FileChooserAction.OPEN, but)
+        #fc.add_buttons(but)
+
         #fc.set_current_folder(xfile)
+
         fc.set_current_folder(old)
         fc.set_default_response(Gtk.ButtonsType.OK)
         fc.connect("response", self.exec_open, old)
