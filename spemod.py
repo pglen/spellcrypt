@@ -1,4 +1,5 @@
-# Return a tuple of coordinates for this word
+# SpellCrypt Encryption Module
+#
 
 from __future__ import absolute_import
 from __future__ import print_function
@@ -442,9 +443,7 @@ def rmjunk(strx):
     for aa in strx:
         if ord(aa) >= 127:        pass
         else:                    stry += aa
-
     return stry
-
 
 # ------------------------------------------------------------------------
 # Make the test white space neutral
@@ -461,5 +460,3 @@ def rmspace(strx):
     return stry
 
 # EOF
-
-

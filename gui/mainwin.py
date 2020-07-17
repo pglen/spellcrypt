@@ -511,6 +511,7 @@ def handler_tick():
         print("Exception starting new timer handler", sys.exc_info())
 
 
+# ------------------------------------------------------------------------
 # Start of program:
 
 if __name__ == '__main__':
@@ -520,6 +521,3 @@ if __name__ == '__main__':
     Gtk.main()
 
 # EOF
-
-
-

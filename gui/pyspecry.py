@@ -62,16 +62,4 @@ if __name__ == '__main__':
     Gtk.main()
     sys.exit(0)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+# EOF
