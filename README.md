@@ -1,6 +1,6 @@
-# spellcrypt
+# SpellCrypt
 
-   Under construction, no usable content ... encryption done, stage one
+   Under construction, Encryption done, GUI done; Experimental;
 
      An encryption algorithm that turns this:
 
@@ -28,10 +28,13 @@
    any context, including email, text message, document or attachment.
 
 ## Screen Shot:
- 
-    The screen shot below shows a text file loaded into the top window. The middle window shows the encrypted text after pressing the 'Encrypt' button. The 'Decrypt' feature allows verification of text, an the 'Check' button compares the top edit box text with the buttom edit vox text.
 
-  The encrypted content than can be copied from the middle window into an email / document or any transmission. 
+    The screen shot below shows a text file loaded into the top window. The middle
+    window shows the encrypted text after pressing the 'Encrypt' button. The
+    'Decrypt' feature allows verification of text, and the 'Check' button
+    compares the top edit box text with the button box text.
+
+  The encrypted content than can be copied from the middle window into an email / document or any transmission.
 
 ![Screen Shot](screen.png)
 
