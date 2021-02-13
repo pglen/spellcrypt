@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import absolute_import
 from __future__ import print_function
@@ -7,7 +7,11 @@ import os, sys, string, zlib, struct
 from datetime import date
 from optparse import OptionParser
 
-sys.path.append("gui")
+base = os.path.getdir(os.path.realpath(__file__))
+print("base", base)
+
+sys.path.append(os.path.append(base, "gui"))
+
 
 import spemod
 
@@ -43,7 +47,11 @@ def cmdline():
                   help="Decrypt data")
 
     parser.add_option("-v", "--verbose", dest="verbose", default=0,
+                  action="store_true",
                   help="Status message verbosity")
+
+    parser.add_option("-g", "--debug", dest="debug", default=0,
+                  help="Debug output level")
 
     return parser
 
@@ -60,7 +68,7 @@ if __name__ == '__main__':
         sys.exit(2);
 
     if (not options.enc) and (not options.dec):
-        print("Missing  option: one of -e (--encrypt) OR -d (--decrypt) must be specified.")
+        print("Missing option: one of -e (--encrypt) OR -d (--decrypt) must be specified.")
         sys.exit(2);
 
     sssmod = spemod.spellencrypt("data/spell.txt")
@@ -87,7 +95,13 @@ if __name__ == '__main__':
 
     arrx = []
     if options.filename:
-        fp = open(options.filename, "r")
+
+        try:
+            fp = open(options.filename, "r")
+        except:
+            print("Input file", "'" + options.filename + "'" , "must exist.")
+            sys.exit(1)
+
         for aa in fp:
             #print("line:", bb)
             ss = spemod.ascsplit(aa.strip())
