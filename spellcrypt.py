@@ -3,15 +3,14 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import os, sys, string, zlib, struct
+import os, sys, string, zlib, struct, platform
 from datetime import date
 from optparse import OptionParser
 
-base = os.path.getdir(os.path.realpath(__file__))
-print("base", base)
+base = os.path.dirname(os.path.abspath(__file__))
+#print("base", base)
 
-sys.path.append(os.path.append(base, "gui"))
-
+sys.path.append(os.path.join(base, "gui"))
 
 import spemod
 
@@ -60,8 +59,26 @@ def cmdline():
 
 if __name__ == '__main__':
 
+    if sys.version_info[0] < 3:
+        print("This program was meant to run on python 3.x or later.")
+        sys.exit(1)
+
     parser = cmdline()
     (options, args) = parser.parse_args()
+    #print("args", args)
+
+    if len (args) == 2:
+        options.filename = args[0]
+        if options.outname:
+            print("Both output option and second argument present.")
+            sys.exit(1)
+        else:
+            options.outname = args[1]
+
+    if len (args) == 1:
+        options.filename = args[0]
+    else:
+        pass
 
     if options.enc and options.dec:
         print("Conflicting options: both enc / dec specified.")
@@ -71,7 +88,7 @@ if __name__ == '__main__':
         print("Missing option: one of -e (--encrypt) OR -d (--decrypt) must be specified.")
         sys.exit(2);
 
-    sssmod = spemod.spellencrypt("data/spell.txt")
+    sssmod = spemod.spellencrypt(os.path.join(base, "data", "spell.txt"))
     sssmod.verbose = options.verbose
     verbose =  options.verbose
 

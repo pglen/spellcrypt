@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 from __future__ import absolute_import
 from __future__ import print_function
@@ -12,6 +12,8 @@ import random, stat
 import gi
 gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
+
+base = os.path.dirname(os.path.abspath(__file__))
 
 from pgutil import  *
 from mainwin import  *
@@ -57,6 +59,10 @@ conf = Config(optarr)
 if __name__ == '__main__':
 
     global mw
+    if sys.version_info[0] < 3:
+        print("This program was meant to run on python 3.x or later.")
+        sys.exit(1)
+
     args = conf.comline(sys.argv[1:])
     mw = MainWin()
     Gtk.main()

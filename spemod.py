@@ -13,6 +13,9 @@ prepass   = string.ascii_letters * 4
 UPPERFLAG   = 0x80000
 CAPFLAG     = 0x100000
 
+
+
+
 printable = string.ascii_letters + "'"
 
 class  spellencrypt():
@@ -323,7 +326,7 @@ def xorstr(passwd):
 
 def butter(passwd):
     sss = ""; rrr = ""
-    for bb in range(0, len(passwd)/2):
+    for bb in range(0, len(passwd)//2):
         #print ("c", passwd[bb])
         sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
         rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
