@@ -1,5 +1,5 @@
-# SpellCrypt Encryption Module
-#
+# Return a tuple of coordinates for this word
+
 
 from __future__ import absolute_import
 from __future__ import print_function
@@ -27,23 +27,21 @@ class  spellencrypt():
         self.arrlen = 0
 
         cnt = 0
-        self.fpi = open(fname, "r", encoding = "ISO-8859-1")
-        #self.fpi = open(fname, "rb")
+        fpi = open(fname, "r")
 
         # Load to memory
-        for aa in self.fpi:
+        for aa in fpi:
             aa = aa.strip().lower()
             if len(aa) > 1:
-                #''' We filter printable
+                self.bigarr.append(aa)
+
+                ''' We filter printable at a later stage
                 uuu = 0
                 for bb in aa:
-                    if not isprint(bb):
+                    if ord(bb) > 127:
                         #print ("Foreign chars", aa)
                         uuu = 1
-
-                if not uuu:
-                    self.bigarr.append(aa)
-                    #print ("chars", aa)
+                '''
 
         # Quick index
         oldchh = ""
@@ -78,13 +76,8 @@ class  spellencrypt():
 
         for bb in self.boundsig:
             if bb == cc:
-                try:
-                    cnt3 = self.boundarr[cnt2]
-                    cnt4 = self.boundarr[cnt2+1]
-                except:
-                    print("Err boundsig", sys.exc_info())
-                    continue
-
+                cnt3 = self.boundarr[cnt2]
+                cnt4 = self.boundarr[cnt2+1]
                 #print  ("got:", cc, bb, cnt2, self.bigarr[cnt3], "range:", cnt4-cnt3)
                 # The dictionary was broken had foreign characters, so we overscanned
                 limx = cnt4-cnt3 + 100
@@ -250,12 +243,14 @@ class  spellencrypt():
         print("xlen", xlen);
 
     # ------------------------------------------------------------------------
+
     def getlen(self):
 
         if self.verbose > 0:
             print("Parsed:", len(self.boundarr), "entries", len(self.bigarr), "total")
 
         return self.arrlen
+
 
 def ascsplit(strx):
     arr = [] ;  last = ""; cumm = ""; cumm2 = ""
@@ -328,7 +323,7 @@ def xorstr(passwd):
 
 def butter(passwd):
     sss = ""; rrr = ""
-    for bb in range(0, (int)(len(passwd)/2)):
+    for bb in range(0, len(passwd)/2):
         #print ("c", passwd[bb])
         sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
         rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
@@ -434,29 +429,9 @@ def     genpass(passwd):
 
     return passwd
 
-# ------------------------------------------------------------------------
-# Clean string from non ascii (non 7 bit) chars
-
-def rmjunk(strx):
-
-    stry = ""
-    for aa in strx:
-        if ord(aa) >= 127:        pass
-        else:                    stry += aa
-    return stry
-
-# ------------------------------------------------------------------------
-# Make the test white space neutral
-
-def rmspace(strx):
-
-    stry = ""
-    for aa in strx:
-        if aa == " ":            pass
-        elif aa == "\r":         pass
-        elif aa == "\n":         pass
-        else:                    stry += aa
-
-    return stry
-
 # EOF
+
+
+
+
+

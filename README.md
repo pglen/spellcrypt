@@ -35,8 +35,8 @@
 ## Screen Shot:
 
   The screen shot below shows a text file loaded into the top window. The middle
-  window shows the encrypted text after pressing the 'Encrypt' button. The
-  'Decrypt' feature allows verification of text, and the 'Check' button
+  window shows the encrypted text after pressing the Encrypt button. The
+  Decrypt feature allows verification of text, and the 'Check' button
   compares the top edit box text with the button box text.
 
   The encrypted content than can be copied from the middle window into an email / document or any transmission.

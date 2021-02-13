@@ -272,8 +272,10 @@ class MainWin():
                     break
 
             message("Error on decryption. DIFF at offset %d" % aa)
-            print("orig", "'" + self.orig[aa:aa+66] + "'")
-            print("decr", "'" + self.decr[aa:aa+66] + "'")
+            print()
+            print("orig:", "'" + self.orig[aa-33:aa+33] + "'\n")
+            print("decr:", "'" + self.decr[aa-33:aa+33] + "'\n")
+            print()
 
     # --------------------------------------------------------------------
 
