@@ -4,30 +4,39 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import sys, string
+import sys, string, os
 
 # Globals
 
 prepass   = string.ascii_letters * 4
 
-UPPERFLAG   = 0x80000
+SPELLFLAG   = 0x040000
+UPPERFLAG   = 0x080000
 CAPFLAG     = 0x100000
 
 
+base = os.path.dirname(os.path.abspath(__file__))
+#print("base", base)
 
+#__all__ = ['__init__', 'enc_dec']
 
 printable = string.ascii_letters + "'"
 
 class  spellencrypt():
 
+
     def __init__(self, fname = "spell.txt"):
 
-        self.verbose = 0
+        self.debug = 0
+        self.splarr = []
         self.bigarr = []
         self.boundsig = []
         self.boundstr = []
         self.boundarr = []
         self.arrlen = 0
+        self.datadir = os.path.dirname(fname)
+
+        #print("datadir", self.datadir)
 
         cnt = 0
         fpi = open(fname, "r")
@@ -45,6 +54,7 @@ class  spellencrypt():
                         #print ("Foreign chars", aa)
                         uuu = 1
                 '''
+        fpi.close()
 
         # Quick index
         oldchh = ""
@@ -60,13 +70,21 @@ class  spellencrypt():
 
         self.arrlen = len(self.bigarr)
 
+        fps = open(os.path.join(self.datadir, "spellmode.txt"), "r")
+        # Load to memory
+        for aaa in fps:
+            aaa = aaa.strip().lower().split()
+            self.splarr.append(aaa[0])
+        fps.close()
+
+        #print("splarr", self.splarr);
         #for iii in range(len(boundarr)-1):
         #    print (boundarr[iii + 1] - boundarr[iii], boundstr[iii], end="    " )
         #    print
 
     def     getword(self, www):
 
-        ttt = [0, 0, 0]
+        ttt = [0, -1, 0]
         cnt2 = 0
         cc =  www[:2]
 
@@ -96,8 +114,9 @@ class  spellencrypt():
                 break
             cnt2 += 1
 
-        #if ttt[2] == 0:
-        #    print (www, "not found")
+        if self.debug > 8:
+            if ttt[2] == -1:
+                print ("Word not found", www)
 
         return ttt[2]
 
@@ -127,6 +146,37 @@ class  spellencrypt():
             strx = "Indexerror (%d)" % ooo
         return strx
 
+
+    def     _spellmode(self, ww):
+
+        arr = []
+        for aa in ww:
+            if self.debug > 5:
+                print("spell",  "'" + aa + "'")
+            cnts = 0
+            for bb in self.splarr:
+                if aa == bb:
+                    #print("found", cnts, bb)
+                    arr.append(cnts)
+                cnts += 1
+        #print("spellmode arr", arr)
+        return arr
+
+    def isallupper(sel, ww):
+        ret = True
+        for aa in ww:
+            if not aa in string.ascii_uppercase:
+                ret = False
+        return ret
+
+    def isanyupper(sel, ww):
+        ret = False
+        for aa in ww:
+            if aa in string.ascii_uppercase:
+                ret = True
+                break
+        return ret
+
     # ------------------------------------------------------------
     # Convert input to array of offsets / strings
 
@@ -136,25 +186,30 @@ class  spellencrypt():
         for ww in arrx:
             if len (ww) == 0:
                 continue
-            if len (ww) > 1:
-                nn = self.getword (str.lower(ww))
-                if nn != 0:
-                    if ww[1] in string.ascii_uppercase:
+            nn = self.getword (str.lower(ww))
+            if nn != 0:
+                if self.isallupper(ww):
+                    nn |= UPPERFLAG
+                if self.isanyupper(ww):
+                    if ww[0] in string.ascii_uppercase:
                         nn |= CAPFLAG
-                    elif ww[0] in string.ascii_uppercase:
-                        #print("bigg", ww, hex(nn))
-                        nn |= UPPERFLAG
-
-                    arr2.append(nn)
-                    #print("'" + ww + "'", hex(nn), end = "; ")
+                    else:
+                        print("Warn: mixed capitalization");
                 else:
-                    arr2.append(ww)
-                    #print("'" + ww + "'", hex(nn), end = "; ")
+                    pass
+                arr2.append(nn)
+                #print("'" + ww + "'", hex(nn), end = "; ")
             else:
-                if len (ww):
-                    arr2.append( ww )
-                    #print("'" + ww + "' ", hex(nn), end = "")
+                #arr2.append(ww)
+                if self.debug > 5:
+                    print("Unkown",  "'" + ww + "'", hex(nn), end = "; ")
+                # Enter spell mode
+                arr3 = self._spellmode(ww)
+                #for aa in arr3:
+                arr2.append(arr3)
 
+        if self.debug > 2:
+            print("_convert ret=", arr2)
         return arr2
 
     # ------------------------------------------------------------------------
@@ -162,33 +217,46 @@ class  spellencrypt():
 
     def  enc_dec(self, flag, arrx, passwd):
 
+        if self.debug > 5:
+            print("CAPFLAG", hex(CAPFLAG), "UPPERFLAG",
+                     hex(UPPERFLAG), "SPELLFLAG", hex(SPELLFLAG) )
+            print("Loaded", hex(self.arrlen), "words")
+
         strx = "";  cnt = 0; passidx = 0;
 
         if len(passwd) == 0:
             raise ValueError("Password Cannot be Empty")
 
-        #print(arrx)
+        if self.debug > 3:
+            print(arrx)
         arr2 = self._convert(arrx)
-        #print (arr2)
+
+        if self.debug > 3:
+            print (arr2)
 
         for ee in arr2:
-            #print ("cnt", cnt, "", end="")
+            if self.debug > 3:
+                print ("cnt", cnt, "", end="")
             if type(ee) == str:
-                if self.verbose > 1:
+                if self.debug > 1:
                     print ("[" + ee + "] ", end="")
                 strx +=  ee
+            elif type(ee) == list:
+                if self.debug > 1:
+                    print ("arr[", ee, "]arr ", end="")
+
             else:
                 if flag:
-                    if self.verbose > 2:
+                    if self.debug > 2:
                         print ("{" + arrx[cnt] + "} ", end="")
                 else:
-                    if self.verbose > 2:
+                    if self.debug > 2:
                         print ("{", arr2[cnt], "} ", end="")
 
                 chh = ord(passwd[passidx])
 
-                #if self.verbose :
-                #    print ("chh ", chh, end=" ")
+                if self.debug > 4:
+                    print ("chh ", chh, end=" ")
 
                 passidx += 1
                 if passidx >= len(passwd):
@@ -196,7 +264,7 @@ class  spellencrypt():
 
                 ee2 = ee & 0x7ffff
 
-                if self.verbose > 1:
+                if self.debug > 1:
                     print("ee =", ee, " ", end="")
 
                 #                               arrlen
@@ -216,7 +284,7 @@ class  spellencrypt():
                     if ee2 < 0:
                         ee2 += self.arrlen
 
-                if self.verbose > 1:
+                if self.debug > 1:
                     print("after_ee =", ee2, "", end="")
 
                 # Reverse conversion
@@ -227,8 +295,10 @@ class  spellencrypt():
                     nstr = nstr.upper()
                 if ee & UPPERFLAG:
                     nstr = nstr.capitalize()
+                if ee & SPELLFLAG:
+                    nstr = "Spell flag"
 
-                if self.verbose:
+                if self.debug > 1:
                     print ("$" + nstr + "$")
 
                 # Add it to results
@@ -249,7 +319,7 @@ class  spellencrypt():
 
     def getlen(self):
 
-        if self.verbose > 0:
+        if self.debug > 0:
             print("Parsed:", len(self.boundarr), "entries", len(self.bigarr), "total")
 
         return self.arrlen

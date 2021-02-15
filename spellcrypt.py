@@ -25,13 +25,18 @@ def cmdline():
                   help="Force overwrite")
 
     parser.add_option("-i", "--in", dest="filename", default="",
-                  help="Read from file", metavar="FILE")
+                  help="Read from file", metavar="filename")
 
     parser.add_option("-o", "--out", dest="outname", default="",
-                  help="Write to file; stdout if none specified.", metavar="FILE")
+                  help="Write to file; stdout if none specified.",
+                    metavar="filename")
 
     parser.add_option("-p", "--pass", dest="passwd", default="1234",
-                  help="Password to use", metavar="STR")
+                  help="Password to use", metavar="pass")
+
+    parser.add_option("-s", "--str", dest="strx", default="",
+                  help="String to encrypt (quote if space or newline)",
+                    metavar="string")
 
     parser.add_option("-q", "--quiet",
                   action="store_true", dest="quiet",
@@ -50,7 +55,7 @@ def cmdline():
                   help="Status message verbosity")
 
     parser.add_option("-g", "--debug", dest="debug", default=0,
-                  help="Debug output level")
+                  help="Debug output level", metavar="level")
 
     return parser
 
@@ -88,8 +93,12 @@ if __name__ == '__main__':
         print("Missing option: one of -e (--encrypt) OR -d (--decrypt) must be specified.")
         sys.exit(2);
 
+    #print("spemod", dir(spemod))
     sssmod = spemod.spellencrypt(os.path.join(base, "data", "spell.txt"))
-    sssmod.verbose = options.verbose
+    #print("sssmod", dir(sssmod))
+
+    sssmod.verbose = int(options.verbose)
+    sssmod.debug = int(options.debug)
     verbose =  options.verbose
 
     #sssmod.getlen()
@@ -112,7 +121,6 @@ if __name__ == '__main__':
 
     arrx = []
     if options.filename:
-
         try:
             fp = open(options.filename, "r")
         except:
@@ -127,11 +135,17 @@ if __name__ == '__main__':
                 #print("cc=", "'"+cc+"'", end=" ")
                 arrx.append(cc)
             arrx.append("\n")
+    elif options.strx:
+        ss = spemod.ascsplit(options.strx.strip())
+        for cc in ss:
+            arrx.append(cc)
+        arrx.append("\n")
     else:
-        if not args:
-            print("Must use input file option or pass command line arguments")
-            sys.exit(0)
-        arrx = args
+        print("Must use input file option or pass command line file arguments.")
+        sys.exit(0)
+
+    if int(options.debug) > 2:
+        print("arrx", arrx)
 
     if options.enc:
         strx = sssmod.enc_dec(True, arrx, newpass)

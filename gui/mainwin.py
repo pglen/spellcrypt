@@ -78,7 +78,14 @@ class MainWin():
         #ic = Gtk.Image(); ic.set_from_stock(Gtk.STOCK_DIALOG_INFO, Gtk.IconSize.BUTTON)
         #self.window.set_icon(ic.get_pixbuf())
 
-        www = Gdk.Screen.width(); hhh = Gdk.Screen.height();
+        display = Gdk.Display.get_default()
+        monitor = display.get_primary_monitor()
+        geometry = monitor.get_geometry()
+        scale_factor = monitor.get_scale_factor()
+        www = scale_factor * geometry.width
+        hhh = scale_factor * geometry.height
+
+        #www = Gdk.Screen.width(); hhh = Gdk.Screen.height();
         #self.window.set_default_size(6*www/8, 6*hhh/8)
 
         self.window.set_default_size(8*hhh/8, 6*hhh/8)
@@ -118,7 +125,7 @@ class MainWin():
         hbox2.pack_start(self.entry, 0, 0, 0)
 
         hbox2.pack_start( Spacer(1), 0, 0, False)
-        butt3 = Gtk.Button.new_with_mnemonic(" _Reveal ")
+        butt3 = Gtk.Button.new_with_mnemonic(" _Reveal Pass")
         butt3.connect("clicked", self.reveal, self.window)
         hbox2.pack_start(butt3, 0, 0, False)
 
@@ -151,7 +158,8 @@ class MainWin():
 
         sc1 = Gtk.ScrolledWindow()
         self.text1 = Gtk.TextView();    self.text1.set_wrap_mode(True)
-        sc1.add_with_viewport(self.text1)
+        #sc1.add_with_viewport(self.text1)
+        sc1.add(self.text1)
 
         hbox5a = Gtk.HBox(); hbox5a.set_spacing(2)
         hbox5a.pack_start(sc1, True, True, True)
@@ -162,7 +170,8 @@ class MainWin():
 
         sc2 = Gtk.ScrolledWindow()
         self.text2 = Gtk.TextView();    self.text2.set_wrap_mode(True)
-        sc2.add_with_viewport(self.text2)
+        #sc2.add_with_viewport(self.text2)
+        sc2.add(self.text2)
         hbox6a = Gtk.HBox(); hbox6a.set_spacing(2)
         hbox6a.pack_start(sc2, True, True, True)
 
@@ -171,7 +180,8 @@ class MainWin():
 
         sc3 = Gtk.ScrolledWindow()
         self.text3 = Gtk.TextView();    self.text3.set_wrap_mode(True)
-        sc3.add_with_viewport(self.text3)
+        #sc3.add_with_viewport(self.text3)
+        sc3.add(self.text3)
         hbox7a = Gtk.HBox(); hbox7a.set_spacing(2)
         hbox7a.pack_start(sc3, True, True, padding = 2)
 
