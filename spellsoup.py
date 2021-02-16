@@ -110,6 +110,9 @@ if __name__ == '__main__':
         #print("rand", idx)
         print("", sssmod.bigarr[idx], end="")
 
-    print(".")
+    print(".", end = " ")
+
+    if int(random.random() * 30) % 2 :
+        print()
 
 # EOF
