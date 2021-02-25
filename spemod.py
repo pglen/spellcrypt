@@ -10,17 +10,28 @@ import sys, string, os
 
 prepass   = string.ascii_letters * 4
 
-SPELLFLAG   = 0x040000
-UPPERFLAG   = 0x080000
-CAPFLAG     = 0x100000
+# Dic size    0x24109
 
+LETTERMASK  = 0x2ffff
+
+SPELLFLAG   = 0x40000
+UPPERFLAG   = 0x80000
+CAPFLAG     = 0x100000
+NEWFLAG     = 0x200000
+
+debug = 0
+mask = 0
 
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
 
+def assertNERaise(aa, bb):
+    if aa != bb:
+        raise Warning("Assert NE raised.", "Values must match.")
+
 #__all__ = ['__init__', 'enc_dec']
 
-printable = string.ascii_letters + "'"
+printable = string.ascii_letters # + "'"
 
 class   PassPad():
 
@@ -62,11 +73,11 @@ class  spellencrypt():
         # Load to memory
         for aa in fpi:
             aa = aa.strip().lower()
-            # We fake a space here, as editors remove it
-            if not aa:
-                aa = ' '
             self.bigarr.append(aa)
         fpi.close()
+
+        # We fake a space here, as editors remove it
+        self.bigarr.append(" ")
 
         # Quick index
         cnt = 0; oldchh = ""
@@ -82,10 +93,14 @@ class  spellencrypt():
 
         self.arrlen = len(self.bigarr)
 
-        #print("boundsig", self.boundsig)
-        #print("boundarr", self.boundarr)
+        if self.debug > 5:
+            print("boundsig", self.boundsig)
+            #print("boundarr", self.boundarr)
 
-        #print("arrlen",  self.arrlen, "aa", cnt);  # ASSERT
+        if self.debug > 3:
+            print("arrlen",  self.arrlen, hex(self.arrlen))
+
+        #assertNERaise(self.arrlen, cnt)
 
         #fps = open(os.path.join(self.datadir, "spellmode.txt"), "r")
         # Load to memory
@@ -110,13 +125,15 @@ class  spellencrypt():
                 break
         '''
 
+        # Single hash
         for bb in self.boundsig:
             if bb == cc:
                 cnt3 = self.boundarr[cnt2]
                 cnt4 = self.boundarr[cnt2+1]
-                #print  ("got:", cc, bb, cnt2, self.bigarr[cnt3], "range:", cnt4-cnt3)
+                if self.debug > 9:
+                    print  ("got:", cc, bb, cnt2, self.bigarr[cnt3], "range:", cnt4-cnt3)
 
-                # The dictionary was broken had foreign characters, so we overscanned
+                # The dictionary was broken had foreign characters, so we overscanned (FIXED)
                 limx = cnt4 - cnt3 + 100
                 if cnt3 + limx > self.arrlen:
                     limx = self.arrlen - cnt3
@@ -169,6 +186,7 @@ class  spellencrypt():
             if self.debug > 5:
                 print("spell mode",  "'" + aa + "'", str.lower(aa) )
             nn = self.getword (str.lower(aa))
+            nn |=  SPELLFLAG
             arr.append(nn)
 
         if self.debug > 5:
@@ -197,8 +215,8 @@ class  spellencrypt():
 
         arr2 = []
         for ww in arrx:
-            if self.debug > 2:
-                print ("_convert():", "'"+ww+"'")
+            #if self.debug > 2:
+            #    print ("_convert():", "'"+ww+"'")
 
             if len (ww) == 0:
                 continue
@@ -210,15 +228,13 @@ class  spellencrypt():
             else:
                 nn = self.getword (str.lower(ww))
                 if nn != 0:
-                    #if self._isallupper(ww):
-                    #    nn |= UPPERFLAG
-                    #if self._isanyupper(ww):
-                    #    if ww[0] in string.ascii_uppercase:
-                    #        nn |= CAPFLAG
-                    #    else:
-                    #        print("Warn: mixed capitalization");
-                    #else:
-                    #    pass
+                    if self._isanyupper(ww):
+                        if self._isallupper(ww):
+                            nn |= UPPERFLAG
+                        elif ww[0] in string.ascii_uppercase:
+                            nn |= CAPFLAG
+                        else:
+                            print("Warn: mixed capitalization");
                     arr2.append(nn)
                     if self.debug > 2:
                         print("'" + ww + "'", hex(nn), end = "; ")
@@ -237,16 +253,16 @@ class  spellencrypt():
 
     def _encode_one(self, ee, chh, flag):
 
-        if self.debug > 1:
+        if self.debug > 3:
             print("ee =", ee, " ", end="")
 
-        if ee == " ":
-            return " "
+        #if ee == " ":
+        #    return " "
 
-        if ee == "\n":
-            return "\n"
+        #if ee == "\n":
+        #    return "\n"
 
-        ee2 = ee & 0x7ffff
+        ee2 = ee & LETTERMASK
 
         #                               arrlen
         # ----------|-------------------|---------------------------
@@ -265,7 +281,7 @@ class  spellencrypt():
             if ee2 < 0:
                 ee2 += self.arrlen
 
-        if self.debug > 1:
+        if self.debug > 3:
             print("after_ee =", ee2, "", end="")
 
         # Reverse conversion
@@ -273,13 +289,14 @@ class  spellencrypt():
 
         # Apply flags
         if ee & CAPFLAG:
-            nstr = nstr.upper()
-        if ee & UPPERFLAG:
             nstr = nstr.capitalize()
+        if ee & UPPERFLAG:
+            nstr = nstr.upper()
         if ee & SPELLFLAG:
-            nstr = "Spell flag"
+            pass
+            nstr += "x" #" Spell_flag "
 
-        if self.debug > 1:
+        if self.debug > 3:
             print ("$[" + nstr + "]$")
 
         return nstr
@@ -289,13 +306,14 @@ class  spellencrypt():
 
     def  enc_dec(self, flag, arrx, passwd):
 
-        if self.debug > 5:
+        if self.debug > 8:
             print("CAPFLAG", hex(CAPFLAG), "UPPERFLAG",
                      hex(UPPERFLAG), "SPELLFLAG", hex(SPELLFLAG) )
             print("Loaded", hex(self.arrlen), "words")
 
-        if self.debug > 4:
-            print("password=", passwd)
+        #if self.debug > 4:
+        #    print("password=", passwd)
+
         self.passpad = PassPad(passwd)
 
         strx = "";  cnt = 0; passidx = 0;
@@ -315,11 +333,11 @@ class  spellencrypt():
             if self.debug > 3:
                 print ("cnt", cnt, "", end="")
             if type(ee) == str:
-                if self.debug > 1:
+                if self.debug > 3:
                     print ("[" + ee + "] ", end="")
                 strx +=  ee
             elif type(ee) == list:
-                if self.debug > 1:
+                if self.debug > 3:
                     print ("arr[", ee, "]arr ", end="")
                 for cc in ee:
                     chh = self.passpad.nextchr()
@@ -330,14 +348,14 @@ class  spellencrypt():
                     nstr = self._encode_one(cc, chh, flag)
 
                     # Add it to results
-                    strx += nstr # + " "
+                    strx += nstr  + " "
 
             else:
                 if flag:
-                    if self.debug > 2:
+                    if self.debug > 3:
                         print ("{" + arrx[cnt] + "} ", end=" ")
                 else:
-                    if self.debug > 2:
+                    if self.debug > 3:
                         print ("{", arr2[cnt], "} ", end=" ")
 
                 chh = self.passpad.nextchr()
@@ -370,8 +388,14 @@ class  spellencrypt():
 
         return self.arrlen
 
+# ------------------------------------------------------------------------
+# Split line into  array
 
 def ascsplit(strx):
+
+    if debug > 1:
+        print("ascsplit", "'"+strx+"'")
+
     arr = [] ;  last = ""; cumm = ""; cumm2 = ""
     mode = 0; old_mode = 0
 
@@ -400,6 +424,9 @@ def ascsplit(strx):
 
     if cumm:
         arr.append(cumm)
+
+    if debug > 2:
+        print("acsplit ret:", arr)
 
     return arr
 
@@ -456,7 +483,7 @@ def bwstr(passwd):
     return sss
 
 # ------------------------------------------------------------------------
-# corrected to handle unicode accidental
+# Corrected to handle unicode accidental
 
 ctrlchar = "\n\r| "
 

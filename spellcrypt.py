@@ -71,6 +71,21 @@ if __name__ == '__main__':
     parser = cmdline()
     (options, args) = parser.parse_args()
 
+    # Convert debug options
+    if options.debug[:2] == "0x":
+        options.debug = int(options.debug, base=16)
+    else:
+        options.debug = int(options.debug)
+
+    # see if masks are specified
+    if options.debug > 0xff:
+        options.mask = options.debug
+        options.debug &= 0xff
+    else:
+        options.mask = 0
+
+    print ("debug level", options.debug, hex(options.mask))
+
     if int(options.debug) > 4:
         print("args", args)
 
@@ -99,12 +114,15 @@ if __name__ == '__main__':
     sssmod = spemod.spellencrypt(os.path.join(base, "data", "spell.txt"))
     #print("sssmod", dir(sssmod))
 
+    # Propagate to sub systems
     sssmod.verbose = int(options.verbose)
-    sssmod.debug = int(options.debug)
+    sssmod.debug = options.debug
+
+    spemod.debug = options.debug
+    spemod.mask = options.mask
+
     verbose =  options.verbose
-
     #sssmod.getlen()
-
     #print("pass in:", len(options.passwd), options.passwd)
     newpass = spemod.genpass(options.passwd)
     #print("pass:", len(newpass), newpass)
@@ -114,11 +132,15 @@ if __name__ == '__main__':
 
     wfp = None
     if options.outname:
-        if os.access(options.outname, os.F_OK):
+        if os.access(options.outname, os.R_OK):
             if not options.force:
                 print ("Cannot overwrite file:", options.outname," use -f to force");
             sys.exit(1)
-        wfp = open(options.outname, "wb")
+            try:
+                os.remove(options.outname)
+            except:
+                print("Warn: cannot remove old file:", options.outname, sys.exc_info())
+        wfp = open(options.outname, "w")
 
     arrx = [];  fp = None
     if options.filename:
@@ -143,7 +165,7 @@ if __name__ == '__main__':
                 arrx.append(cc)
 
     elif options.strx:
-        if int(options.debug) > 2:
+        if int(options.debug) > 4:
             print("line:", aa)
         ss = spemod.ascsplit(options.strx)
         for cc in ss:
@@ -153,7 +175,7 @@ if __name__ == '__main__':
         print("Must use input file option or pass command line file arguments.")
         sys.exit(0)
 
-    if int(options.debug) > 2:
+    if  options.mask & 0x100:
         print("arrx", arrx)
 
     if options.enc:
@@ -171,6 +193,7 @@ if __name__ == '__main__':
 
     if wfp:
         wfp.write(strx)
+        wfp.close()
     else:
         print(strx)
 
