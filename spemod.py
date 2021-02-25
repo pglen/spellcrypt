@@ -37,6 +37,10 @@ class   PassPad():
 
         return ret
 
+    def rewind(self):
+        self.passidx = 0
+
+
 class  spellencrypt():
 
 
@@ -193,29 +197,39 @@ class  spellencrypt():
 
         arr2 = []
         for ww in arrx:
+            if self.debug > 2:
+                print ("_convert():", "'"+ww+"'")
+
             if len (ww) == 0:
                 continue
-            nn = self.getword (str.lower(ww))
-            if nn != 0:
-                if self._isallupper(ww):
-                    nn |= UPPERFLAG
-                if self._isanyupper(ww):
-                    if ww[0] in string.ascii_uppercase:
-                        nn |= CAPFLAG
-                    else:
-                        print("Warn: mixed capitalization");
-                else:
-                    pass
-                arr2.append(nn)
-                #print("'" + ww + "'", hex(nn), end = "; ")
+            # process exceptions
+            if ww == "\n":
+                arr2.append("\n")
+            elif ww == " ":
+                arr2.append(" ")
             else:
-                #arr2.append(ww)
-                if self.debug > 5:
-                    print("Unkown",  "'" + ww + "'", hex(nn), end = "; ")
-                # Enter spell mode
-                arr3 = self._spellmode(ww)
-                #for aa in arr3:
-                arr2.append(arr3)
+                nn = self.getword (str.lower(ww))
+                if nn != 0:
+                    #if self._isallupper(ww):
+                    #    nn |= UPPERFLAG
+                    #if self._isanyupper(ww):
+                    #    if ww[0] in string.ascii_uppercase:
+                    #        nn |= CAPFLAG
+                    #    else:
+                    #        print("Warn: mixed capitalization");
+                    #else:
+                    #    pass
+                    arr2.append(nn)
+                    if self.debug > 2:
+                        print("'" + ww + "'", hex(nn), end = "; ")
+                else:
+                    #arr2.append(ww)
+                    if self.debug > 3:
+                        print("Unkown",  "'" + ww + "'", hex(nn), end = "; ")
+                    # Enter spell mode
+                    arr3 = self._spellmode(ww)
+                    #for aa in arr3:
+                    arr2.append(arr3)
 
         if self.debug > 2:
             print("_convert ret=", arr2)
@@ -225,6 +239,12 @@ class  spellencrypt():
 
         if self.debug > 1:
             print("ee =", ee, " ", end="")
+
+        if ee == " ":
+            return " "
+
+        if ee == "\n":
+            return "\n"
 
         ee2 = ee & 0x7ffff
 
@@ -274,6 +294,8 @@ class  spellencrypt():
                      hex(UPPERFLAG), "SPELLFLAG", hex(SPELLFLAG) )
             print("Loaded", hex(self.arrlen), "words")
 
+        if self.debug > 4:
+            print("password=", passwd)
         self.passpad = PassPad(passwd)
 
         strx = "";  cnt = 0; passidx = 0;
@@ -283,10 +305,11 @@ class  spellencrypt():
 
         if self.debug > 3:
             print(arrx)
+
         arr2 = self._convert(arrx)
 
         if self.debug > 3:
-            print (arr2)
+            print ("arr2", arr2)
 
         for ee in arr2:
             if self.debug > 3:
@@ -307,15 +330,15 @@ class  spellencrypt():
                     nstr = self._encode_one(cc, chh, flag)
 
                     # Add it to results
-                    strx += nstr + " "
+                    strx += nstr # + " "
 
             else:
                 if flag:
                     if self.debug > 2:
-                        print ("{" + arrx[cnt] + "} ", end="")
+                        print ("{" + arrx[cnt] + "} ", end=" ")
                 else:
                     if self.debug > 2:
-                        print ("{", arr2[cnt], "} ", end="")
+                        print ("{", arr2[cnt], "} ", end=" ")
 
                 chh = self.passpad.nextchr()
 
@@ -325,7 +348,7 @@ class  spellencrypt():
                 nstr = self._encode_one(ee, chh, flag)
 
                 # Add it to results
-                strx += nstr + " "
+                strx += nstr # + " "
 
             cnt = cnt + 1
 

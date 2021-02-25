@@ -31,7 +31,7 @@ def cmdline():
                   help="Write to file; stdout if none specified.",
                     metavar="filename")
 
-    parser.add_option("-p", "--pass", dest="passwd", default="1234",
+    parser.add_option("-p", "--pass", dest="passwd", default="",
                   help="Password to use", metavar="pass")
 
     parser.add_option("-s", "--str", dest="strx", default="",
@@ -70,7 +70,9 @@ if __name__ == '__main__':
 
     parser = cmdline()
     (options, args) = parser.parse_args()
-    #print("args", args)
+
+    if int(options.debug) > 4:
+        print("args", args)
 
     if len (args) == 2:
         options.filename = args[0]
@@ -90,7 +92,7 @@ if __name__ == '__main__':
         sys.exit(2);
 
     if (not options.enc) and (not options.dec):
-        print("Missing option: one of -e (--encrypt) OR -d (--decrypt) must be specified.")
+        print("Missing option: one of -e (--encrypt) or -d (--decrypt) must be specified.")
         sys.exit(2);
 
     #print("spemod", dir(spemod))
@@ -103,6 +105,7 @@ if __name__ == '__main__':
 
     #sssmod.getlen()
 
+    #print("pass in:", len(options.passwd), options.passwd)
     newpass = spemod.genpass(options.passwd)
     #print("pass:", len(newpass), newpass)
 
@@ -115,31 +118,37 @@ if __name__ == '__main__':
             if not options.force:
                 print ("Cannot overwrite file:", options.outname," use -f to force");
             sys.exit(1)
-        wfp = open(options.outname, "w")
-    else:
-        wfp = sys.stdout
+        wfp = open(options.outname, "wb")
 
-    arrx = []
+    arrx = [];  fp = None
     if options.filename:
-        try:
-            fp = open(options.filename, "r")
-        except:
-            print("Input file", "'" + options.filename + "'" , "must exist.")
-            sys.exit(1)
+        if options.filename == "-":
+            fp = sys.stdin
+        else:
+            try:
+                fp = open(options.filename, "r")
+            except:
+                print("Input file", "'" + options.filename + "'" , "must exist.")
+                sys.exit(1)
 
         for aa in fp:
-            #print("line:", bb)
-            ss = spemod.ascsplit(aa.strip())
-            #print("split:", ss)
+            if int(options.debug) > 4:
+                print("line:", aa)
+
+            #ss = spemod.ascsplit(aa.strip())
+            ss = spemod.ascsplit(aa)
+            if int(options.debug) > 5:
+                print("split:", ss)
             for cc in ss:
-                #print("cc=", "'"+cc+"'", end=" ")
                 arrx.append(cc)
-            arrx.append("\n")
+
     elif options.strx:
-        ss = spemod.ascsplit(options.strx.strip())
+        if int(options.debug) > 2:
+            print("line:", aa)
+        ss = spemod.ascsplit(options.strx)
         for cc in ss:
             arrx.append(cc)
-        arrx.append("\n")
+
     else:
         print("Must use input file option or pass command line file arguments.")
         sys.exit(0)
@@ -149,9 +158,16 @@ if __name__ == '__main__':
 
     if options.enc:
         strx = sssmod.enc_dec(True, arrx, newpass)
-
-    if options.dec:
+        #strx = ""
+        #for aa in arrx:
+        #    strx += aa
+    elif options.dec:
         strx = sssmod.enc_dec(False, arrx, newpass)
+        #strx = ""
+        #for aa in arrx:
+        #    strx += aa
+    else:
+        print("Bad command ");
 
     if wfp:
         wfp.write(strx)
