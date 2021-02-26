@@ -70,21 +70,23 @@ if __name__ == '__main__':
 
     parser = cmdline()
     (options, args) = parser.parse_args()
+    options.mask = 0
 
     # Convert debug options
-    if options.debug[:2] == "0x":
-        options.debug = int(options.debug, base=16)
-    else:
-        options.debug = int(options.debug)
+    if options.debug:
+        if options.debug[:2] == "0x":
+            options.debug = int(options.debug, base=16)
+        else:
+            options.debug = int(options.debug)
 
-    # see if masks are specified
-    if options.debug > 0xff:
-        options.mask = options.debug
-        options.debug &= 0xff
-    else:
-        options.mask = 0
+        # see if masks are specified
+        if options.debug > 0xff:
+            options.mask = options.debug
+            options.debug &= 0xff
+        else:
+            options.mask = 0
 
-    print ("debug level", options.debug, hex(options.mask))
+    print ("debug level", options.debug, "mask", hex(options.mask))
 
     if int(options.debug) > 4:
         print("args", args)
