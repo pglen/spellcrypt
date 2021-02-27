@@ -86,7 +86,7 @@ if __name__ == '__main__':
         else:
             options.mask = 0
 
-    print ("debug level", options.debug, "mask", hex(options.mask))
+    #print ("debug level", options.debug, "mask", hex(options.mask))
 
     if int(options.debug) > 4:
         print("args", args)
@@ -119,6 +119,7 @@ if __name__ == '__main__':
     # Propagate to sub systems
     sssmod.verbose = int(options.verbose)
     sssmod.debug = options.debug
+    sssmod.mask  = options.mask
 
     spemod.debug = options.debug
     spemod.mask = options.mask
@@ -137,7 +138,7 @@ if __name__ == '__main__':
         if os.access(options.outname, os.R_OK):
             if not options.force:
                 print ("Cannot overwrite file:", options.outname," use -f to force");
-            sys.exit(1)
+                sys.exit(1)
             try:
                 os.remove(options.outname)
             except:
@@ -161,8 +162,10 @@ if __name__ == '__main__':
 
             #ss = spemod.ascsplit(aa.strip())
             ss = spemod.ascsplit(aa)
-            if int(options.debug) > 5:
+            #if int(options.debug) > 5:
+            if  options.mask & 0x400:
                 print("split:", ss)
+
             for cc in ss:
                 arrx.append(cc)
 

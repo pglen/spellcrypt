@@ -22,6 +22,9 @@ NEWFLAG     = 0x200000
 debug = 0
 mask = 0
 
+MASK = 0x100
+PARSEMASK = 0x200
+
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
 
@@ -239,12 +242,10 @@ class  spellencrypt():
                     if self.debug > 2:
                         print("'" + ww + "'", hex(nn), end = "; ")
                 else:
-                    #arr2.append(ww)
                     if self.debug > 3:
                         print("Unkown",  "'" + ww + "'", hex(nn), end = "; ")
                     # Enter spell mode
                     arr3 = self._spellmode(ww)
-                    #for aa in arr3:
                     arr2.append(arr3)
 
         if self.debug > 2:
@@ -258,7 +259,6 @@ class  spellencrypt():
 
         #if ee == " ":
         #    return " "
-
         #if ee == "\n":
         #    return "\n"
 
@@ -293,8 +293,7 @@ class  spellencrypt():
         if ee & UPPERFLAG:
             nstr = nstr.upper()
         if ee & SPELLFLAG:
-            pass
-            nstr += "x" #" Spell_flag "
+            nstr += "s " #" Spell_flag "
 
         if self.debug > 3:
             print ("$[" + nstr + "]$")
@@ -326,7 +325,7 @@ class  spellencrypt():
 
         arr2 = self._convert(arrx)
 
-        if self.debug > 3:
+        if self.mask & 0x200:
             print ("arr2", arr2)
 
         for ee in arr2:
@@ -344,12 +343,9 @@ class  spellencrypt():
 
                     if self.debug > 4:
                         print ("chh ", chh, end=" ")
-
                     nstr = self._encode_one(cc, chh, flag)
-
                     # Add it to results
-                    strx += nstr  + " "
-
+                    strx += nstr + " "
             else:
                 if flag:
                     if self.debug > 3:
@@ -357,16 +353,12 @@ class  spellencrypt():
                 else:
                     if self.debug > 3:
                         print ("{", arr2[cnt], "} ", end=" ")
-
                 chh = self.passpad.nextchr()
-
                 if self.debug > 4:
                     print ("chh ", chh, end=" ")
-
                 nstr = self._encode_one(ee, chh, flag)
-
                 # Add it to results
-                strx += nstr # + " "
+                strx += nstr  + " "
 
             cnt = cnt + 1
 
