@@ -20,10 +20,7 @@ from optparse import OptionParser
 #
 
 import sys, string, os
-
-# Globals
-
-prepass   = string.ascii_letters * 4
+from hexdump import *
 
 # Dict size:  Sun 28.Feb.2021  0x24109
 
@@ -71,13 +68,47 @@ def upack24(xxx):
 class Primi():
 
     def __init__(self):
+        self.prepass   = string.ascii_letters * 4
         pass
 
-    def xsum(self, passwd):
+    # Generate password from passed string by extending / modulating
+    def     genpass(self, passwd):
+        #print ("'" + prepass + "'" )
+        passwd = passwd + self.prepass + passwd + self.prepass + passwd
+
+        for aa in range(7):
+            passwd = self.bwstr(passwd)
+            passwd = self.xorstr(passwd, 0x55)
+            passwd = self.butter(passwd)
+
+            passwd = self.fwstr(passwd)
+            passwd = self.xorstr(passwd, 0x55)
+            passwd = self.butter(passwd)
+
+            passwd = self.modstr(passwd, "12345678")
+            passwd = self.xorstr(passwd, 0x55)
+            passwd = self.butter(passwd)
+
+        for aa in range(5):
+
+            passwd = self.fwstr(passwd)
+            passwd = self.xorstr(passwd, 0x55)
+            passwd = self.butter(passwd)
+
+            passwd = self.modstr(passwd, "12345678")
+            passwd = self.xorstr(passwd, 0x55)
+            passwd = self.butter(passwd)
+
+
+        return passwd
+
+    def _xsum(self, passwd):
         sss = 0
         for aa in passwd:
             sss += ord(aa)
         return chr(sss & 0xff)
+
+    # All below primitives are reversible
 
     def fwstr(self, passwd):
         passwd2 = passwd + " "
@@ -87,11 +118,22 @@ class Primi():
             sss += chr( (ord(passwd2[bb]) + ord(passwd2[bb+1])) & 0xff)
         return sss
 
-    def xorstr(self, passwd):
+    def xorstr(self, passwd, chh):
         sss = ""
         for bb in range(0, len(passwd)):
             #print ("c", passwd[bb])
-            sss += chr((ord(passwd[bb]) ^ 0x55) & 0xff)
+            sss += chr((ord(passwd[bb]) ^ chh) & 0xff)
+        return sss
+
+    def modstr(self, passwd, mod):
+        sss = ""
+        cc = 0
+        for bb in range(0, len(passwd)):
+            #print ("c", passwd[bb])
+            sss += chr((ord(passwd[bb]) + ord(mod[cc]) ) & 0xff)
+            cc += 1
+            if cc >= len(mod): cc = 0
+
         return sss
 
     def butter(self, passwd):
@@ -402,7 +444,9 @@ class  spellencrypt():
             print("Loaded", hex(self.arrlen), "words")
 
         #if self.debug > 4:
-        #    print("password=", passwd)
+            #print("password=", HexDump(passwd)[:300], "....")
+            #print("password=\n", "'"+passwd +"'")
+
         self.passpad = PassPad(passwd)
         strx = "";  cnt = 0; passidx = 0;
         if len(passwd) == 0:
@@ -504,100 +548,24 @@ def ascsplit(strx):
         print("acsplit ret:", arr)
     return arr
 
-# ------------------------------------------------------------------------
-# Corrected to handle unicode accidental
-
-class   CharClass:
-
-    def __init__(self):
-        pass
-
-    ctrlchar = "\n\r| "
-
-    def isprint(chh):
-        try:
-            if ord(chh) > 127:
-                return False
-            if ord(chh) < 32:
-                return False
-            if chh in ctrlchar:
-                return False
-            if chh in string.ascii_letters:
-                return True
-        except:
-            pass
-        return False
-
-# ------------------------------------------------------------------------
-# Return a hex dump formatted string
-
-def hexdump(strx, llen = 16):
-
-    lenx = len(strx)
-    outx = ""
-    ccl = CharClass()
-    try:
-        for aa in range(lenx/16):
-            outx += " "
-            for bb in range(16):
-                try:
-                    outx += "%02x " % ord(strx[aa * 16 + bb])
-                except:
-                    pass
-                    out +=  "?? "
-                    #outx += "%02x " % strx[aa * 16 + bb]
-
-            outx += " | "
-            for cc in range(16):
-                chh = strx[aa * 16 + cc]
-                if ccl.isprint(chh):
-                    outx += "%c" % chh
-                else:
-                    outx += "."
-            outx += " | \n"
-
-        # Print remainder on last line
-        remn = lenx % 16 ;   divi = lenx / 16
-        if remn:
-            outx += " "
-            for dd in range(remn):
-                try:
-                    outx += "%02x " % ord(strx[divi * 16 + dd])
-                except:
-                    outx +=  "?? "
-                    pass
-                    #outx += "%02x " % int(strx[divi * 16 + dd])
-
-            outx += " " * ((16 - remn) * 3)
-            outx += " | "
-            for cc in range(remn):
-                chh = strx[divi * 16 + cc]
-                if ccl.isprint(chh):
-                    outx += "%c" % chh
-                else:
-                    outx += "."
-            outx += " " * ((16 - remn))
-            outx += " | \n"
-    except:
-        print("Error on hexdump", sys.exc_info())
-        #print_exc("hexdump")
-
-    return(outx)
 
 # ------------------------------------------------------------------------
 
-def     genpass(passwd):
+def testpass(passwd):
 
-    #print ("'" + prepass + "'" )
+    testarr = [];   numarr = []
+    for cc in range(256):
+        testarr.append(0)
+        numarr.append(cc)
 
-    passwd = passwd + prepass + passwd + prepass + passwd
-    primi = Primi()
+    for aa in passwd:
+        vvv = ord(aa)
+        #print("vvv", vvv)
+        testarr[vvv] = testarr[vvv] + 1
 
-    for aa in range(5):
-        passwd = primi.bwstr(passwd)
-        passwd = primi.xorstr(passwd)
-        passwd = primi.fwstr(passwd)
-        passwd = primi.butter(passwd)
-    return passwd
+    #for bb in range(len(testarr)):
+    #    print(numarr[bb], testarr[bb])
+
+    return testarr
 
 # EOF

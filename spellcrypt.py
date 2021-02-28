@@ -13,7 +13,7 @@ base = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(base, "spellcryptlib"))
 #from spellcrypt import spemod
 
-import spemod
+import spemod, hexdump
 
 verbose = 0
 
@@ -54,6 +54,10 @@ def cmdline():
     parser.add_option("-v", "--verbose", dest="verbose", default=0,
                   action="store_true",
                   help="Status message verbosity")
+
+    parser.add_option("-z", "--zoo", dest="zoo", default=0,
+                  action="store_true",
+                  help="Show password quality")
 
     parser.add_option("-g", "--debug", dest="debug", default=0,
                   help="Debug output level", metavar="level")
@@ -113,6 +117,15 @@ if __name__ == '__main__':
         print("Missing option: one of -e (--encrypt) or -d (--decrypt) must be specified.")
         sys.exit(2);
 
+    #print("pass in:", len(options.passwd), options.passwd)
+    newpass = spemod.Primi().genpass(options.passwd)
+    #print("pass:", len(newpass), newpass)
+
+    if options.zoo:
+        print("Password head:\n", hexdump.HexDump(newpass)[:300], "....")
+        print ("Frequency distribution:\n", spemod.testpass(newpass))
+        sys.exit(0)
+
     #print("spemod", dir(spemod))
     sssmod = spemod.spellencrypt(os.path.join(base, "spellcryptlib", "spell.txt"))
     #print("sssmod", dir(sssmod))
@@ -126,12 +139,6 @@ if __name__ == '__main__':
     spemod.mask = options.mask
 
     verbose =  options.verbose
-    #print("pass in:", len(options.passwd), options.passwd)
-    newpass = spemod.genpass(options.passwd)
-    #print("pass:", len(newpass), newpass)
-
-    #print(spemod.hexdump(newpass))
-    #sys.exit (1)
 
     wfp = None
     if options.outname:
