@@ -16,30 +16,17 @@ git:
 	git commit -m auto
 	git push
 
-build:
-	#obsolete, build for py3 only
-	#@make -C bluepy build
-	@make -C bluepy build3
-
-build3:
-	@make -C bluepy build3
-
 test:
 	@make -C client test
-
-hello:
-	@make -C client hello
 
 deb:  build build3
 	./build-deb.sh
 
 clean:
-	@make -C client clean
-	@make -C bluepy clean
-	@make -C server clean
-	@make -C common clean
-	@rm -f aa bb cc pyvserv.deb
-	@rm -rf ./build-tmp
+	@rm -f __pycache__/*
+	@rm -f gui/__pycache__/*
+	@rm -f spellcrypt/__pycache__/*
+	find . -name "*.pyc" -delete
 
 cleankeys:
 	@rm -rf ./data/keys

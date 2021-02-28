@@ -9,8 +9,9 @@ from optparse import OptionParser
 
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
-
-sys.path.append(os.path.join(base, "gui"))
+#sys.path.append(os.path.join(base, "gui"))
+sys.path.append(os.path.join(base, "spellcryptlib"))
+#from spellcrypt import spemod
 
 import spemod
 
@@ -113,7 +114,7 @@ if __name__ == '__main__':
         sys.exit(2);
 
     #print("spemod", dir(spemod))
-    sssmod = spemod.spellencrypt(os.path.join(base, "data", "spell.txt"))
+    sssmod = spemod.spellencrypt(os.path.join(base, "spellcryptlib", "spell.txt"))
     #print("sssmod", dir(sssmod))
 
     # Propagate to sub systems
@@ -125,7 +126,6 @@ if __name__ == '__main__':
     spemod.mask = options.mask
 
     verbose =  options.verbose
-    #sssmod.getlen()
     #print("pass in:", len(options.passwd), options.passwd)
     newpass = spemod.genpass(options.passwd)
     #print("pass:", len(newpass), newpass)
