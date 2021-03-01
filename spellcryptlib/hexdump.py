@@ -1,5 +1,5 @@
-# ------------------------------------------------------------------------
 #!/usr/bin/env python3
+# ------------------------------------------------------------------------
 
 from __future__ import absolute_import
 from __future__ import print_function
@@ -90,4 +90,19 @@ def HexDump(strx, llen = 16):
         #print_exc("hexdump")
 
     return(outx)
+
+def pack24(mm):
+    xxx = ""
+    for aa in range(3):
+        xxx += struct.pack("B", mm & 0xff )
+        mm = mm >> 8
+    return xxx
+
+def upack24(xxx):
+    uuu = 0
+    for aa in range(3):
+        uu = struct.unpack("B", xxx[aa:aa+1] )
+        uuu += uu[0] <<  aa * 8
+    return uuu
+
 

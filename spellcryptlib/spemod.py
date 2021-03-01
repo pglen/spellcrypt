@@ -24,7 +24,7 @@ from hexdump import *
 
 # Dict size:  Sun 28.Feb.2021  0x24109
 
-LETTERMASK  = 0x2ffff
+LETTERMASK  = 0x3ffff
 
 SPELLFLAG   = 0x40000
 UPPERFLAG   = 0x80000
@@ -48,109 +48,6 @@ def assertNERaise(aa, bb):
 
 printable = string.ascii_letters # + "'"
 
-
-def pack24(mm):
-    xxx = ""
-    for aa in range(3):
-        xxx += struct.pack("B", mm & 0xff )
-        mm = mm >> 8
-    return xxx
-
-def upack24(xxx):
-    uuu = 0
-    for aa in range(3):
-        uu = struct.unpack("B", xxx[aa:aa+1] )
-        uuu += uu[0] <<  aa * 8
-    return uuu
-
-# Primitives. Keep results below 128 by truncation
-
-class Primi():
-
-    def __init__(self):
-        self.prepass   = string.ascii_letters * 4
-        pass
-
-    # Generate password from passed string by extending / modulating
-    def     genpass(self, passwd):
-        #print ("'" + prepass + "'" )
-        passwd = passwd + self.prepass + passwd + self.prepass + passwd
-
-        for aa in range(7):
-            passwd = self.bwstr(passwd)
-            passwd = self.xorstr(passwd, 0x55)
-            passwd = self.butter(passwd)
-
-            passwd = self.fwstr(passwd)
-            passwd = self.xorstr(passwd, 0x55)
-            passwd = self.butter(passwd)
-
-            passwd = self.modstr(passwd, "12345678")
-            passwd = self.xorstr(passwd, 0x55)
-            passwd = self.butter(passwd)
-
-        for aa in range(5):
-
-            passwd = self.fwstr(passwd)
-            passwd = self.xorstr(passwd, 0x55)
-            passwd = self.butter(passwd)
-
-            passwd = self.modstr(passwd, "12345678")
-            passwd = self.xorstr(passwd, 0x55)
-            passwd = self.butter(passwd)
-
-
-        return passwd
-
-    def _xsum(self, passwd):
-        sss = 0
-        for aa in passwd:
-            sss += ord(aa)
-        return chr(sss & 0xff)
-
-    # All below primitives are reversible
-
-    def fwstr(self, passwd):
-        passwd2 = passwd + " "
-        sss = ""
-        for bb in range(0, len(passwd)):
-            #print ("c", passwd[bb])
-            sss += chr( (ord(passwd2[bb]) + ord(passwd2[bb+1])) & 0xff)
-        return sss
-
-    def xorstr(self, passwd, chh):
-        sss = ""
-        for bb in range(0, len(passwd)):
-            #print ("c", passwd[bb])
-            sss += chr((ord(passwd[bb]) ^ chh) & 0xff)
-        return sss
-
-    def modstr(self, passwd, mod):
-        sss = ""
-        cc = 0
-        for bb in range(0, len(passwd)):
-            #print ("c", passwd[bb])
-            sss += chr((ord(passwd[bb]) + ord(mod[cc]) ) & 0xff)
-            cc += 1
-            if cc >= len(mod): cc = 0
-
-        return sss
-
-    def butter(self, passwd):
-        sss = ""; rrr = ""
-        for bb in range(0, len(passwd)//2):
-            #print ("c", passwd[bb])
-            sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
-            rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
-        return sss + rrr
-
-    def bwstr(self, passwd):
-        sss = ""
-        for bb in range(len(passwd)-1, -1, -1):
-            #print ("c", passwd[bb])
-            sss += chr( (ord(passwd[bb]) + ord(passwd[bb-1])) & 0xff)
-        return sss
-
 #-------------------------------------------------------------------------
 #
 
@@ -159,14 +56,14 @@ class   PassPad():
     def __init__(self, pass_str):
         self.pass_str = pass_str
         self.passidx = 0
+        self.xlen = len(self.pass_str)
 
     # Cycle pass character around
     def nextchr(self):
         ret = ord(self.pass_str[self.passidx])
         self.passidx += 1
-        if self.passidx >= len(self.pass_str):
+        if self.passidx >= self.xlen:
             self.passidx = 0
-
         return ret
 
     def rewind(self):
@@ -258,6 +155,7 @@ class  spellencrypt():
             print("arrlen",  self.arrlen, hex(self.arrlen))
 
         #assertNERaise(self.arrlen, cnt)
+        #print("cmp", hex(self.arrlen), hex(LETTERMASK))
 
         #fps = open(os.path.join(self.datadir, "spellmode.txt"), "r")
         # Load to memory
@@ -374,6 +272,8 @@ class  spellencrypt():
                             nn |= CAPFLAG
                         else:
                             print("Warn: mixed capitalization");
+                            # Todo: spell mode
+
                     arr2.append(nn)
                     if self.debug > 2:
                         print("'" + ww + "'", hex(nn), end = "; ")
@@ -387,9 +287,12 @@ class  spellencrypt():
             print("_convert ret=", arr2)
         return arr2
 
+    # Encode one entity
     def _encode_one(self, ee, chh, flag):
+
         if self.debug > 3:
             print("ee =", ee, " ", end="")
+
         #if ee == " ":
         #    return " "
         #if ee == "\n":
@@ -402,9 +305,10 @@ class  spellencrypt():
         #                         ^org
         #                         ------|------
 
-        #print("adj", ord(chh) * 500, "", end="")
-
+        #print("adj", chh, "", end="")
         offs =  chh * 103
+
+        #''' Disable crypt with uncommented hash mark
         if flag:
             ee2 += offs
             if ee2 > self.arrlen:
@@ -413,6 +317,7 @@ class  spellencrypt():
             ee2 -= offs
             if ee2 < 0:
                 ee2 += self.arrlen
+        #'''
 
         if self.debug > 3:
             print("after_ee =", ee2, "", end="")
@@ -420,6 +325,7 @@ class  spellencrypt():
         # Reverse conversion
         nstr = self._revword(ee2)
 
+        '''
         # Apply flags
         if ee & CAPFLAG:
             nstr = nstr.capitalize()
@@ -427,6 +333,7 @@ class  spellencrypt():
             nstr = nstr.upper()
         if ee & SPELLFLAG:
             nstr += "s` " #" Spell_flag "
+        '''
 
         if self.debug > 3:
             print ("$[" + nstr + "]$")
@@ -438,11 +345,10 @@ class  spellencrypt():
 
     def  enc_dec(self, flag, arrx, passwd):
 
-        if self.debug > 8:
-            print("CAPFLAG", hex(CAPFLAG), "UPPERFLAG",
-                     hex(UPPERFLAG), "SPELLFLAG", hex(SPELLFLAG) )
-            print("Loaded", hex(self.arrlen), "words")
-
+        #if self.debug > 8:
+        #    print("CAPFLAG", hex(CAPFLAG), "UPPERFLAG",
+        #             hex(UPPERFLAG), "SPELLFLAG", hex(SPELLFLAG) )
+        #    print("Loaded", hex(self.arrlen), "words")
         #if self.debug > 4:
             #print("password=", HexDump(passwd)[:300], "....")
             #print("password=\n", "'"+passwd +"'")
@@ -451,8 +357,10 @@ class  spellencrypt():
         strx = "";  cnt = 0; passidx = 0;
         if len(passwd) == 0:
             raise ValueError("Password Cannot be Empty")
+
         if self.debug > 3:
             print(arrx)
+
         arr2 = self._convert(arrx)
         if self.mask & 0x200:
             print ("arr2", arr2)
@@ -490,82 +398,5 @@ class  spellencrypt():
             cnt = cnt + 1
         return strx
 
-# ------------------------------------------------------------------------
-# Split line into array
-
-def ascsplit(strx):
-
-    if debug > 1:
-        print("ascsplit", "'"+strx+"'")
-
-    arr = [] ;  last = ""; cumm = ""; cumm2 = ""
-    mode = 0; old_mode = 0
-
-    for aa in strx:
-        if aa == "\n":
-            mode = 0
-        elif aa == " ":
-            mode = 1
-        elif aa in printable:
-            mode = 2
-        else:
-            mode = 3
-
-        if mode == 0:
-            if old_mode != mode:
-                if cumm:
-                    arr.append(cumm); cumm = ""
-            # Always add
-            arr.append(aa)
-
-        if mode == 1:
-            if old_mode != mode:
-                if cumm:
-                    arr.append(cumm);  cumm = ""
-            # Always add
-            arr.append(aa)
-
-        if mode == 2:
-            cumm += aa
-            if old_mode != mode:
-                if cumm2:
-                    arr.append(cumm2);  cumm2 = ""
-
-        if mode == 3:
-            cumm2 += aa
-            if old_mode != mode:
-                if cumm:
-                    arr.append(cumm);    cumm = ""
-
-        old_mode = mode
-
-    # Flush the rest, if any
-    if cumm2:
-        arr.append(cumm2)
-    if cumm:
-        arr.append(cumm)
-    if debug > 2:
-        print("acsplit ret:", arr)
-    return arr
-
-
-# ------------------------------------------------------------------------
-
-def testpass(passwd):
-
-    testarr = [];   numarr = []
-    for cc in range(256):
-        testarr.append(0)
-        numarr.append(cc)
-
-    for aa in passwd:
-        vvv = ord(aa)
-        #print("vvv", vvv)
-        testarr[vvv] = testarr[vvv] + 1
-
-    #for bb in range(len(testarr)):
-    #    print(numarr[bb], testarr[bb])
-
-    return testarr
 
 # EOF

@@ -13,7 +13,7 @@ base = os.path.dirname(os.path.abspath(__file__))
 sys.path.append(os.path.join(base, "spellcryptlib"))
 #from spellcrypt import spemod
 
-import spemod, hexdump
+import spemod, spepass, hexdump
 
 verbose = 0
 
@@ -118,7 +118,7 @@ if __name__ == '__main__':
         sys.exit(2);
 
     #print("pass in:", len(options.passwd), options.passwd)
-    newpass = spemod.Primi().genpass(options.passwd)
+    newpass = spepass.Primi().genpass(options.passwd)
     #print("pass:", len(newpass), newpass)
 
     if options.zoo:
@@ -168,7 +168,7 @@ if __name__ == '__main__':
                 print("line:", aa)
 
             #ss = spemod.ascsplit(aa.strip())
-            ss = spemod.ascsplit(aa)
+            ss = spepass.ascsplit(aa)
             #if int(options.debug) > 5:
             if  options.mask & 0x400:
                 print("split:", ss)
