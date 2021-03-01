@@ -167,9 +167,7 @@ if __name__ == '__main__':
             if int(options.debug) > 4:
                 print("line:", aa)
 
-            #ss = spemod.ascsplit(aa.strip())
             ss = spepass.ascsplit(aa)
-            #if int(options.debug) > 5:
             if  options.mask & 0x400:
                 print("split:", ss)
 
