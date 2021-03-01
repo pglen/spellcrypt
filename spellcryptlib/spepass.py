@@ -113,7 +113,7 @@ def ascsplit(strx):
             mode = 0
         elif aa == " ":
             mode = 1
-        if aa in string.punctuation:
+        if aa in string.punctuation or ord(aa) > 255:
             mode = 2
         elif aa in string.ascii_letters:
             mode = 3

@@ -205,14 +205,17 @@ class  spellencrypt():
             if len (ww) == 0:
                 continue
 
+            uni = False
+            if len(ww) == 1:
+                if ord(ww) > 255:
+                    uni = True
             # Process exceptions
-            if ww in string.punctuation:
+            if ww in string.punctuation or uni:
                 arr2.append(ww)
             elif ww in string.whitespace:
                 arr2.append(ww)
             else:
                 nn = self.getword (str.lower(ww))
-
                 if nn != 0:
                     if self.cli._isanyupper(ww):
                         if self.cli._isallupper(ww):
