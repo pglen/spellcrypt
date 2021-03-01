@@ -3,9 +3,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import os, sys, string, zlib, struct, platform
-from datetime import date
-from optparse import OptionParser
+import os, string
 
 # Spell crypt main module
 #
@@ -19,8 +17,8 @@ from optparse import OptionParser
 #        return new string
 #
 
-import sys, string, os
 from hexdump import *
+from spepass import *
 
 # Dict size:  Sun 28.Feb.2021  0x24109
 
@@ -69,44 +67,11 @@ class   PassPad():
     def rewind(self):
         self.passidx = 0
 
-# Character / string classification
-
-class   CharClassi():
-
-    def __init__(self):
-        pass
-
-    def _isallupper(sel, ww):
-        ret = True
-        for aa in ww:
-            if not aa in string.ascii_uppercase:
-                ret = False
-        return ret
-
-    def _isanyupper(sel, ww):
-        ret = False
-        for aa in ww:
-            if aa in string.ascii_uppercase:
-                ret = True
-                break
-        return ret
-
-    def _isallspace(self, ww):
-        ret = True
-        for aa in ww:
-            if aa != " ":
-                ret = False
-        return ret
-
-    def _isupper(self, ww):
-        if ww in string.ascii_uppercase:
-            return True
 
 # ------------------------------------------------------------
 # Convert input to array of offsets / strings
 
 class  spellencrypt():
-
 
     def __init__(self, fname = "spell.txt"):
 
@@ -157,28 +122,15 @@ class  spellencrypt():
         #assertNERaise(self.arrlen, cnt)
         #print("cmp", hex(self.arrlen), hex(LETTERMASK))
 
-        #fps = open(os.path.join(self.datadir, "spellmode.txt"), "r")
-        # Load to memory
-        #for aaa in fps:
-        #    aaa = aaa.strip().lower().split()
-        #    self.splarr.append(aaa[0])
-        #fps.close()
-        #print("splarr", self.splarr);
-        #for iii in range(len(boundarr)-1):
-        #    print (boundarr[iii + 1] - boundarr[iii], boundstr[iii], end="    " )
-        #    print
-
     def getword(self, www):
 
         ttt = [0, -1, 0]; cnt2 = 0; cc =  www[:1]
 
-        '''
-        # Brute method
+        ''' # Brute method
         for dd in range(self.arrlen):
             if self.bigarr[dd] == www:
                 ttt = cnt2, dd, dd
-                break
-        '''
+                break '''
 
         # Single hash
         for bb in self.boundsig:
@@ -208,18 +160,15 @@ class  spellencrypt():
 
         return ttt[2]
 
-    # ------------------------------------------------------------------------
+    '''# ------------------------------------------------------------------------
     # Return a word from coordinates for this word
-
-    def revwcoord(self, xxx, yyy):
-
+    def _revwcoord(self, xxx, yyy):
         #print ("get:" , xxx, yyy)
-
         strx = "";
         cnt3 = self.boundarr[xxx]
         strx = self.bigarr[cnt3 + yyy]
         #print("Got: ",  strx)
-        return strx
+        return strx'''
 
     # ------------------------------------------------------------------------
     # Return a word from ordinal
@@ -247,23 +196,23 @@ class  spellencrypt():
             print("spellmode arr", arr)
         return arr
 
-
-    def _convert(self, arrx, flag = False):
+    def _convert_arr(self, arrx, flag = False):
         arr2 = []
         for ww in arrx:
-            #if self.debug > 2:
-            #    print ("_convert():", "'"+ww+"'")
+            if self.debug > 5:
+                print ("_convert():", "'"+ww+"'")
+
             if len (ww) == 0:
                 continue
 
-            # process exceptions
-            if ww == "\n":
-                arr2.append("\n")
-            #elif self.cli._isallspace(ww):
-            elif ww == " ":
+            # Process exceptions
+            if ww in string.punctuation:
+                arr2.append(ww)
+            elif ww in string.whitespace:
                 arr2.append(ww)
             else:
                 nn = self.getword (str.lower(ww))
+
                 if nn != 0:
                     if self.cli._isanyupper(ww):
                         if self.cli._isallupper(ww):
@@ -275,16 +224,18 @@ class  spellencrypt():
                             # Todo: spell mode
 
                     arr2.append(nn)
-                    if self.debug > 2:
-                        print("'" + ww + "'", hex(nn), end = "; ")
+                    if self.debug > 1:
+                        print("'" + ww + "'", hex(nn) ) #, end = "; ")
                 else:
-                    if self.debug > 3:
+                    if self.debug > 21:
                         print("Unkown",  "'" + ww + "'", hex(nn), end = "; ")
                     # Enter spell mode
-                    arr3 = self._spellmode(ww)
-                    arr2.append(arr3)
-        if self.debug > 2:
-            print("_convert ret=", arr2)
+                    #arr3 = self._spellmode(ww)
+                    #arr2.append(arr3)
+
+            if self.debug > 2:
+                print("_convert item=", nn, "'"+ww+"'")
+
         return arr2
 
     # Encode one entity
@@ -292,11 +243,6 @@ class  spellencrypt():
 
         if self.debug > 3:
             print("ee =", ee, " ", end="")
-
-        #if ee == " ":
-        #    return " "
-        #if ee == "\n":
-        #    return "\n"
 
         ee2 = ee & LETTERMASK
 
@@ -307,6 +253,8 @@ class  spellencrypt():
 
         #print("adj", chh, "", end="")
         offs =  chh * 103
+
+        # Crypt by offetting and wrapping
 
         #''' Disable crypt with uncommented hash mark
         if flag:
@@ -325,18 +273,19 @@ class  spellencrypt():
         # Reverse conversion
         nstr = self._revword(ee2)
 
-        '''
         # Apply flags
         if ee & CAPFLAG:
             nstr = nstr.capitalize()
         if ee & UPPERFLAG:
             nstr = nstr.upper()
-        if ee & SPELLFLAG:
-            nstr += "s` " #" Spell_flag "
-        '''
+        #if ee & SPELLFLAG:
+        #    nstr += "s` " #" Spell_flag "
 
         if self.debug > 3:
             print ("$[" + nstr + "]$")
+
+        if self.mask & 0x400:
+            print (nstr, end= " " )
 
         return nstr
 
@@ -361,9 +310,10 @@ class  spellencrypt():
         if self.debug > 3:
             print(arrx)
 
-        arr2 = self._convert(arrx)
+        arr2 = self._convert_arr(arrx)
         if self.mask & 0x200:
             print ("arr2", arr2)
+
         for ee in arr2:
             if self.debug > 3:
                 print ("cnt", cnt, "", end="")
@@ -371,17 +321,17 @@ class  spellencrypt():
                 if self.debug > 3:
                     print ("[" + ee + "] ", end="")
                 strx +=  ee
+
             elif type(ee) == list:
                 if self.debug > 3:
                     print ("arr[", ee, "]arr ", end="")
                 for cc in ee:
                     chh = self.passpad.nextchr()
-
                     if self.debug > 4:
                         print ("chh ", chh, end=" ")
-                    nstr = self._encode_one(cc, chh, flag)
+                    #nstr = self._encode_one(cc, chh, flag)
                     # Add it to results
-                    strx += nstr #+ "# "
+                    #strx += nstr #+ "# "
             else:
                 if flag:
                     if self.debug > 3:
@@ -394,7 +344,7 @@ class  spellencrypt():
                     print ("chh ", chh, end=" ")
                 nstr = self._encode_one(ee, chh, flag)
                 # Add it to results
-                strx += nstr  #+ "@ "
+                strx += nstr # + "@ "
             cnt = cnt + 1
         return strx
 

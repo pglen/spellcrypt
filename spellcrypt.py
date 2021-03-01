@@ -175,7 +175,7 @@ if __name__ == '__main__':
                 arrx.append(cc)
 
     elif options.strx:
-        if int(options.debug) > 4:
+        if int(options.debug) > 5:
             print("line:", aa)
         ss = spemod.ascsplit(options.strx)
         for cc in ss:

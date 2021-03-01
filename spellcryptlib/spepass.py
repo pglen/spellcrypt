@@ -113,11 +113,14 @@ def ascsplit(strx):
             mode = 0
         elif aa == " ":
             mode = 1
-        elif aa in string.ascii_letters:
+        if aa in string.punctuation:
             mode = 2
-        else:
+        elif aa in string.ascii_letters:
             mode = 3
+        else:
+            mode = 4
 
+        # ----------------------------------------------------------
         if mode == 0:
             if old_mode != mode:
                 if cumm:
@@ -133,12 +136,19 @@ def ascsplit(strx):
             arr.append(aa)
 
         if mode == 2:
+            if old_mode != mode:
+                if cumm:
+                    arr.append(cumm);  cumm = ""
+            # Always add
+            arr.append(aa)
+
+        if mode == 3:
             cumm += aa
             if old_mode != mode:
                 if cumm2:
                     arr.append(cumm2);  cumm2 = ""
 
-        if mode == 3:
+        if mode == 4:
             cumm2 += aa
             if old_mode != mode:
                 if cumm:
@@ -174,4 +184,37 @@ def testpass(passwd):
     #    print(numarr[bb], testarr[bb])
 
     return testarr
+
+# Character / string classification
+
+class   CharClassi():
+
+    def __init__(self):
+        pass
+
+    def _isallupper(sel, ww):
+        ret = True
+        for aa in ww:
+            if not aa in string.ascii_uppercase:
+                ret = False
+        return ret
+
+    def _isanyupper(sel, ww):
+        ret = False
+        for aa in ww:
+            if aa in string.ascii_uppercase:
+                ret = True
+                break
+        return ret
+
+    def _isallspace(self, ww):
+        ret = True
+        for aa in ww:
+            if aa != " ":
+                ret = False
+        return ret
+
+    def _isupper(self, ww):
+        if ww in string.ascii_uppercase:
+            return True
 
