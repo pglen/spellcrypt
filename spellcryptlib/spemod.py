@@ -32,6 +32,8 @@ NEWFLAG     = 0x200000
 debug = 0
 mask = 0
 
+sstr = ""
+
 MASK = 0x100
 PARSEMASK = 0x200
 
@@ -197,6 +199,7 @@ class  spellencrypt():
         return arr
 
     def _convert_arr(self, arrx, flag = False):
+
         arr2 = []
         for ww in arrx:
             if self.debug > 5:
@@ -206,16 +209,30 @@ class  spellencrypt():
                 continue
 
             uni = False
-            if len(ww) == 1:
-                if ord(ww) > 255:
-                    uni = True
-            # Process exceptions
-            if ww in string.punctuation or uni:
-                arr2.append(ww)
+            if len(ww) == 1 and ord(ww) > 255:
+                uni = True
+
+            # Process direct entities
+            if ww in string.punctuation:
+                arr2.append(ww) # + "*p")
+            elif uni:
+                arr2.append(ww) # + "*u")
             elif ww in string.whitespace:
-                arr2.append(ww)
+                arr2.append(ww) # + "*w")
+
+            elif ww[-1:] == 'x':
+                nn = self.getword(str.lower(ww[:-1]))
+                if self.cli._isanyupper(ww):
+                    if self.cli._isallupper(ww):
+                        nn |= UPPERFLAG
+                    elif self.cli._isupper(ww[0]):
+                        nn |= CAPFLAG
+                    else:
+                        print("Warn: mixed capitalization");
+                nn |= SPELLFLAG
+                arr2.append(nn)
             else:
-                nn = self.getword (str.lower(ww))
+                nn = self.getword(str.lower(ww))
                 if nn != 0:
                     if self.cli._isanyupper(ww):
                         if self.cli._isallupper(ww):
@@ -230,11 +247,12 @@ class  spellencrypt():
                     if self.debug > 1:
                         print("'" + ww + "'", hex(nn) ) #, end = "; ")
                 else:
-                    if self.debug > 21:
+                    if self.debug > 1:
                         print("Unkown",  "'" + ww + "'", hex(nn), end = "; ")
+
                     # Enter spell mode
-                    #arr3 = self._spellmode(ww)
-                    #arr2.append(arr3)
+                    arr3 = self._spellmode(ww)
+                    arr2.append(arr3)
 
             if self.debug > 2:
                 print("_convert item=", nn, "'"+ww+"'")
@@ -276,26 +294,14 @@ class  spellencrypt():
         # Reverse conversion
         nstr = self._revword(ee2)
 
-        # Apply flags
-        if ee & CAPFLAG:
-            nstr = nstr.capitalize()
-        if ee & UPPERFLAG:
-            nstr = nstr.upper()
-        #if ee & SPELLFLAG:
-        #    nstr += "s` " #" Spell_flag "
-
-        if self.debug > 3:
-            print ("$[" + nstr + "]$")
-
-        if self.mask & 0x400:
-            print (nstr, end= " " )
-
         return nstr
 
     # ------------------------------------------------------------------------
     # Encrypt / Decrypt. Flag is true for encrypt.
 
     def  enc_dec(self, flag, arrx, passwd):
+
+        global sstr
 
         #if self.debug > 8:
         #    print("CAPFLAG", hex(CAPFLAG), "UPPERFLAG",
@@ -314,6 +320,7 @@ class  spellencrypt():
             print(arrx)
 
         arr2 = self._convert_arr(arrx)
+
         if self.mask & 0x200:
             print ("arr2", arr2)
 
@@ -323,7 +330,7 @@ class  spellencrypt():
             if type(ee) == str:
                 if self.debug > 3:
                     print ("[" + ee + "] ", end="")
-                strx +=  ee
+                strx +=  ee # + "$"
 
             elif type(ee) == list:
                 if self.debug > 3:
@@ -332,9 +339,9 @@ class  spellencrypt():
                     chh = self.passpad.nextchr()
                     if self.debug > 4:
                         print ("chh ", chh, end=" ")
-                    #nstr = self._encode_one(cc, chh, flag)
+                    nstr = self._encode_one(cc, chh, flag)
                     # Add it to results
-                    #strx += nstr #+ "# "
+                    strx += nstr + "x "
             else:
                 if flag:
                     if self.debug > 3:
@@ -342,14 +349,36 @@ class  spellencrypt():
                 else:
                     if self.debug > 3:
                         print ("{", arr2[cnt], "} ", end=" ")
+
                 chh = self.passpad.nextchr()
                 if self.debug > 4:
                     print ("chh ", chh, end=" ")
                 nstr = self._encode_one(ee, chh, flag)
-                # Add it to results
-                strx += nstr # + "@ "
+
+                # Apply flags
+                if ee & CAPFLAG:
+                    nstr = nstr.capitalize()
+                if ee & UPPERFLAG:
+                    nstr = nstr.upper()
+
+                if ee & SPELLFLAG:
+                    # Accumulate
+                    sstr += nstr # + "s "
+                    #print ("spell", sstr)
+                else:
+                    # Add it to results
+                    if sstr != "":
+                        strx += sstr
+                        sstr = ""
+                    strx += nstr #  + "@ "
+
+                if self.debug > 3:
+                    print ("$[" + nstr + "]$")
+
+                if self.mask & 0x400:
+                    print (nstr, end= " " )
+
             cnt = cnt + 1
         return strx
-
 
 # EOF

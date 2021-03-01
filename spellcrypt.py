@@ -168,8 +168,8 @@ if __name__ == '__main__':
                 print("line:", aa)
 
             ss = spepass.ascsplit(aa)
-            if  options.mask & 0x400:
-                print("split:", ss)
+            #if  options.mask & 0x400:
+            #    print("split:", ss)
 
             for cc in ss:
                 arrx.append(cc)
