@@ -15,7 +15,7 @@ git:
 	git add .
 	git commit -m auto
 	git push
-
+	git push local
 test:
 	@make -C client test
 
@@ -23,9 +23,9 @@ deb:  build build3
 	./build-deb.sh
 
 clean:
-	@rm -f __pycache__/*
-	@rm -f gui/__pycache__/*
-	@rm -f spellcrypt/__pycache__/*
+	@rm -rf __pycache__/
+	@rm -rf gui/__pycache__
+	@rm -rf spellcryptlib/__pycache__/
 	find . -name "*.pyc" -delete
 
 cleankeys:
