@@ -97,6 +97,10 @@ class  spellencrypt():
             self.bigarr.append(aa)
         fpi.close()
 
+        # Add all single character
+        for aa in range(255):
+            self.bigarr.append(chr(aa))
+
         # We fake a space here, as editors remove it
         self.bigarr.append(" ")
 
@@ -190,7 +194,7 @@ class  spellencrypt():
         arr = []
         for aa in ww:
             if self.debug > 5:
-                print("spell mode",  "'" + aa + "'", str.lower(aa) )
+                print("spell mode",  wrap(aa), str.lower(aa) )
             nn = self.getword (str.lower(aa))
             nn |=  SPELLFLAG
             arr.append(nn)
@@ -203,7 +207,7 @@ class  spellencrypt():
         arr2 = []
         for ww in arrx:
             if self.debug > 5:
-                print ("_convert():", "'"+ww+"'")
+                print ("_convert():", wrap(ww))
 
             if len (ww) == 0:
                 continue
@@ -215,25 +219,18 @@ class  spellencrypt():
             # Process direct entities
             if ww in string.punctuation:
                 arr2.append(ww) # + "*p")
+                continue
             elif uni:
                 arr2.append(ww) # + "*u")
+                continue
             elif ww in string.whitespace:
                 arr2.append(ww) # + "*w")
+                continue
 
-            elif ww[-1:] == 'x':
-                nn = self.getword(str.lower(ww[:-1]))
-                if self.cli._isanyupper(ww):
-                    if self.cli._isallupper(ww):
-                        nn |= UPPERFLAG
-                    elif self.cli._isupper(ww[0]):
-                        nn |= CAPFLAG
-                    else:
-                        print("Warn: mixed capitalization");
-                nn |= SPELLFLAG
-                arr2.append(nn)
-            else:
-                nn = self.getword(str.lower(ww))
-                if nn != 0:
+            # Enc / Dec
+            if flag:
+                if ww[-1:] == 'x':
+                    nn = self.getword(str.lower(ww[:-1]))
                     if self.cli._isanyupper(ww):
                         if self.cli._isallupper(ww):
                             nn |= UPPERFLAG
@@ -241,21 +238,36 @@ class  spellencrypt():
                             nn |= CAPFLAG
                         else:
                             print("Warn: mixed capitalization");
-                            # Todo: spell mode
-
+                    nn |= SPELLFLAG
                     arr2.append(nn)
-                    if self.debug > 1:
-                        print("'" + ww + "'", hex(nn) ) #, end = "; ")
-                else:
-                    if self.debug > 1:
-                        print("Unkown",  "'" + ww + "'", hex(nn), end = "; ")
+                    continue
 
-                    # Enter spell mode
-                    arr3 = self._spellmode(ww)
-                    arr2.append(arr3)
+            nn = self.getword(str.lower(ww))
+            if nn != 0:
+                if self.cli._isanyupper(ww):
+                    if self.cli._isallupper(ww):
+                        nn |= UPPERFLAG
+                    elif self.cli._isupper(ww[0]):
+                        nn |= CAPFLAG
+                    else:
+                        print("Warn: mixed capitalization");
+                        # Todo: spell mode
+
+                arr2.append(nn)
+                if self.debug > 1:
+                    print(wrap(ww), hex(nn) ) #, end = "; ")
+                continue
+
+            if self.debug > 1:
+                print("Unkown",  wrap(ww), hex(nn), end = "; ")
+
+            # Enter spell mode
+            if not flag:
+                arr3 = self._spellmode(ww)
+                arr2.append(arr3)
 
             if self.debug > 2:
-                print("_convert item=", nn, "'"+ww+"'")
+                print("_convert item=", nn, wrap(ww))
 
         return arr2
 

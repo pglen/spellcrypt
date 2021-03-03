@@ -1,9 +1,11 @@
 #!/bin/bash
 #VERBOSE="-v 2"
+FILE=tests/test_2.txt
 echo Diff should be silent
-rm aa bb
-./spellcrypt.py $VERBOSE -e -f -i tests/test_3.txt -o  aa
+rm -f aa bb
+./spellcrypt.py $VERBOSE -e -f -i $FILE -o  aa
 ./spellcrypt.py $VERBOSE -d -f -i aa -o bb
-diff -w tests/test_3.txt bb
+diff -w $FILE bb
+#rm -f aa bb
 
 

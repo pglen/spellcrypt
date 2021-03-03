@@ -9,6 +9,9 @@ from datetime import date
 
 debug = 0
 
+def wrap(strs):
+    return "'" + strs + "'"
+
 # Primitives. Keep results below 255 by truncation
 
 class Primi():
