@@ -29,7 +29,8 @@
 
  System Requirements:
 
-  o Python 2.x or Python 3.x  (works on both)
+  o ~~Python 2.x or Python 3.x ~~
+  o Mar 3 2021 -- Python 3 only
   o PyGObject and dependencies
 
 ## Screen Shot:
