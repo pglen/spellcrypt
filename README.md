@@ -39,7 +39,7 @@
   Decrypt feature allows verification of text, and the 'Check' button
   compares the top edit box text with the button box text.
 
-  The encrypted content than can be copied from the middle window into an email / document or any transmission.
+  The encrypted content then can be copied from the middle window into an email / document or any transmission.
 
 ![Screen Shot](screen.png)
 
