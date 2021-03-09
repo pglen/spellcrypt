@@ -22,17 +22,15 @@ from spepass import *
 
 # Dict size:  Sun 28.Feb.2021  0x24109
 
-LETTERMASK  = 0x3ffff
+LETTERMASK  =   0xfffff
 
-SPELLFLAG   = 0x40000
-UPPERFLAG   = 0x80000
-CAPFLAG     = 0x100000
-NEWFLAG     = 0x200000
+SPELLFLAG   =  0x400000
+UPPERFLAG   =  0x800000
+CAPFLAG     = 0x1000000
+NEWFLAG     = 0x2000000
 
 debug = 0
 mask = 0
-
-sstr = ""
 
 MASK = 0x100
 PARSEMASK = 0x200
@@ -68,6 +66,23 @@ class   PassPad():
 
     def rewind(self):
         self.passidx = 0
+
+def print_hexarr(arrx, strx = "arr"):
+    print(strx, "arr: ", end="")
+    for aa in arrx:
+
+        if type(aa) == type(0):
+            print("0x" + hex(aa), end=", ")
+
+            '''if aa & CAPFLAG:
+                print("CAP", end = " ")
+            if aa & SPELLFLAG:
+                print("SP", end = " ")'''
+        else:
+            print("'" + aa + "'", end=", ")
+
+
+    print("end_arr")
 
 
 # ------------------------------------------------------------
@@ -176,6 +191,20 @@ class  spellencrypt():
         #print("Got: ",  strx)
         return strx'''
 
+
+    def _capflag(self, ww):
+        nn = 0
+        if self.cli._isanyupper(ww):
+            if self.cli._isallupper(ww):
+                nn |= UPPERFLAG
+            elif self.cli._isupper(ww[0]):
+                nn |= CAPFLAG
+            else:
+                print("Warn: mixed capitalization");
+
+        #print("capflag", ww, hex(nn))
+        return nn
+
     # ------------------------------------------------------------------------
     # Return a word from ordinal
 
@@ -193,18 +222,23 @@ class  spellencrypt():
     def _spellmode(self, ww):
         arr = []
         for aa in ww:
-            if self.debug > 5:
-                print("spell mode",  wrap(aa), str.lower(aa) )
+            if self.debug > 3:
+                print("spell mode",  wrap(aa))
             nn = self.getword (str.lower(aa))
-            nn |=  SPELLFLAG
+            if self.cli._isupper(aa):
+                nn |= CAPFLAG
             arr.append(nn)
-        if self.debug > 5:
-            print("spellmode arr", arr)
+        #if self.debug > 5:
+        #    print_hexarr(arr)
         return arr
 
-    def _convert_arr(self, arrx, flag = False):
+    # --------------------------------------------------------------------
+    # Convert the array of tokens to
 
-        arr2 = []
+    def _convert_arr(self, arrx, flag):
+
+        arr2 = []; spell = False
+
         for ww in arrx:
             if self.debug > 5:
                 print ("_convert():", wrap(ww))
@@ -218,64 +252,77 @@ class  spellencrypt():
 
             # Process direct entities
             if ww in string.punctuation:
-                arr2.append(ww) # + "*p")
+                if not spell:
+                    arr2.append(ww[0]) # + "*p")
+                    if self.debug > 3:
+                        print("punct", wrap(ww))
                 continue
             elif uni:
-                arr2.append(ww) # + "*u")
+                if not spell:
+                    arr2.append(ww[0]) # + "*u")
+                    if self.debug > 3:
+                        print("uni",  wrap(ww))
                 continue
-            elif ww in string.whitespace:
-                arr2.append(ww) # + "*w")
+            elif ww[0] in string.whitespace:
+                if not spell:
+                    if self.debug > 3:
+                        print("white", wrap(ww))
+                    arr2.append(ww) # + "*w")
                 continue
+            str2 = str.lower(ww)
+
+            # Dec only
+            if not flag:
+                if ww[-1:] == 'x' or ww[-1:] == 'X':
+                    nn = self.getword(str2[:-1])
+                    if nn:
+                        if self.debug > 6:
+                            print("despell", wrap(ww[:-1]), nn)
+
+                        nn |= SPELLFLAG
+                        if ww[-1:] == 'X':
+                            nn |= CAPFLAG
+                        arr2.append(nn)
+                        spell = True
+                    else:
+                        print("Cannot dec str")
+                else:
+                    if spell:
+                        arr2.append(" ")
+                        #print_hexarr(arr2, "tmp")
+                    spell = False
+                    #print("arr2", arr2)
+                    #continue
 
             # Enc / Dec
-            if flag:
-                if ww[-1:] == 'x':
-                    nn = self.getword(str.lower(ww[:-1]))
-                    if self.cli._isanyupper(ww):
-                        if self.cli._isallupper(ww):
-                            nn |= UPPERFLAG
-                        elif self.cli._isupper(ww[0]):
-                            nn |= CAPFLAG
-                        else:
-                            print("Warn: mixed capitalization");
-                    nn |= SPELLFLAG
-                    arr2.append(nn)
-                    continue
-
-            nn = self.getword(str.lower(ww))
+            nn = self.getword(str2)
             if nn != 0:
-                if self.cli._isanyupper(ww):
-                    if self.cli._isallupper(ww):
-                        nn |= UPPERFLAG
-                    elif self.cli._isupper(ww[0]):
-                        nn |= CAPFLAG
-                    else:
-                        print("Warn: mixed capitalization");
-                        # Todo: spell mode
-
+                nn |= self._capflag(ww)
                 arr2.append(nn)
                 if self.debug > 1:
                     print(wrap(ww), hex(nn) ) #, end = "; ")
-                continue
+            else:
+                if self.debug > 6:
+                    print("Unkown", wrap(ww), hex(nn), flag)
 
-            if self.debug > 1:
-                print("Unkown",  wrap(ww), hex(nn), end = "; ")
-
-            # Enter spell mode
-            if not flag:
-                arr3 = self._spellmode(ww)
-                arr2.append(arr3)
-
-            if self.debug > 2:
-                print("_convert item=", nn, wrap(ww))
+                # Enter spell mode
+                if flag:
+                    arr3 = self._spellmode(ww)
+                    #if self.debug > 3:
+                    #    print("got spell res:", arr3)
+                    arr2.append(arr3)
 
         return arr2
 
     # Encode one entity
-    def _encode_one(self, ee, chh, flag):
+    def _encode_one(self, ee, flag):
 
-        if self.debug > 3:
+        if self.debug > 9:
             print("ee =", ee, " ", end="")
+
+        chh = self.passpad.nextchr()
+        if self.debug > 8:
+            print ("chh ", chh, end=" ")
 
         ee2 = ee & LETTERMASK
 
@@ -300,7 +347,7 @@ class  spellencrypt():
                 ee2 += self.arrlen
         #'''
 
-        if self.debug > 3:
+        if self.debug > 9:
             print("after_ee =", ee2, "", end="")
 
         # Reverse conversion
@@ -313,7 +360,8 @@ class  spellencrypt():
 
     def  enc_dec(self, flag, arrx, passwd):
 
-        global sstr
+        if len(passwd) == 0:
+            raise ValueError("Password Cannot be Empty")
 
         #if self.debug > 8:
         #    print("CAPFLAG", hex(CAPFLAG), "UPPERFLAG",
@@ -325,47 +373,50 @@ class  spellencrypt():
 
         self.passpad = PassPad(passwd)
         strx = "";  cnt = 0; passidx = 0;
-        if len(passwd) == 0:
-            raise ValueError("Password Cannot be Empty")
+
+        #if self.debug > 3:
+        #    print("flag:", flag)
 
         if self.debug > 3:
             print(arrx)
 
-        arr2 = self._convert_arr(arrx)
+        arr2 = self._convert_arr(arrx, flag)
 
         if self.mask & 0x200:
             print ("arr2", arr2)
 
         for ee in arr2:
             if self.debug > 3:
-                print ("cnt", cnt, "", end="")
-            if type(ee) == str:
+                print ("cnt=", cnt, ee, end=" ")
+
+            if type(ee) == type(""):
+
                 if self.debug > 3:
-                    print ("[" + ee + "] ", end="")
+                    print (wrap(ee, " [", "] "), end="\n")
                 strx +=  ee # + "$"
 
-            elif type(ee) == list:
+            elif type(ee) == type([]):
                 if self.debug > 3:
-                    print ("arr[", ee, "]arr ", end="")
-                for cc in ee:
-                    chh = self.passpad.nextchr()
-                    if self.debug > 4:
-                        print ("chh ", chh, end=" ")
-                    nstr = self._encode_one(cc, chh, flag)
-                    # Add it to results
-                    strx += nstr + "x "
-            else:
-                if flag:
-                    if self.debug > 3:
-                        print ("{" + arrx[cnt] + "} ", end=" ")
-                else:
-                    if self.debug > 3:
-                        print ("{", arr2[cnt], "} ", end=" ")
+                    print_hexarr(ee, "list")
 
-                chh = self.passpad.nextchr()
-                if self.debug > 4:
-                    print ("chh ", chh, end=" ")
-                nstr = self._encode_one(ee, chh, flag)
+                for cc in ee:
+                    pad = "x "
+                    if cc & CAPFLAG:
+                        pad = "X "
+                    nstr = self._encode_one(cc, flag)
+                    # Add it to results
+                    if self.debug > 4:
+                        print ("&" + nstr + "& ", end=" ")
+                    if self.debug > 3:
+                        print ("cc", hex(cc), end=" ")
+                    strx += nstr + pad
+
+            elif type(ee) == type(0):
+
+                if self.debug > 3:
+                    print ("{", ee, "} ", end=" ")
+
+                nstr = self._encode_one(ee, flag)
 
                 # Apply flags
                 if ee & CAPFLAG:
@@ -373,22 +424,15 @@ class  spellencrypt():
                 if ee & UPPERFLAG:
                     nstr = nstr.upper()
 
-                if ee & SPELLFLAG:
-                    # Accumulate
-                    sstr += nstr # + "s "
-                    #print ("spell", sstr)
-                else:
-                    # Add it to results
-                    if sstr != "":
-                        strx += sstr
-                        sstr = ""
-                    strx += nstr #  + "@ "
+                strx += nstr #  + "@ "
 
                 if self.debug > 3:
                     print ("$[" + nstr + "]$")
 
                 if self.mask & 0x400:
                     print (nstr, end= " " )
+            else:
+                print("non intercepted type")
 
             cnt = cnt + 1
         return strx

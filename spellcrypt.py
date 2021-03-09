@@ -77,7 +77,7 @@ if __name__ == '__main__':
     (options, args) = parser.parse_args()
     options.mask = 0
 
-    # Convert debug options
+    # Convert debug options and debug mask
     if options.debug:
         if options.debug[:2] == "0x":
             options.debug = int(options.debug, base=16)
@@ -92,9 +92,8 @@ if __name__ == '__main__':
             options.mask = 0
 
     #print ("debug level", options.debug, "mask", hex(options.mask))
-
-    if int(options.debug) > 4:
-        print("args", args)
+    #if int(options.debug) > 4:
+    #    print("args", args)
 
     if len (args) == 2:
         options.filename = args[0]
@@ -205,6 +204,6 @@ if __name__ == '__main__':
         wfp.write(strx)
         wfp.close()
     else:
-        print(strx)
+        print(strx, end = "")
 
 # EOF

@@ -9,8 +9,11 @@ from datetime import date
 
 debug = 0
 
-def wrap(strs):
-    return "'" + strs + "'"
+def wrap(strs, delim = "'", delim2 = ''):
+    if not delim2:
+        return delim + strs + delim
+    else:
+        return delim + strs + delim2
 
 # Primitives. Keep results below 255 by truncation
 
