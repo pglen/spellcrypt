@@ -44,7 +44,6 @@ def pversion():
     print( os.path.basename(sys.argv[0]), "Version", version)
     sys.exit(0)
 
-
         #["p:",  "port",     9999,   None],      \
         # option, var_name, initial_val, function
 

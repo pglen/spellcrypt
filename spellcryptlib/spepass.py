@@ -123,8 +123,10 @@ def ascsplit(strx):
             mode = 2
         elif aa in string.ascii_letters:
             mode = 3
-        else:
+        elif aa in string.digits:
             mode = 4
+        else:
+            mode = 5
 
         # ----------------------------------------------------------
         if mode == 0:
@@ -155,6 +157,12 @@ def ascsplit(strx):
                     arr.append(cumm2);  cumm2 = ""
 
         if mode == 4:
+            cumm += aa
+            if old_mode != mode:
+                if cumm2:
+                    arr.append(cumm2);    cumm2 = ""
+
+        if mode == 5:
             cumm2 += aa
             if old_mode != mode:
                 if cumm:
@@ -224,3 +232,4 @@ class   CharClassi():
         if ww in string.ascii_uppercase:
             return True
 
+# EOF

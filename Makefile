@@ -2,6 +2,7 @@
 
 .PHONY: test clean
 
+
 all:
 	@echo Targets: git build test clean deb init cleankeys
 	@echo Target \'build\' makes the \'C\' libs
@@ -11,13 +12,17 @@ all:
 init:
 	@python3 ./tools/genkey.py
 
+SUB=auto
+
 git:
 	git add .
-	git commit -m auto
+	git commit -m $SUB
 	git push
 	git push local
+
+
 test:
-	@make -C client test
+	./spellcrypt.py
 
 deb:  build build3
 	./build-deb.sh
@@ -32,6 +37,9 @@ cleankeys:
 	@rm -rf ./data/keys
 
 md5:
+
+test_env:
+	@echo ${SUB}
 
 
 

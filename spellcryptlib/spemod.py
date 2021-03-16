@@ -3,7 +3,7 @@
 from __future__ import absolute_import
 from __future__ import print_function
 
-import os, string
+import os, string, random
 
 # Spell crypt main module
 #
@@ -45,6 +45,9 @@ def assertNERaise(aa, bb):
 #__all__ = ['__init__', 'enc_dec']
 
 printable = string.ascii_letters # + "'"
+
+globword  = ""
+globword2 = ""
 
 #-------------------------------------------------------------------------
 #
@@ -92,15 +95,16 @@ class  spellencrypt():
 
     def __init__(self, fname = "spell.txt"):
 
-        self.debug = 0; self.arrlen = 0
+        self.debug = 0; self.arrlen = 0; self.mask = 0
         self.bigarr = []
         self.boundsig = [];  self.boundarr = []
         self.datadir = os.path.dirname(fname)
         self.cli = CharClassi()
 
+        self.datadir = os.path.dirname(os.path.abspath(__file__))
         #print("datadir", self.datadir)
 
-        fpi = open(fname, "r")
+        fpi = open(self.datadir + os.sep + fname, "r")
 
         # Ignore first line
         #hash = fpi.readline()
@@ -143,15 +147,52 @@ class  spellencrypt():
         #assertNERaise(self.arrlen, cnt)
         #print("cmp", hex(self.arrlen), hex(LETTERMASK))
 
+    # --------------------------------------------------------------------
+    # Prefix the original with a random sentence. This is then used as
+    # parameters later
+
+    def randpre(self):
+
+        pre = []
+        rrr = int(random.random() * 4) + 5
+
+        global globword, globword2
+
+        for aa in range(rrr):
+            idx = int(random.random() * self.arrlen)
+            #print("rand", idx)
+            nnn = self.bigarr[idx]
+            if aa == 0:
+                nnn = nnn.capitalize()
+            if aa == 1:
+                globword = nnn
+            if aa == 2:
+                globword2 = nnn[:2] + " "
+
+            pre.append(nnn)
+            if aa < rrr-2 and random.random() * 10 < 1.0:
+                pre.append(',')
+            if aa < rrr-1:
+                pre.append(' ')
+
+        pre.append(".")
+        pre.append(' ')
+
+        print("globwords:", globword, globword2)
+        return pre
+
+
     def getword(self, www):
 
         ttt = [0, -1, 0]; cnt2 = 0; cc =  www[:1]
 
-        ''' # Brute method
+        '''
+        # Brute method
         for dd in range(self.arrlen):
             if self.bigarr[dd] == www:
                 ttt = cnt2, dd, dd
-                break '''
+                break
+        '''
 
         # Single hash
         for bb in self.boundsig:
@@ -183,6 +224,7 @@ class  spellencrypt():
 
     '''# ------------------------------------------------------------------------
     # Return a word from coordinates for this word
+
     def _revwcoord(self, xxx, yyy):
         #print ("get:" , xxx, yyy)
         strx = "";
@@ -190,7 +232,6 @@ class  spellencrypt():
         strx = self.bigarr[cnt3 + yyy]
         #print("Got: ",  strx)
         return strx'''
-
 
     def _capflag(self, ww):
         nn = 0
@@ -219,7 +260,12 @@ class  spellencrypt():
             raise ValuError()
         return strx
 
+    # ------------------------------------------------------------------------
+    # Not in dictionary, decompose
+
     def _spellmode(self, ww):
+
+        global globword
         arr = []
         for aa in ww:
             if self.debug > 3:
@@ -228,6 +274,12 @@ class  spellencrypt():
             if self.cli._isupper(aa):
                 nn |= CAPFLAG
             arr.append(nn)
+
+        print("globword", globword)
+        ttt = self.getword(globword)
+        print("ttt", ttt)
+        arr.append(ttt)
+
         #if self.debug > 5:
         #    print_hexarr(arr)
         return arr
@@ -256,31 +308,46 @@ class  spellencrypt():
                     arr2.append(ww[0]) # + "*p")
                     if self.debug > 3:
                         print("punct", wrap(ww))
+                #spell = False
                 continue
             elif uni:
                 if not spell:
                     arr2.append(ww[0]) # + "*u")
                     if self.debug > 3:
                         print("uni",  wrap(ww))
+                #spell = False
                 continue
             elif ww[0] in string.whitespace:
                 if not spell:
                     if self.debug > 3:
                         print("white", wrap(ww))
-                    arr2.append(ww) # + "*w")
+                    arr2.append(ww)
+                    #arr2.append(wrap(ww)+ "*w ")
+                #spell = False
                 continue
+
+            #elif ww[0] in string.digits:
+            #    if not spell:
+            #        if self.debug > 3:
+            #            print("white", wrap(ww))
+            #        #arr2.append(ww)
+            #        arr2.append(wrap(ww)+ "*n ")
+            #    #spell = False
+            #    continue
+
+            # Create a lower case copy
             str2 = str.lower(ww)
 
             # Dec only
             if not flag:
-                if ww[-1:] == 'x' or ww[-1:] == 'X':
-                    nn = self.getword(str2[:-1])
+                if ww[-2:] == globword2 or ww[-2:] == globword2.upper():
+                    nn = self.getword(str2[:-2])
                     if nn:
                         if self.debug > 6:
                             print("despell", wrap(ww[:-1]), nn)
 
                         nn |= SPELLFLAG
-                        if ww[-1:] == 'X':
+                        if ww[-2:] == globword2.upper():
                             nn |= CAPFLAG
                         arr2.append(nn)
                         spell = True
@@ -298,6 +365,11 @@ class  spellencrypt():
             nn = self.getword(str2)
             if nn != 0:
                 nn |= self._capflag(ww)
+                if spell:
+                    arr2.append("xxx ")
+                    #print_hexarr(arr2, "tmp")
+                #spell = False
+
                 arr2.append(nn)
                 if self.debug > 1:
                     print(wrap(ww), hex(nn) ) #, end = "; ")
@@ -380,29 +452,55 @@ class  spellencrypt():
         if self.debug > 3:
             print(arrx)
 
+        if flag:
+            prex = self.randpre()
+            arrx = prex + arrx;
+
+        if self.debug > 3:
+            print("pre arrx", arrx)
+
+        global globword, globword2
+
+        # Cut point for prelude
+        cutpoint = 0
+        if not flag:
+            for cutpoint in range(len(arrx)):
+                if cutpoint == 2:
+                    globword = arrx[cutpoint]
+                if cutpoint == 4:
+                    globword2 = arrx[cutpoint][:2]
+                if arrx[cutpoint] == ".":
+                    cutpoint += 2  # For ".", " " at the end
+                    break;
+
+        #print("cutpoint", cutpoint)
+        print("globword:", globword, "globword2:", globword2)
+
         arr2 = self._convert_arr(arrx, flag)
 
         if self.mask & 0x200:
             print ("arr2", arr2)
 
+        cnt3 = 0
         for ee in arr2:
             if self.debug > 3:
                 print ("cnt=", cnt, ee, end=" ")
 
             if type(ee) == type(""):
-
                 if self.debug > 3:
                     print (wrap(ee, " [", "] "), end="\n")
-                strx +=  ee # + "$"
+                cnt3 += 1
+                if cnt3 > cutpoint:
+                    strx +=  ee # + "$"
 
             elif type(ee) == type([]):
                 if self.debug > 3:
                     print_hexarr(ee, "list")
 
                 for cc in ee:
-                    pad = "x "
+                    pad = globword2
                     if cc & CAPFLAG:
-                        pad = "X "
+                        pad = globword2.upper()
                     nstr = self._encode_one(cc, flag)
                     # Add it to results
                     if self.debug > 4:
@@ -424,7 +522,9 @@ class  spellencrypt():
                 if ee & UPPERFLAG:
                     nstr = nstr.upper()
 
-                strx += nstr #  + "@ "
+                cnt3 += 1
+                if cnt3 > cutpoint:
+                    strx += nstr #  + "@ "
 
                 if self.debug > 3:
                     print ("$[" + nstr + "]$")
@@ -435,6 +535,7 @@ class  spellencrypt():
                 print("non intercepted type")
 
             cnt = cnt + 1
+
         return strx
 
 # EOF

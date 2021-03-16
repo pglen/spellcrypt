@@ -126,7 +126,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     #print("spemod", dir(spemod))
-    sssmod = spemod.spellencrypt(os.path.join(base, "spellcryptlib", "spell.txt"))
+    sssmod = spemod.spellencrypt() #os.path.join(base, "spellcryptlib", "spell.txt"))
     #print("sssmod", dir(sssmod))
 
     # Propagate to sub systems
@@ -185,7 +185,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     if  options.mask & 0x100:
-        print("arrx", arrx)
+        print("arrx:", arrx)
 
     if options.enc:
         strx = sssmod.enc_dec(True, arrx, newpass)
@@ -199,6 +199,9 @@ if __name__ == '__main__':
         #    strx += aa
     else:
         print("Bad command ");
+
+    if  options.mask & 0x100:
+        print("strx:", strx)
 
     if wfp:
         wfp.write(strx)

@@ -13,20 +13,20 @@ from gi.repository import Gdk
 from gi.repository import GLib
 from gi.repository import GObject
 
-#sys.path.append('..')
+base = os.path.dirname(os.path.abspath(__file__))
+#print("base", base)
+sys.path.append(base + os.sep + ".." + os.sep + 'spellcryptlib')
 
 import spemod
+import spepass
 
 def message(strx, title=None):
 
-        dialog = Gtk.MessageDialog(title, None,
-            Gtk.ButtonsType.NONE , Gtk.ButtonsType.CLOSE,
-            'Message: \n\n%s' % (strx) )
+        dialog = Gtk.MessageDialog(text='\n%s' % (strx),
+                    title=title, transient_for=None,
+                        buttons = Gtk.ButtonsType.OK)
 
         # Close dialog on user response
-
-        #dialog.set_transient_for(mainwin.window)
-
         dialog.connect ("response", lambda d, r: d.destroy())
         dialog.show()
 
@@ -62,13 +62,15 @@ class MainWin():
 
     def __init__(self):
 
-        self.sssmod = None
         self.orig = None;  self.encr = None;  self.decr = None
-
         self.window = Gtk.Window(type=Gtk.WindowType.TOPLEVEL)
 
-        #if not self.sssmod:
-        self.sssmod =  spemod.spellencrypt("../data/spell.txt")
+        try:
+            self.sssmod =  spemod.spellencrypt("spell.txt")
+        except:
+            print ("Cannot load encryption.")
+            raise ValueError("Cannot load dictionary.")
+
 
         #os.chdir( os.path.dirname(os.getcwd()) )
 
@@ -271,20 +273,20 @@ class MainWin():
             message("No decrypted text.")
             return
 
-        s1 = spemod.rmspace(self.orig); s2 = spemod.rmspace(self.decr)
-        if  s1 == s2:
-            message("Original and decrypted texts match.")
+        #s1 = spemod.rmspace(self.orig); s2 = spemod.rmspace(self.decr)
+        if  self.orig == self.decr:
+            message("Original and decrypted texts match.", title="Match")
         else:
             offs = 0
-            for aa in range(len(s1)):
-                if s1[aa] != s2[aa]:
+            for aa in range(len(self.orig)):
+                if self.orig[aa] != self.decr[aa]:
                     offs = aa
                     break
 
-            message("Error on decryption. DIFF at offset %d" % aa)
+            message("Error on decryption. DIFF at offset %d" % aa, title="Mismatch")
             print()
-            print("orig:", "'" + self.orig[aa-33:aa+33] + "'\n")
-            print("decr:", "'" + self.decr[aa-33:aa+33] + "'\n")
+            print("orig:", "'" + self.orig[offs-13:offs+13] + "'\n")
+            print("decr:", "'" + self.decr[offs-13:offs+13] + "'\n")
             print()
 
     # --------------------------------------------------------------------
@@ -299,14 +301,8 @@ class MainWin():
             message("Cannot have an empty password.")
             return
 
-        self.newpass = spemod.genpass(ppp)
-
-        try:
-            if not self.sssmod:
-                self.sssmod =  spemod.spellencrypt("data/spell.txt")
-        except:
-            print ("Cannot load encryption.")
-            raise ValueError("Cannot load dictionary.")
+        self.newpass = spepass.Primi().genpass(ppp)
+        #self.newpass = spemod.genpass(ppp)
 
         pppx = []; arrx = []
 
@@ -317,16 +313,16 @@ class MainWin():
             aa = buff.get_text(iter, iter2, False)
             #print ("buff", , "eee")
 
-            ss = spemod.ascsplit(aa.strip())
+            ss = spepass.ascsplit(aa) #.strip())
             for cc in ss:
                 #print("cc=", ("'"+cc+"'", end=" ")
                 arrx.append(cc)
-
-            arrx.append("\n")
+            #arrx.append("\n")
 
         self.encr = self.sssmod.enc_dec(True, arrx, self.newpass)
 
         self.text2.get_buffer().set_text(self.encr)
+        self.text3.get_buffer().set_text("")
 
 
     def decrypt(self, win, butt):
@@ -339,14 +335,8 @@ class MainWin():
             message("Cannot have an empty password.")
             return
 
-        self.newpass = spemod.genpass(ppp)
-
-        try:
-            if not self.sssmod:
-                self.sssmod =  spemod.spellencrypt("../data/spell.txt")
-        except:
-            print ("Cannot load encryption.")
-            raise ValueError("Cannot load dictionary.")
+        self.newpass = spepass.Primi().genpass(ppp)
+        #self.newpass = spemod.genpass(ppp)
 
         pppx = []; arrx = []
 
@@ -357,12 +347,13 @@ class MainWin():
             aa = buff.get_text(iter, iter2, False)
             #print ("buff", , "eee")
 
-            aa = aa.strip()
+            #aa = aa.strip()
             ss = spemod.ascsplit(aa)
             for cc in ss:
                 #print("cc=", ("'"+cc+"'", end=" ")
                 arrx.append(cc)
-            arrx.append("\n")
+
+            #arrx.append("\n")
 
         self.decr = self.sssmod.enc_dec(False, arrx, self.newpass)
 
@@ -401,7 +392,7 @@ class MainWin():
 
                     #print("type", type(self.orig))
 
-                    self.orig = spemod.rmjunk(self.orig)
+                    #self.orig = spemod.rmjunk(self.orig)
                     self.text1.get_buffer().set_text(self.orig)
                     self.show_stat("Loaded %d bytes" % len(self.orig))
 
