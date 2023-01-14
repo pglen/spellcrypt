@@ -18,7 +18,7 @@ git:
 	git add .
 	git commit -m $SUB
 	git push
-	git push local
+	#git push local
 
 test:
 	./spellcrypt.py -e orig/aa  -f orig/aaa
