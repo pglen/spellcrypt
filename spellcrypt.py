@@ -126,7 +126,7 @@ if __name__ == '__main__':
         sys.exit(0)
 
     #print("spemod", dir(spemod))
-    sssmod = spemod.spellencrypt() #os.path.join(base, "spellcryptlib", "spell.txt"))
+    sssmod = spemod.spellencrypt(os.path.join(base, "data", "spell.txt"))
     #print("sssmod", dir(sssmod))
 
     # Propagate to sub systems
@@ -138,18 +138,6 @@ if __name__ == '__main__':
     spemod.mask = options.mask
 
     verbose =  options.verbose
-
-    wfp = None
-    if options.outname:
-        if os.access(options.outname, os.R_OK):
-            if not options.force:
-                print ("Cannot overwrite file:", options.outname," use -f to force");
-                sys.exit(1)
-            try:
-                os.remove(options.outname)
-            except:
-                print("Warn: cannot remove old file:", options.outname, sys.exc_info())
-        wfp = open(options.outname, "w")
 
     arrx = [];  fp = None
     if options.filename:
@@ -183,6 +171,22 @@ if __name__ == '__main__':
     else:
         print("Must use input file option or pass command line file arguments.")
         sys.exit(0)
+
+    wfp = None
+    if options.outname:
+        if os.access(options.outname, os.R_OK):
+            if not options.force:
+                print ("Cannot overwrite file:", options.outname," use -f to force");
+                sys.exit(1)
+            try:
+                os.remove(options.outname)
+            except:
+                print("Warn: cannot remove old file:", options.outname, sys.exc_info()[1])
+        try:
+            wfp = open(options.outname, "w")
+        except:
+            print ("Cannot create outfile:", "'" + options.outname + "'", sys.exc_info()[1]);
+            sys.exit(2)
 
     if  options.mask & 0x100:
         print("arrx:", arrx)

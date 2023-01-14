@@ -20,9 +20,9 @@ git:
 	git push
 	git push local
 
-
 test:
-	./spellcrypt.py
+	./spellcrypt.py -e orig/aa  -f orig/aaa
+	./spellcrypt.py -s orig/aaa -f orig/aaaa
 
 deb:  build build3
 	./build-deb.sh
