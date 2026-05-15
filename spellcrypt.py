@@ -1,68 +1,73 @@
 #!/usr/bin/env python3
 
-from __future__ import absolute_import
-from __future__ import print_function
-
 import os, sys, string, zlib, struct, platform
+
 from datetime import date
 from optparse import OptionParser
 
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
-#sys.path.append(os.path.join(base, "gui"))
-sys.path.append(os.path.join(base, "spellcryptlib"))
-#from spellcrypt import spemod
+sys.path.append(os.path.join(base, "spelib"))
 
 import spemod, spepass, hexdump
 
-verbose = 0
-
 def cmdline():
 
-    parser = OptionParser()
-
-    parser.add_option("-f", "--force",
+    xparse = OptionParser()
+    xparse.add_option("-f", "--force",
                   action="store_true", dest="force",
                   help="Force overwrite")
 
-    parser.add_option("-i", "--in", dest="filename", default="",
+    xparse.add_option("-i", "--in", dest="filename", default="",
                   help="Read from file", metavar="filename")
 
-    parser.add_option("-o", "--out", dest="outname", default="",
+    xparse.add_option("-o", "--out", dest="outname", default="",
                   help="Write to file; stdout if none specified.",
                     metavar="filename")
 
-    parser.add_option("-p", "--pass", dest="passwd", default="",
+    xparse.add_option("-p", "--pass", dest="passwd", default="",
                   help="Password to use", metavar="pass")
 
-    parser.add_option("-s", "--str", dest="strx", default="",
-                  help="String to encrypt (quote if space or newline)",
+    xparse.add_option("-s", "--str", dest="strx", default="",
+                  help="String to operate on (quote if space or newline)",
                     metavar="string")
 
-    parser.add_option("-q", "--quiet",
+    xparse.add_option("-q", "--quiet",
                   action="store_true", dest="quiet",
                   help="Don't print status messages to stdout")
 
-    parser.add_option("-e", "--encrypt",
+    xparse.add_option("-e", "--encrypt",
                   action="store_true", dest="enc", default = 0,
                   help="Encrypt data")
 
-    parser.add_option("-d", "--decrypt",
+    xparse.add_option("-d", "--decrypt",
                   action="store_true", dest="dec", default = 0,
                   help="Decrypt data")
 
-    parser.add_option("-v", "--verbose", dest="verbose", default=0,
+    xparse.add_option("-v", "--verbose", dest="verbose", default=0,
                   action="store_true",
                   help="Status message verbosity")
 
-    parser.add_option("-z", "--zoo", dest="zoo", default=0,
+    xparse.add_option("-z", "--zoo", dest="zoo", default=0,
                   action="store_true",
                   help="Show password quality")
 
-    parser.add_option("-g", "--debug", dest="debug", default=0,
+    xparse.add_option("-g", "--debug", dest="debug", default=0,
                   help="Debug output level", metavar="level")
 
-    return parser
+    return xparse
+
+def file2arr(fp):
+    arrx = []
+    for aa in fp:
+        if int(options.debug) > 4:
+            print("line:", aa)
+        ss = spepass.ascsplit(aa)
+        #if  options.mask & 0x400:
+        #    print("split:", ss)
+        for cc in ss:
+            arrx.append(cc)
+    return arrx
 
 # ------------------------------------------------------------------------
 # Start of program:
@@ -90,6 +95,9 @@ if __name__ == '__main__':
             options.debug &= 0xff
         else:
             options.mask = 0
+
+        # Propgate to submods
+        spepass.debug = options.debug
 
     #print ("debug level", options.debug, "mask", hex(options.mask))
     #if int(options.debug) > 4:
@@ -121,12 +129,13 @@ if __name__ == '__main__':
     #print("pass:", len(newpass), newpass)
 
     if options.zoo:
-        print("Password head:\n", hexdump.HexDump(newpass)[:300], "....")
-        print ("Frequency distribution:\n", spemod.testpass(newpass))
+        print("Password head:\n" + hexdump.HexDump(newpass)[:300], "....")
+        print ("Frequency distribution:")
+        print(spepass.testpass(newpass))
         sys.exit(0)
 
     #print("spemod", dir(spemod))
-    sssmod = spemod.spellencrypt() #os.path.join(base, "spellcryptlib", "spell.txt"))
+    sssmod = spemod.spellencrypt(os.path.join(base, "spelib", "spell.txt"))
     #print("sssmod", dir(sssmod))
 
     # Propagate to sub systems
@@ -136,8 +145,6 @@ if __name__ == '__main__':
 
     spemod.debug = options.debug
     spemod.mask = options.mask
-
-    verbose =  options.verbose
 
     arrx = [];  fp = None
     if options.filename:
@@ -153,11 +160,9 @@ if __name__ == '__main__':
         for aa in fp:
             if int(options.debug) > 4:
                 print("line:", aa)
-
             ss = spepass.ascsplit(aa)
             #if  options.mask & 0x400:
             #    print("split:", ss)
-
             for cc in ss:
                 arrx.append(cc)
 
@@ -206,7 +211,6 @@ if __name__ == '__main__':
 
     if  options.mask & 0x100:
         print("strx:", strx)
-
     if wfp:
         wfp.write(strx)
         wfp.close()

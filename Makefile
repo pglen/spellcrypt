@@ -2,7 +2,6 @@
 
 .PHONY: test clean
 
-
 all:
 	@echo Targets: git build test clean deb init cleankeys
 	@echo Target \'build\' makes the \'C\' libs
@@ -18,7 +17,7 @@ git:
 	git add .
 	git commit -m $SUB
 	git push
-	git push local
+	#git push local
 
 test:
 	./spellcrypt.py -e orig/aa  -f orig/aaa
@@ -28,10 +27,11 @@ deb:  build build3
 	./build-deb.sh
 
 clean:
+	@rm -f  aa* bb* cc* dd*
 	@rm -rf __pycache__/
 	@rm -rf gui/__pycache__
 	@rm -rf spellcryptlib/__pycache__/
-	find . -name "*.pyc" -delete
+	@find . -name "*.pyc" -delete
 
 cleankeys:
 	@rm -rf ./data/keys
