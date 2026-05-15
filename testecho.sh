@@ -1,2 +1,2 @@
-echo -e $1 | ./spellcrypt.py -e - | ./spellcrypt.py -d  -
-
+# Echo to crypter
+echo -e $@ | ./spellcrypt.py -e - | ./spellcrypt.py -d  -

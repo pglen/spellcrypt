@@ -59,7 +59,7 @@ function write to stdout, unless specified otherwise with the -o option.
 
     Use filename '-' for  stdin
 
-The soup.py utility just creates a random string.
+The soup.py utility just creates random strings (sentences).
 
  System Requirements:
 
@@ -68,6 +68,13 @@ The soup.py utility just creates a random string.
   For the GUI:
 
     o PyGObject and dependencies
+
+## Caveats:
+
+Words that are not in the english dictionary are included vebatime in
+the cyphertext. Numbers are also included verbatim in the cyphertext.
+This is not a serious limitation, as the context around the number is
+encrypted.
 
 ## Screen Shot:
 

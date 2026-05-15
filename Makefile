@@ -25,6 +25,9 @@ test:
 	diff sayings.txt sayings.dec
 	@rm -f sayings.tmp sayings.dec
 
+testall:
+	@cd tests ; ./testall.sh
+
 clean:
 	@rm -f  aa* bb* cc* dd*
 	@rm -rf __pycache__/
@@ -35,10 +38,8 @@ clean:
 cleankeys:
 	@rm -rf ./data/keys
 
-md5:
-
-test_env:
-	@echo ${SUB}
+#test_env:
+#	@echo ${SUB}
 
 
 

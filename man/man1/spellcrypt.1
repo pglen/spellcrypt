@@ -1,0 +1,72 @@
+.TH spellcrypt 1 "" "" \" -*- nroff -*-
+.SH NAME
+.B spellcrypt \-
+Spell Encrypt / Decrypt
+.SH SYNOPSIS
+.B spellcrypt [options] [infile] [outfile]
+.br
+.SH DESCRIPTION
+This manual page documents the spellcrypt python utility
+.PP
+spellcrypt Features:
+.br
+    o Simple usage
+.br
+    o Encryption / Decryption
+.br
+    o Multi platform operation (wherever python3 runs)
+.br
+    o GUI
+.br
+.SH COMMAND LINE OPTIONS
+
+.br
+Usage: spellcrypt.py [options] [infile] [outfile]
+.br
+Options:
+.br
+  -h, --help            show this help message and exit
+.br
+  -e, --encrypt         encrypt data
+.br
+  -d, --decrypt         eecrypt data
+.br
+  -i infname, --in=infname
+.br
+                        read from file; use '-' for stdin
+.br
+  -o outfname, --out=outfname
+                        write to file; stdout if no file specified.
+.br
+  -s instring, --str=instring
+                        string to operate on (quote if space or newline)
+.br
+  -p pass, --pass=pass  password to use
+.br
+  -f, --force           force overwrite
+.br
+  -q, --quiet           print fewer status messages
+.br
+  -v, --verbose         status message verbosity
+.br
+  -V, --version         show version
+.br
+  -z, --zoo             show password quality
+.br
+  -g dlevel, --debug=dlevel
+                        debug output level
+.br
+  -m dmask, --mask=dmask
+                        debug output mask
+.SH CAVEATS
+Spellcrypt does not encrypt numbers, or words not found in the dictionary.
+(English dictionary for now.)
+.SH PLATFORMS
+All platforms that have python3 should work fine. Current platforms include
+Linux, WinX, MSYS2 ...
+.SH FILES
+.SH COPYING
+spellcrypt can be copied Freely, or under the MIT or General Public License
+.SH AUTHOR
+spellcrypt was written by Peter Glen, peterglen99@google.com
+

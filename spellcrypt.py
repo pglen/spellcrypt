@@ -8,14 +8,17 @@ from optparse import OptionParser
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
 sys.path.append(os.path.join(base, "spelib"))
+sys.path.append("spelib")
 
 import spemod, spepass, hexdump
+
+VERSION = "1.0.2"
 
 def cmdline():
 
     xparse = OptionParser(usage="spellcrypt.py [options] [infile] [outfile]")
-    xparse.epilog = \
-        "Use filename '-' for  stdin"
+    #xparse.epilog = \
+    #    "Use filename '-' for  stdin"
     xparse.add_option("-e", "--encrypt",
                   action="store_true", dest="enc", default = 0,
                   help="encrypt data")
@@ -25,11 +28,11 @@ def cmdline():
                   help="eecrypt data")
 
     xparse.add_option("-i", "--in", dest="filename", default="",
-                  help="read from file",
+                  help="read from file; use '-' for stdin",
                     metavar="infname")
 
     xparse.add_option("-o", "--out", dest="outname", default="",
-                  help="write to file; stdout if '-' specified.",
+                  help="write to file; stdout if no file specified.",
                     metavar="outfname")
 
     xparse.add_option("-s", "--str", dest="strx", default="",
@@ -50,6 +53,10 @@ def cmdline():
     xparse.add_option("-v", "--verbose", dest="verbose", default=0,
                   action="store_true",
                   help="status message verbosity")
+
+    xparse.add_option("-V", "--version", dest="version", default=0,
+                  action="store_true",
+                  help="show version")
 
     xparse.add_option("-z", "--zoo", dest="zoo", default=0,
                   action="store_true",
@@ -78,7 +85,9 @@ def file2arr(fp):
 # ------------------------------------------------------------------------
 # Start of program:
 
-if __name__ == '__main__':
+def mainfunc():
+
+    global options, args
 
     if sys.version_info[0] < 3:
         print("This program was meant to run on python 3.x or later.")
@@ -86,6 +95,10 @@ if __name__ == '__main__':
 
     parser = cmdline()
     options, args = parser.parse_args()
+
+    if options.version:
+        print("%s version: %s" % (os.path.basename(sys.argv[0]), VERSION) )
+        sys.exit()
 
     # Convert debug options
     if options.debug:
@@ -218,5 +231,8 @@ if __name__ == '__main__':
         wfp.close()
     else:
         print(strx, end = "")
+
+if __name__ == '__main__':
+    mainfunc()
 
 # EOF

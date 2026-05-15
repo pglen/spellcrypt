@@ -61,14 +61,16 @@ def cmdline():
 
 # Start of program:
 
-if __name__ == '__main__':
+def mainfunc():
+
+    global options, args
 
     if sys.version_info[0] < 3:
         print("This program was meant to run on python 3.x or later.")
         sys.exit(1)
 
     parser = cmdline()
-    (options, args) = parser.parse_args()
+    options, args = parser.parse_args()
 
     #print("args", args)
     #if len (args) == 2:
@@ -118,5 +120,8 @@ if __name__ == '__main__':
 
     #if int(random.random() * 30) % 2 :
     #    print()
+
+if __name__ == '__main__':
+    mainfunc()
 
 # EOF

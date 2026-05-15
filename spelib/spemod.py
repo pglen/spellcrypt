@@ -9,7 +9,8 @@ CAPFLAG     = 0x100000
 
 printable = string.ascii_letters + "'"
 
-base = os.path.dirname(os.path.abspath(__file__))
+base = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(base))
 
 class  spellencrypt():
 
