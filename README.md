@@ -59,6 +59,7 @@ function write to stdout, unless specified otherwise with the -o option.
 
     Use filename '-' for  stdin
 
+The soup.py utility just creates a random string.
 
  System Requirements:
 
