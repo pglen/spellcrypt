@@ -13,47 +13,53 @@ import spemod, spepass, hexdump
 
 def cmdline():
 
-    xparse = OptionParser()
-    xparse.add_option("-f", "--force",
-                  action="store_true", dest="force",
-                  help="Force overwrite")
-
-    xparse.add_option("-i", "--in", dest="filename", default="",
-                  help="Read from file", metavar="filename")
-
-    xparse.add_option("-o", "--out", dest="outname", default="",
-                  help="Write to file; stdout if none specified.",
-                    metavar="filename")
-
-    xparse.add_option("-p", "--pass", dest="passwd", default="",
-                  help="Password to use", metavar="pass")
-
-    xparse.add_option("-s", "--str", dest="strx", default="",
-                  help="String to operate on (quote if space or newline)",
-                    metavar="string")
-
-    xparse.add_option("-q", "--quiet",
-                  action="store_true", dest="quiet",
-                  help="Don't print status messages to stdout")
-
+    xparse = OptionParser(usage="spellcrypt.py [options] [infile] [outfile]")
+    xparse.epilog = \
+        "Use filename '-' for  stdin"
     xparse.add_option("-e", "--encrypt",
                   action="store_true", dest="enc", default = 0,
-                  help="Encrypt data")
+                  help="encrypt data")
 
     xparse.add_option("-d", "--decrypt",
                   action="store_true", dest="dec", default = 0,
-                  help="Decrypt data")
+                  help="eecrypt data")
+
+    xparse.add_option("-i", "--in", dest="filename", default="",
+                  help="read from file",
+                    metavar="infname")
+
+    xparse.add_option("-o", "--out", dest="outname", default="",
+                  help="write to file; stdout if '-' specified.",
+                    metavar="outfname")
+
+    xparse.add_option("-s", "--str", dest="strx", default="",
+                  help="string to operate on (quote if space or newline)",
+                    metavar="instring")
+
+    xparse.add_option("-p", "--pass", dest="passwd", default="",
+                  help="password to use", metavar="pass")
+
+    xparse.add_option("-f", "--force",
+                  action="store_true", dest="force",
+                  help="force overwrite")
+
+    xparse.add_option("-q", "--quiet",
+                  action="store_true", dest="quiet",
+                  help="print fewer status messages")
 
     xparse.add_option("-v", "--verbose", dest="verbose", default=0,
                   action="store_true",
-                  help="Status message verbosity")
+                  help="status message verbosity")
 
     xparse.add_option("-z", "--zoo", dest="zoo", default=0,
                   action="store_true",
-                  help="Show password quality")
+                  help="show password quality")
 
     xparse.add_option("-g", "--debug", dest="debug", default=0,
-                  help="Debug output level", metavar="level")
+                  help="debug output level", metavar="dlevel")
+
+    xparse.add_option("-m", "--mask", dest="mask", default=0,
+                  help="debug output mask", metavar="dmask")
 
     return xparse
 
@@ -63,8 +69,8 @@ def file2arr(fp):
         if int(options.debug) > 4:
             print("line:", aa)
         ss = spepass.ascsplit(aa)
-        #if  options.mask & 0x400:
-        #    print("split:", ss)
+        if  options.mask & 0x400:
+            print("split:", ss)
         for cc in ss:
             arrx.append(cc)
     return arrx
@@ -79,35 +85,37 @@ if __name__ == '__main__':
         sys.exit(1)
 
     parser = cmdline()
-    (options, args) = parser.parse_args()
-    options.mask = 0
+    options, args = parser.parse_args()
 
-    # Convert debug options and debug mask
+    # Convert debug options
     if options.debug:
         if options.debug[:2] == "0x":
             options.debug = int(options.debug, base=16)
         else:
             options.debug = int(options.debug)
 
-        # see if masks are specified
-        if options.debug > 0xff:
-            options.mask = options.debug
-            options.debug &= 0xff
+    # Convert
+    if options.mask:
+        if options.mask[:2] == "0x":
+            options.mask = int(options.mask, base=16)
         else:
-            options.mask = 0
+            options.mask = int(options.mask)
 
-        # Propgate to submods
-        spepass.debug = options.debug
+    # Propgate to submods
+    spepass.debug = options.debug
+
+    if options.debug > 1:
+        print("options:", options)
 
     #print ("debug level", options.debug, "mask", hex(options.mask))
     #if int(options.debug) > 4:
     #    print("args", args)
 
-    if len (args) == 2:
+    if len(args) > 1:
         options.filename = args[0]
         if options.outname:
             print("Both output option and second argument present.")
-            sys.exit(1)
+            sys.exit(2)
         else:
             options.outname = args[1]
 
@@ -157,14 +165,7 @@ if __name__ == '__main__':
                 print("Input file", "'" + options.filename + "'" , "must exist.")
                 sys.exit(1)
 
-        for aa in fp:
-            if int(options.debug) > 4:
-                print("line:", aa)
-            ss = spepass.ascsplit(aa)
-            #if  options.mask & 0x400:
-            #    print("split:", ss)
-            for cc in ss:
-                arrx.append(cc)
+        arrx = file2arr(fp)
 
     elif options.strx:
         if int(options.debug) > 5:
