@@ -3,10 +3,7 @@
 .PHONY: test clean
 
 all:
-	@echo Targets: git build test clean deb init cleankeys
-	@echo Target \'build\' makes the \'C\' libs
-	@echo Target \'init\' generates an initial key.
-	@echo Target \'cleankeys\' deletes all keys.
+	@echo Targets: git test clean
 
 init:
 	@python3 ./tools/genkey.py
@@ -20,17 +17,13 @@ git:
 	#git push local
 
 test:
-	./spellcrypt.py -e orig/aa  -f orig/aaa
-	./spellcrypt.py -s orig/aaa -f orig/aaaa
 
-deb:  build build3
-	./build-deb.sh
 
 clean:
 	@rm -f  aa* bb* cc* dd*
 	@rm -rf __pycache__/
 	@rm -rf gui/__pycache__
-	@rm -rf spellcryptlib/__pycache__/
+	@rm -rf spelib/__pycache__/
 	@find . -name "*.pyc" -delete
 
 cleankeys:

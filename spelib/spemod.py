@@ -1,10 +1,4 @@
-# Return a tuple of coordinates for this word
-
-
-from __future__ import absolute_import
-from __future__ import print_function
-
-import sys, string
+import os, sys, string
 
 # Globals
 
@@ -14,6 +8,8 @@ UPPERFLAG   = 0x80000
 CAPFLAG     = 0x100000
 
 printable = string.ascii_letters + "'"
+
+base = os.path.dirname(os.path.abspath(__file__))
 
 class  spellencrypt():
 
@@ -27,7 +23,7 @@ class  spellencrypt():
         self.arrlen = 0
 
         cnt = 0
-        fpi = open(fname, "r")
+        fpi = open(os.path.join(base, fname), "r")
 
         # Load to memory
         for aa in fpi:

@@ -143,7 +143,8 @@ if __name__ == '__main__':
         sys.exit(0)
 
     #print("spemod", dir(spemod))
-    sssmod = spemod.spellencrypt(os.path.join(base, "spelib", "spell.txt"))
+    #os.path.join(base, "spelib", "spell.txt"))
+    sssmod = spemod.spellencrypt()
     #print("sssmod", dir(sssmod))
 
     # Propagate to sub systems

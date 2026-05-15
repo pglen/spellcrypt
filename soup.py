@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 import os, sys, string, zlib, struct, platform, random
+
 from datetime import date
 from optparse import OptionParser
 
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
+
 sys.path.append(os.path.join(base, "spelib"))
-sys.path.append(os.path.join(base, "gui"))
+#sys.path.append(os.path.join(base, "gui"))
 
 import spemod
 
@@ -114,7 +116,7 @@ if __name__ == '__main__':
 
     print(".")
 
-    if int(random.random() * 30) % 2 :
-        print()
+    #if int(random.random() * 30) % 2 :
+    #    print()
 
 # EOF

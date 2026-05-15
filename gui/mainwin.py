@@ -1,8 +1,5 @@
 #!/usr/bin/env python
 
-from __future__ import absolute_import
-from __future__ import print_function
-
 import os, sys, getopt, signal, string
 import random, time, subprocess
 
@@ -15,7 +12,7 @@ from gi.repository import GObject
 
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
-sys.path.append(base + os.sep + ".." + os.sep + 'spellcryptlib')
+sys.path.append(base + os.sep + ".." + os.sep + 'spelib')
 
 import spemod
 import spepass
@@ -66,7 +63,7 @@ class MainWin():
         self.window = Gtk.Window(type=Gtk.WindowType.TOPLEVEL)
 
         try:
-            self.sssmod =  spemod.spellencrypt("spell.txt")
+            self.sssmod =  spemod.spellencrypt()
         except:
             print ("Cannot load encryption.")
             raise ValueError("Cannot load dictionary.")
@@ -297,9 +294,9 @@ class MainWin():
         self.show_stat("Started Encryption")
 
         ppp = self.entry.get_text()
-        if len(ppp) == 0:
-            message("Cannot have an empty password.")
-            return
+        #if len(ppp) == 0:
+        #    message("Cannot have an empty password.")
+        #    return
 
         self.newpass = spepass.Primi().genpass(ppp)
         #self.newpass = spemod.genpass(ppp)
@@ -331,9 +328,9 @@ class MainWin():
         self.show_stat("Started Decryption")
 
         ppp = self.entry.get_text()
-        if len(ppp) == 0:
-            message("Cannot have an empty password.")
-            return
+        #if len(ppp) == 0:
+        #    message("Cannot have an empty password.")
+        #    return
 
         self.newpass = spepass.Primi().genpass(ppp)
         #self.newpass = spemod.genpass(ppp)
@@ -348,7 +345,7 @@ class MainWin():
             #print ("buff", , "eee")
 
             #aa = aa.strip()
-            ss = spemod.ascsplit(aa)
+            ss = spepass.ascsplit(aa)
             for cc in ss:
                 #print("cc=", ("'"+cc+"'", end=" ")
                 arrx.append(cc)
