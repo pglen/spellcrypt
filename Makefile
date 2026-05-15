@@ -14,10 +14,16 @@ git:
 	git add .
 	git commit -m $SUB
 	git push
-	#git push local
+
+git-local:
+	git push local
 
 test:
-
+	@echo Testing ... diff should be silent
+	@./spellcrypt.py -e -i sayings.txt -f -o sayings.tmp
+	@./spellcrypt.py -d -i sayings.tmp -f -o sayings.dec
+	diff sayings.txt sayings.dec
+	@rm -f sayings.tmp sayings.dec
 
 clean:
 	@rm -f  aa* bb* cc* dd*

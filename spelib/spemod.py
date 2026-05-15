@@ -21,6 +21,7 @@ class  spellencrypt():
         self.boundstr = []
         self.boundarr = []
         self.arrlen = 0
+        self.hashlen = 2
 
         cnt = 0
         fpi = open(os.path.join(base, fname), "r")
@@ -42,14 +43,15 @@ class  spellencrypt():
         # Quick index
         oldchh = ""
         for aa in self.bigarr:
-            if  oldchh != aa[:2] :
-                oldchh = aa[:2]
+            cc =  aa[:self.hashlen]
+            if  oldchh != cc:
+                oldchh = cc
                 #print ("Bound:", "'"+ aa +"'")
-                self.boundsig.append(aa[:2])
+                self.boundsig.append(cc)
                 self.boundarr.append(cnt)
-                self.boundstr.append(aa)
+                #self.boundstr.append(aa)
             cnt += 1;
-        self.boundstr.append(aa)
+        #self.boundstr.append(aa)
 
         self.arrlen = len(self.bigarr)
 
@@ -60,8 +62,8 @@ class  spellencrypt():
     def     getword(self, www):
 
         ttt = [0, 0, 0]
+        cc =  www[:self.hashlen]
         cnt2 = 0
-        cc =  www[:2]
 
         '''  # brute
         for dd in range(self.arrlen):
@@ -73,7 +75,10 @@ class  spellencrypt():
         for bb in self.boundsig:
             if bb == cc:
                 cnt3 = self.boundarr[cnt2]
-                cnt4 = self.boundarr[cnt2+1]
+                try:
+                    cnt4 = self.boundarr[cnt2+1]
+                except:
+                    cnt4 = cnt3;
                 #print  ("got:", cc, bb, cnt2, self.bigarr[cnt3], "range:", cnt4-cnt3)
                 # The dictionary was broken had foreign characters, so we overscanned
                 limx = cnt4-cnt3 + 100

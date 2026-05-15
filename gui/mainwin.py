@@ -321,7 +321,6 @@ class MainWin():
         self.text2.get_buffer().set_text(self.encr)
         self.text3.get_buffer().set_text("")
 
-
     def decrypt(self, win, butt):
         #print ("encrypt", self.orig)
 
