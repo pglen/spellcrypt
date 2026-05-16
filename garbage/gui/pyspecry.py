@@ -1,8 +1,5 @@
 #!/usr/bin/env python3
 
-# ------------------------------------------------------------------------
-# Voice recognition
-
 import os, sys, getopt, signal, select, socket, time, struct
 import random, stat
 
@@ -11,6 +8,7 @@ gi.require_version("Gtk", "3.0")
 from gi.repository import Gtk
 
 base = os.path.dirname(os.path.abspath(__file__))
+sys.path.append(base + os.sep + ".." + os.sep + 'spelib')
 
 from pgutil import  *
 from mainwin import  *
@@ -54,8 +52,7 @@ optarr = \
 
 conf = Config(optarr)
 
-if __name__ == '__main__':
-
+def mainfunc():
     global mw
     if sys.version_info[0] < 3:
         print("This program was meant to run on python 3.x or later.")
@@ -65,5 +62,9 @@ if __name__ == '__main__':
     mw = MainWin()
     Gtk.main()
     sys.exit(0)
+
+
+if __name__ == '__main__':
+    mainfunc()
 
 # EOF

@@ -30,7 +30,7 @@ for aa in vvv.split("\n"):
             pass
 #print("loc_vers:", loc_vers)
 
-includex = ["*", "spelib/", ]
+includex = ["*", "spelib/",]
 
 doclist = []; droot = "docs/"
 doclistx = os.listdir(droot)
@@ -57,7 +57,7 @@ setuptools.setup(
         "Operating System :: OS Independent",
     ],
     packages=setuptools.find_packages(include=includex),
-    scripts = ['spellcrypt.py', 'soup.py'],
+    scripts = ['spellcrypt.py', 'soup.py', 'pyspecry.py'],
     #py_modules = ["pyvpacker",],
     #include_package_data=True,
     #package_data = {"spellcrypt" : doclist},
@@ -66,6 +66,7 @@ setuptools.setup(
     entry_points={
         'console_scripts': [ "spellcrypt=spellcrypt:mainfunc",
                                 "soup=soup:mainfunc",
+                                "pyspecry=pyspecry:mainfunc",
                            ],
     },
 )

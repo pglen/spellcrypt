@@ -1,6 +1,13 @@
 #!/usr/bin/env python3
 
-import os, sys, string, zlib, struct, platform
+from __future__ import print_function
+
+import sys
+if sys.version_info[0] < 3:
+    print("This program was meant to run on python 3.x or later.")
+    sys.exit(1)
+
+import os, string, zlib, struct, platform
 
 from datetime import date
 from optparse import OptionParser

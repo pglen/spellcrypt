@@ -31,6 +31,7 @@ testall:
 clean:
 	@rm -f  aa* bb* cc* dd*
 	@rm -rf __pycache__/
+	@rm -rf build/* dist/*
 	@rm -rf gui/__pycache__
 	@rm -rf spelib/__pycache__/
 	@find . -name "*.pyc" -delete

@@ -40,6 +40,7 @@ class  spellencrypt():
                         #print ("Foreign chars", aa)
                         uuu = 1
                 '''
+        fpi.close()
 
         # Quick index
         oldchh = ""
