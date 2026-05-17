@@ -86,7 +86,7 @@ encrypted.
   The encrypted content then can be copied from the middle window into an
   email / document or any transmission.
 
-![Screen Shot](screen.png)
+![Screen Shot](https://github.com/pglen/spellcrypt/blob/master/screen.png)
 
 License:    Open Source, FreeWare
 
