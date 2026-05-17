@@ -6,9 +6,39 @@ Spell Encrypt / Decrypt
 .B spellcrypt [options] [infile] [outfile]
 .br
 .SH DESCRIPTION
-This manual page documents the spellcrypt python utility
+This manual page documents the spellcrypt python utility.
+.br
+.SS Introduction
+Encryption algorithm that creates a readable text as it's cyphertext.
+.br
+This disguises the fact that an encryption is used. (Discounting the fact that
+the cyphertext makes limited sense.)
+.br
+An encryption algorithm that turns this:
+.br
+.RS
+The greatest Enemy of Knowledge is not ignorance, it is the illusion of knowledge.
+.RE
+.br
+Into this:
+.RS
+Nonagon waxy Unimplemented whitecap Clinically dionysos bussey nootka, constitutionals colb kirkwood befitting whitecap clinically.
+.RE
+.br
+.SS How it works:
+.br
+A dictionary is indexed into the original file, and the indexes are \
+encrypted. The new index is untangled from the dictionary, which yields a \
+different text, which is outputted as syphertext. The decryption does \
+the reverse.
+.br
+.SS Strength:
+Strong enough to withstand any, but the most resource intensive attacks. \
+The variable strength is also a function of the password quality. It is \
+feasible to achieve strong encryption with a good quality password.
+.br
 .PP
-spellcrypt Features:
+.SS Spellcrypt Features:
 .br
     o Simple usage
 .br
@@ -59,14 +89,17 @@ Options:
   -m dmask, --mask=dmask
                         debug output mask
 .SH CAVEATS
-Spellcrypt does not encrypt numbers, or words not found in the dictionary.
-(English dictionary for now.)
+Spellcrypt does not encrypt numbers, or words that are not found in the \
+dictionary. (English dictionary for now.) This is a severe hindrance on foreign
+language text.
 .SH PLATFORMS
-All platforms that have python3 should work fine. Current platforms include
+All platforms that have python3 should work fine. Current platforms include \
 Linux, WinX, MSYS2 ...
 .SH FILES
+spellcrypt (main), soup (generate random), spemod (python library)
 .SH COPYING
-spellcrypt can be copied Freely, or under the MIT or General Public License
+This project can be copied Freely, or under the MIT or General Public License
 .SH AUTHOR
 spellcrypt was written by Peter Glen, peterglen99@google.com
-
+.SH SEE ALSO
+See source for more details at github.com -- pglen/spellcrypt

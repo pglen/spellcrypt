@@ -35,6 +35,7 @@ clean:
 	@rm -rf gui/__pycache__
 	@rm -rf spelib/__pycache__/
 	@find . -name "*.pyc" -delete
+	@find tests -name "*.txt.enc" -delete
 
 cleankeys:
 	@rm -rf ./data/keys

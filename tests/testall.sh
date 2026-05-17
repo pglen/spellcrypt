@@ -1,5 +1,6 @@
 #!/bin/bash
 
+echo Starting tests .. \(no diff output means pass\)
 LLL="test_1.txt test_3.txt test_5.txt test_2.txt test_4.txt test_6.txt"
 
 for AA in $LLL; do
@@ -9,3 +10,5 @@ for AA in $LLL; do
     #rm -f $AA.enc
     rm -f $AA.dec
 done
+
+echo Done.
