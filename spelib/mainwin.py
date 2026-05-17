@@ -1,7 +1,13 @@
 #!/usr/bin/env python
 
-import os, sys, getopt, signal, string
-import random, time, subprocess
+# pylint: disable=C0321
+# pylint: disable=C0209
+# pylint: disable=C0103
+# pylint: disable=C0116
+# pylint: disable=C0114
+
+import os, sys, string
+import subprocess
 
 import gi
 gi.require_version("Gtk", "3.0")
@@ -20,13 +26,13 @@ import spepass
 
 def message(strx, title=None):
 
-        dialog = Gtk.MessageDialog(text='\n%s' % (strx),
-                    title=title, transient_for=None,
-                        buttons = Gtk.ButtonsType.OK)
+    dialog = Gtk.MessageDialog(text='\n%s' % (strx),
+                title=title, transient_for=None,
+                    buttons = Gtk.ButtonsType.OK)
 
-        # Close dialog on user response
-        dialog.connect ("response", lambda d, r: d.destroy())
-        dialog.show()
+    # Close dialog on user response
+    dialog.connect ("response", lambda d, r: d.destroy())
+    dialog.show()
 
 # ------------------------------------------------------------------------
 # Resolve path name
@@ -34,7 +40,7 @@ def message(strx, title=None):
 def respath(fname):
 
     try:
-        ppp = string.split(os.environ['PATH'], os.pathsep)
+        ppp = "".split(os.environ['PATH'], os.pathsep)
         for aa in ppp:
             ttt = aa + os.sep + fname
             if os.path.isfile(str(ttt)):
@@ -111,13 +117,13 @@ class MainWin():
         except:
             pass
 
-        vbox = Gtk.VBox();
+        vbox = Gtk.VBox()
         vbox.pack_start( Spacer(1), 0, 0, 0)
 
-        hbox = Gtk.HBox();  hbox2 = Gtk.HBox(); hbox3 = Gtk.VBox();
+        hbox = Gtk.HBox();  hbox2 = Gtk.HBox(); hbox3 = Gtk.VBox()
 
         hbox2.pack_start( Spacer(1), 0, 0, False)
-        lab3 = Gtk.Label.new_with_mnemonic("  Enter Pa_ssWord: ");
+        lab3 = Gtk.Label.new_with_mnemonic("  Enter Pa_ssWord: ")
         hbox2.pack_start( Spacer(1), 0, 0, False)
         hbox2.pack_start(lab3, 0, 0, False)
         self.entry = Gtk.Entry(); self.entry.set_visibility(False)
@@ -198,10 +204,10 @@ class MainWin():
         vbox.pack_start(hbox3, True, True, 0)
 
         hbox8 = Gtk.HBox()
-        lab1a = Gtk.Label(label="");
-        lab2a = Gtk.Label(label="");
-        lab3a = Gtk.Label(label=" Status:  ");
-        self.statlab =  Gtk.Label(label="  Idle ");
+        lab1a = Gtk.Label(label="")
+        lab2a = Gtk.Label(label="")
+        lab3a = Gtk.Label(label=" Status:  ")
+        self.statlab =  Gtk.Label(label="  Idle ")
 
         #self.statlab.set_justify(Gtk.Justification.LEFT)
         #self.statlab.set_xalign(Gtk.Align.START)
@@ -306,9 +312,9 @@ class MainWin():
 
         buff =  self.text1.get_buffer()
         for ccc in range(buff.get_line_count()):
-            iter = buff.get_iter_at_line(ccc)
+            iterx = buff.get_iter_at_line(ccc)
             iter2 = buff.get_iter_at_line(ccc+1)
-            aa = buff.get_text(iter, iter2, False)
+            aa = buff.get_text(iterx, iter2, False)
             #print ("buff", , "eee")
 
             ss = spepass.ascsplit(aa) #.strip())
@@ -358,8 +364,8 @@ class MainWin():
 
     def show_stat(self, strx):
         global time_label
-        self.statlab.set_text(strx);
-        time_label = 0;
+        self.statlab.set_text(strx)
+        time_label = 0
 
     # --------------------------------------------------------------------
     def exec_open(self, win, resp, old):
@@ -401,7 +407,7 @@ class MainWin():
         #print("Loading file:")
 
         global time_label
-        self.show_stat("Opening File");
+        self.show_stat("Opening File")
 
         but =  ("Cancel", Gtk.ButtonsType.CANCEL, "Load Macro", Gtk.ButtonsType.OK)
         old = os.getcwd()

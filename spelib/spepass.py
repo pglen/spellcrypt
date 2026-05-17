@@ -27,8 +27,8 @@ class Primi():
     def __init__(self):
         self.prepass   = string.ascii_letters * 4
 
-    # Generate password from passed string by extending / modulating
     def genpass(self, passwd):
+        ''' Generate password from passed string by extending / modulating '''
         #print ("'" + prepass + "'" )
         passwd = passwd + self.prepass + passwd + self.prepass + passwd
 
