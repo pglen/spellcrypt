@@ -5,8 +5,10 @@ from __future__ import print_function
 
 import os, sys, glob, getopt, time, string, signal, stat, shutil
 import traceback
-import warnings; warnings.simplefilter("ignore");
-import gtk; warnings.simplefilter("default")
+import warnings;
+
+#warnings.simplefilter("ignore");
+#import gtk; warnings.simplefilter("default")
 
 # ------------------------------------------------------------------------
 # Handle command line. Interpret optarray and decorate the class

@@ -33,3 +33,34 @@ def ascsplit2(strx):
         print("acsplit arr", arr)
     return arr
 
+
+class   CharClassi():
+
+    ''' Character / String classification '''
+
+    def __init__(self):
+        pass
+    def _isallupper(self, ww):
+        ret = True
+        for aa in ww:
+            if not aa in string.ascii_uppercase:
+                ret = False
+        return ret
+    def _isanyupper(self, ww):
+        ret = False
+        for aa in ww:
+            if aa in string.ascii_uppercase:
+                ret = True
+                break
+        return ret
+    def _isallspace(self, ww):
+        ret = True
+        for aa in ww:
+            if aa != " ":
+                ret = False
+        return ret
+    def _isupper(self, ww):
+        if ww in string.ascii_uppercase:
+            return True
+        return False
+

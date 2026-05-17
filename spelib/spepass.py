@@ -1,30 +1,38 @@
 #!/usr/bin/env python3
 
-import os, sys, string, zlib, struct, platform
-from datetime import date
+# pylint: disable=C0321
+# pylint: disable=C0209
+# pylint: disable=C0103
+# pylint: disable=C0116
+# pylint: disable=C0114
+
+import string
+
+__doc__ = \
+'''
+Password generation support
+'''
 
 debug = 0
 
 def wrap(strs, delim = "'", delim2 = ''):
     if not delim2:
         return delim + strs + delim
-    else:
-        return delim + strs + delim2
-
-# Primitives. Keep results below 255 by truncation
+    return delim + strs + delim2
 
 class Primi():
 
+    ''' Primitives. Keep results below 255 by truncation '''
+
     def __init__(self):
         self.prepass   = string.ascii_letters * 4
-        pass
 
     # Generate password from passed string by extending / modulating
     def genpass(self, passwd):
         #print ("'" + prepass + "'" )
         passwd = passwd + self.prepass + passwd + self.prepass + passwd
 
-        for aa in range(7):
+        for _ in range(7):
             passwd = self.bwstr(passwd)
             passwd = self.xorstr(passwd, 0x55)
             passwd = self.butter(passwd)
@@ -37,7 +45,7 @@ class Primi():
             passwd = self.xorstr(passwd, 0x55)
             passwd = self.butter(passwd)
 
-        for aa in range(5):
+        for _ in range(5):
 
             passwd = self.fwstr(passwd)
             passwd = self.xorstr(passwd, 0x55)
@@ -55,7 +63,7 @@ class Primi():
             sss += ord(aa)
         return chr(sss & 0xff)
 
-    # All below primitives are reversible
+    # All the below primitives are reversible
 
     def fwstr(self, passwd):
         passwd2 = passwd + " "
@@ -67,17 +75,17 @@ class Primi():
 
     def xorstr(self, passwd, chh):
         sss = ""
-        for bb in range(0, len(passwd)):
-            #print ("c", passwd[bb])
-            sss += chr((ord(passwd[bb]) ^ chh) & 0xff)
+        for bb in passwd:
+            #print ("c", bb)
+            sss += chr((ord(bb) ^ chh) & 0xff)
         return sss
 
     def modstr(self, passwd, mod):
         sss = ""
         cc = 0
-        for bb in range(0, len(passwd)):
-            #print ("c", passwd[bb])
-            sss += chr((ord(passwd[bb]) + ord(mod[cc]) ) & 0xff)
+        for bb in passwd:
+            #print ("c", bb)
+            sss += chr((ord(bb) + ord(mod[cc]) ) & 0xff)
             cc += 1
             if cc >= len(mod): cc = 0
 
@@ -106,7 +114,7 @@ def ascsplit(strx):
     if debug > 1:
         print("ascsplit()", "'"+strx+"'")
 
-    arr = [] ;  last = ""; cumm = ""; cumm2 = ""
+    arr = [] ;  cumm = ""; cumm2 = ""
     mode = 0; old_mode = 0
 
     for aa in strx:
@@ -191,38 +199,5 @@ def testpass(passwd):
     #    print(numarr[bb], testarr[bb])
 
     return testarr
-
-# Character / string classification
-
-class   CharClassi():
-
-    def __init__(self):
-        pass
-
-    def _isallupper(sel, ww):
-        ret = True
-        for aa in ww:
-            if not aa in string.ascii_uppercase:
-                ret = False
-        return ret
-
-    def _isanyupper(sel, ww):
-        ret = False
-        for aa in ww:
-            if aa in string.ascii_uppercase:
-                ret = True
-                break
-        return ret
-
-    def _isallspace(self, ww):
-        ret = True
-        for aa in ww:
-            if aa != " ":
-                ret = False
-        return ret
-
-    def _isupper(self, ww):
-        if ww in string.ascii_uppercase:
-            return True
 
 # EOF

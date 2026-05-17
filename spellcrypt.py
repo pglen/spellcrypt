@@ -1,17 +1,25 @@
 #!/usr/bin/env python3
 
+# pylint: disable=C0321
+# pylint: disable=C0209
+# pylint: disable=C0103
+# pylint: disable=C0116
+
 from __future__ import print_function
 
-import sys
+import os, sys
 if sys.version_info[0] < 3:
     print("This program was meant to run on python 3.x or later.")
     sys.exit(1)
 
-import os, string, zlib, struct, platform
-
-from datetime import date
+#from datetime import date
 from optparse import OptionParser
 
+__doc__ = \
+'''
+  The spellcrypt utility encrypts / decrypts a text file
+  into a new text file.
+'''
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
 sys.path.append(os.path.join(base, "spelib"))
@@ -19,7 +27,9 @@ sys.path.append("spelib")
 
 import spemod, spepass, hexdump
 
-VERSION = "1.0.3"
+VERSION = "1.0.4"
+options = None
+args = None
 
 def cmdline():
 
@@ -146,11 +156,11 @@ def mainfunc():
 
     if options.enc and options.dec:
         print("Conflicting options: both enc / dec specified.")
-        sys.exit(2);
+        sys.exit(2)
 
     if (not options.enc) and (not options.dec):
         print("Missing option: one of -e (--encrypt) or -d (--decrypt) must be specified.")
-        sys.exit(2);
+        sys.exit(2)
 
     #print("pass in:", len(options.passwd), options.passwd)
     newpass = spepass.Primi().genpass(options.passwd)
@@ -189,8 +199,6 @@ def mainfunc():
         arrx = file2arr(fp)
 
     elif options.strx:
-        if int(options.debug) > 5:
-            print("line:", aa)
         ss = spepass.ascsplit(options.strx)
         for cc in ss:
             arrx.append(cc)
@@ -203,7 +211,7 @@ def mainfunc():
     if options.outname:
         if os.access(options.outname, os.R_OK):
             if not options.force:
-                print ("Cannot overwrite file:", options.outname," use -f to force");
+                print ("Cannot overwrite file:", options.outname," use -f to force")
                 sys.exit(1)
             try:
                 os.remove(options.outname)
@@ -212,7 +220,7 @@ def mainfunc():
         try:
             wfp = open(options.outname, "w")
         except:
-            print ("Cannot create outfile:", "'" + options.outname + "'", sys.exc_info()[1]);
+            print ("Cannot create outfile:", "'" + options.outname + "'", sys.exc_info()[1])
             sys.exit(2)
 
     if  options.mask & 0x100:
@@ -229,7 +237,7 @@ def mainfunc():
         #for aa in arrx:
         #    strx += aa
     else:
-        print("Bad command ");
+        print("Bad command ")
 
     if  options.mask & 0x100:
         print("strx:", strx)

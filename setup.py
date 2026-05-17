@@ -32,11 +32,11 @@ for aa in vvv.split("\n"):
 
 includex = ["*", "spelib/",]
 
-#doclist = []; droot = "docs/"
-#doclistx = os.listdir(droot)
-#for aa in doclistx:
-#    doclist.append(droot + aa)
-#print("doclist:", doclist)
+doclist = []; droot = "spelib/docs/"
+doclistx = os.listdir(droot)
+for aa in doclistx:
+    doclist.append("docs" + os.sep + aa)
+print("doclist:", doclist)
 
 with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
@@ -57,8 +57,9 @@ setuptools.setup(
     ],
     packages=setuptools.find_packages(include=includex),
     scripts = ['spellcrypt.py', 'soup.py', 'pyspecry.py'],
-    include_package_data=True,
-    #package_data = {"spelib" : doclist},
+    #include_package_data=True,
+    package_data = {"spelib" : doclist,},
+    #package_dir = { "" :  "docs"},
     data_files = [("share/man/man1/",
                         ["man/man1/spellcrypt.1"]) ],
     python_requires='>=3',

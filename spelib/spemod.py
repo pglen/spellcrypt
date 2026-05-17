@@ -1,7 +1,15 @@
-import os, sys, string
+import os, sys, string, struct
 
-# Globals
+# pylint: disable=C0321
+# pylint: disable=C0209
+# pylint: disable=C0103
+# pylint: disable=C0116
+# pylint: disable=C0114
 
+__doc__ = \
+'''
+spellcrypt main module
+'''
 prepass   = string.ascii_letters * 4
 
 UPPERFLAG   = 0x80000
@@ -14,6 +22,8 @@ sys.path.append(os.path.join(base))
 
 class  spellencrypt():
 
+    ''' Encrypt data passed by the caller '''
+
     def __init__(self, fname = "spell.txt"):
 
         self.verbose = 0
@@ -25,22 +35,21 @@ class  spellencrypt():
         self.hashlen = 2
 
         cnt = 0
-        fpi = open(os.path.join(base, fname), "r")
+        with open(os.path.join(base, fname), "r", encoding="utf-8") as fpi:
+            # Load to memory
+            for aa in fpi:
+                aa = aa.strip().lower()
+                if len(aa) > 1:
+                    self.bigarr.append(aa)
 
-        # Load to memory
-        for aa in fpi:
-            aa = aa.strip().lower()
-            if len(aa) > 1:
-                self.bigarr.append(aa)
-
-                ''' We filter printable at a later stage
-                uuu = 0
-                for bb in aa:
-                    if ord(bb) > 127:
-                        #print ("Foreign chars", aa)
-                        uuu = 1
-                '''
-        fpi.close()
+                    ''' We filter printable at a later stage
+                    uuu = 0
+                    for bb in aa:
+                        if ord(bb) > 127:
+                            #print ("Foreign chars", aa)
+                            uuu = 1
+                    '''
+                #fpi.close()
 
         # Quick index
         oldchh = ""
@@ -52,7 +61,7 @@ class  spellencrypt():
                 self.boundsig.append(cc)
                 self.boundarr.append(cnt)
                 #self.boundstr.append(aa)
-            cnt += 1;
+            cnt += 1
         #self.boundstr.append(aa)
 
         self.arrlen = len(self.bigarr)
@@ -80,7 +89,7 @@ class  spellencrypt():
                 try:
                     cnt4 = self.boundarr[cnt2+1]
                 except:
-                    cnt4 = cnt3;
+                    cnt4 = cnt3
                 #print  ("got:", cc, bb, cnt2, self.bigarr[cnt3], "range:", cnt4-cnt3)
                 # The dictionary was broken had foreign characters, so we overscanned
                 limx = cnt4-cnt3 + 100
@@ -101,25 +110,23 @@ class  spellencrypt():
 
         return ttt[2]
 
-    # ------------------------------------------------------------------------
-    # Return a word from coordinates for this word
-
     def     revwcoord(self, xxx, yyy):
+
+        ''' Return a word from coordinates '''
 
         #print ("get:" , xxx, yyy)
 
-        strx = "";
+        strx = ""
         cnt3 = self.boundarr[xxx]
         strx = self.bigarr[cnt3 + yyy]
         #print("Got: ",  strx)
         return strx
 
-    # ------------------------------------------------------------------------
-    # Return a word from ordinal
-
     def     _revword(self, ooo):
 
-        strx = "";
+        '''  Return a word from ordinal. '''
+
+        strx = ""
         #print("revword", ooo)
         if ooo < len(self.bigarr) and ooo >= 0:
             strx = self.bigarr[ooo]
@@ -127,10 +134,9 @@ class  spellencrypt():
             strx = "Indexerror (%d)" % ooo
         return strx
 
-    # ------------------------------------------------------------
-    # Convert input to array of offsets / strings
+    def     _convert(self, arrx):
 
-    def     _convert(self, arrx, flag = False):
+        ''' Convert input to array of offsets / strings '''
 
         arr2 = []
         for ww in arrx:
@@ -157,12 +163,11 @@ class  spellencrypt():
 
         return arr2
 
-    # ------------------------------------------------------------------------
-    # Encrypt / Decrypt. Flag is true for encrypt.
-
     def  enc_dec(self, flag, arrx, passwd):
 
-        strx = "";  cnt = 0; passidx = 0;
+        ''' Encrypt / Decrypt. Flag is true for encrypt.'''
+
+        strx = "";  cnt = 0; passidx = 0
 
         if len(passwd) == 0:
             raise ValueError("Password Cannot be Empty")
@@ -173,7 +178,8 @@ class  spellencrypt():
 
         for ee in arr2:
             #print ("cnt", cnt, "", end="")
-            if type(ee) == str:
+            #if type(ee) == type(""):
+            if isinstance(ee, str):
                 if self.verbose > 1:
                     print ("[" + ee + "] ", end="")
                 strx +=  ee
@@ -221,42 +227,34 @@ class  spellencrypt():
 
                 # Reverse conversion
                 nstr = self._revword(ee2)
-
                 # Apply flags
                 if ee & CAPFLAG:
                     nstr = nstr.upper()
                 if ee & UPPERFLAG:
                     nstr = nstr.capitalize()
-
                 if self.verbose:
                     print ("$" + nstr + "$")
-
                 # Add it to results
                 strx += nstr
-
             cnt = cnt + 1
-
         return strx
 
-    def calcarrlen(arrx):
+    def calcarrlen(self, arrx):
 
-        xlen = 0;
+        ''' calc array length '''
+        xlen = 0
         for ww in arrx:
             xlen += len(ww)
-        print("xlen", xlen);
+        #print("xlen", xlen)
 
-    # ------------------------------------------------------------------------
-
-    def getlen(self):
-
-        if self.verbose > 0:
-            print("Parsed:", len(self.boundarr), "entries", len(self.bigarr), "total")
-
-        return self.arrlen
+    #def getlen(self):
+    #    if self.verbose > 0:
+    #        print("Parsed:", len(self.boundarr), "entries", len(self.bigarr), "total")
+    #    return self.arrlen
 
 def pack24(mm):
     xxx = ""
-    for aa in range(3):
+    for _ in range(3):
         xxx += struct.pack("B", mm & 0xff )
         mm = mm >> 8
     return xxx
@@ -268,15 +266,17 @@ def upack24(xxx):
         uuu += uu[0] <<  aa * 8
     return uuu
 
-# Primitives. Keep results below 128 by truncation
+# Primitives.
 
 def xsum(passwd):
+    ''' Keep results below 128 by truncation '''
     sss = 0
     for aa in passwd:
         sss += ord(aa)
     return chr(sss & 0xff)
 
 def fwstr(passwd):
+    ''' Forward encrypt for pass '''
     passwd2 = passwd + " "
     sss = ""
     for bb in range(0, len(passwd)):
@@ -285,13 +285,15 @@ def fwstr(passwd):
     return sss
 
 def xorstr(passwd):
+    ''' xor constant into strings '''
     sss = ""
-    for bb in range(0, len(passwd)):
+    for bb in passwd:
         #print ("c", passwd[bb])
-        sss += chr((ord(passwd[bb]) ^ 0x55) & 0xff)
+        sss += chr((ord(bb) ^ 0x55) & 0xff)
     return sss
 
 def butter(passwd):
+    ''' merge the two halfs, similar to the butterfly operatopn '''
     sss = ""; rrr = ""
     for bb in range(0, len(passwd)/2):
         #print ("c", passwd[bb])
@@ -300,6 +302,7 @@ def butter(passwd):
     return sss + rrr
 
 def bwstr(passwd):
+    ''' Backward encrypt for pass '''
     sss = ""
     for bb in range(len(passwd)-1, -1, -1):
         #print ("c", passwd[bb])
@@ -307,7 +310,7 @@ def bwstr(passwd):
     return sss
 
 # ------------------------------------------------------------------------
-# corrected to handle unicode accidental
+# Corrected to handle unicode accidental
 
 ctrlchar = "\n\r| "
 
@@ -327,14 +330,12 @@ def isprint(chh):
 
     return False
 
-# ------------------------------------------------------------------------
-# Return a hex dump formatted string
 
-def hexdump(strx, llen = 16):
+def hexdump(strx):
 
+    ''' Return a hex dump formatted string '''
     lenx = len(strx)
     outx = ""
-
     try:
         for aa in range(lenx/16):
             outx += " "
@@ -342,7 +343,6 @@ def hexdump(strx, llen = 16):
                 try:
                     outx += "%02x " % ord(strx[aa * 16 + bb])
                 except:
-                    pass
                     out +=  "?? "
                     #outx += "%02x " % strx[aa * 16 + bb]
 
@@ -364,7 +364,6 @@ def hexdump(strx, llen = 16):
                     outx += "%02x " % ord(strx[divi * 16 + dd])
                 except:
                     outx +=  "?? "
-                    pass
                     #outx += "%02x " % int(strx[divi * 16 + dd])
 
             outx += " " * ((16 - remn) * 3)
@@ -381,27 +380,22 @@ def hexdump(strx, llen = 16):
         print("Error on hexdump", sys.exc_info())
         #print_exc("hexdump")
 
-    return(outx)
+    return outx
 
 
 def     genpass(passwd):
+
+    ''' Generate password for enc/dec/ '''
 
     #print ("'" + prepass + "'" )
 
     passwd = passwd + prepass + passwd + prepass + passwd
 
-    for aa in range(5):
-
+    for _ in range(5):
         passwd = bwstr(passwd)
         passwd = xorstr(passwd)
         passwd = fwstr(passwd)
         passwd = butter(passwd)
-
     return passwd
 
 # EOF
-
-
-
-
-

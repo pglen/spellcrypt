@@ -1,0 +1,1145 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.10.0" />
+<title>spemod API documentation</title>
+<meta name="description" content="" />
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/sanitize.min.css" integrity="sha256-PK9q560IAAa6WVRRh76LtCaI8pjTJ2z11v0miyNNjrs=" crossorigin>
+<link rel="preload stylesheet" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/11.0.1/typography.min.css" integrity="sha256-7l/o7C8jubJiy74VsKTidCy1yBkRtiUGbVkYBylBqUg=" crossorigin>
+<link rel="stylesheet preload" as="style" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/styles/github.min.css" crossorigin>
+<style>:root{--highlight-color:#fe9}.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}h1:target,h2:target,h3:target,h4:target,h5:target,h6:target{background:var(--highlight-color);padding:.2em 0}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}dt:target .name{background:var(--highlight-color)}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}td{padding:0 .5em}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+<script defer src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/10.1.1/highlight.min.js" integrity="sha256-Uv3H6lx7dJmRfRvH8TH6kJD1TSK1aFcwgx+mdg3epi8=" crossorigin></script>
+<script>window.addEventListener('DOMContentLoaded', () => hljs.initHighlighting())</script>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>spemod</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import os, sys, string
+
+# Globals
+
+prepass   = string.ascii_letters * 4
+
+UPPERFLAG   = 0x80000
+CAPFLAG     = 0x100000
+
+printable = string.ascii_letters + &#34;&#39;&#34;
+
+base = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(base))
+
+class  spellencrypt():
+
+    &#39;&#39;&#39; Encrypt data passed by the caller &#39;&#39;&#39;
+
+    def __init__(self, fname = &#34;spell.txt&#34;):
+
+        self.verbose = 0
+        self.bigarr = []
+        self.boundsig = []
+        self.boundstr = []
+        self.boundarr = []
+        self.arrlen = 0
+        self.hashlen = 2
+
+        cnt = 0
+        fpi = open(os.path.join(base, fname), &#34;r&#34;)
+
+        # Load to memory
+        for aa in fpi:
+            aa = aa.strip().lower()
+            if len(aa) &gt; 1:
+                self.bigarr.append(aa)
+
+                &#39;&#39;&#39; We filter printable at a later stage
+                uuu = 0
+                for bb in aa:
+                    if ord(bb) &gt; 127:
+                        #print (&#34;Foreign chars&#34;, aa)
+                        uuu = 1
+                &#39;&#39;&#39;
+        fpi.close()
+
+        # Quick index
+        oldchh = &#34;&#34;
+        for aa in self.bigarr:
+            cc =  aa[:self.hashlen]
+            if  oldchh != cc:
+                oldchh = cc
+                #print (&#34;Bound:&#34;, &#34;&#39;&#34;+ aa +&#34;&#39;&#34;)
+                self.boundsig.append(cc)
+                self.boundarr.append(cnt)
+                #self.boundstr.append(aa)
+            cnt += 1;
+        #self.boundstr.append(aa)
+
+        self.arrlen = len(self.bigarr)
+
+        #for iii in range(len(boundarr)-1):
+        #    print (boundarr[iii + 1] - boundarr[iii], boundstr[iii], end=&#34;    &#34; )
+        #    print
+
+    def     getword(self, www):
+
+        ttt = [0, 0, 0]
+        cc =  www[:self.hashlen]
+        cnt2 = 0
+
+        &#39;&#39;&#39;  # brute
+        for dd in range(self.arrlen):
+            if self.bigarr[dd] == www:
+                ttt = cnt2, dd, dd
+                break
+        &#39;&#39;&#39;
+
+        for bb in self.boundsig:
+            if bb == cc:
+                cnt3 = self.boundarr[cnt2]
+                try:
+                    cnt4 = self.boundarr[cnt2+1]
+                except:
+                    cnt4 = cnt3;
+                #print  (&#34;got:&#34;, cc, bb, cnt2, self.bigarr[cnt3], &#34;range:&#34;, cnt4-cnt3)
+                # The dictionary was broken had foreign characters, so we overscanned
+                limx = cnt4-cnt3 + 100
+                if cnt3 + limx &gt; self.arrlen:
+                    limx = self.arrlen - cnt3
+
+                for dd in range(limx):
+                    #print (self.bigarr[cnt3 + dd], end=&#34; &#34;)
+                    if self.bigarr[(cnt3)+ dd] == www:
+                        #print(&#34;Found: &#34;,  self.bigarr[cnt3 + dd], cnt2, dd)
+                        ttt = cnt2, dd, cnt3 + dd
+                        break
+                break
+            cnt2 += 1
+
+        #if ttt[2] == 0:
+        #    print (www, &#34;not found&#34;)
+
+        return ttt[2]
+
+    def     revwcoord(self, xxx, yyy):
+
+        &#39;&#39;&#39; Return a word from coordinates &#39;&#39;&#39;
+
+        #print (&#34;get:&#34; , xxx, yyy)
+
+        strx = &#34;&#34;;
+        cnt3 = self.boundarr[xxx]
+        strx = self.bigarr[cnt3 + yyy]
+        #print(&#34;Got: &#34;,  strx)
+        return strx
+
+    def     _revword(self, ooo):
+
+        &#39;&#39;&#39;  Return a word from ordinal. &#39;&#39;&#39;
+
+        strx = &#34;&#34;;
+        #print(&#34;revword&#34;, ooo)
+        if ooo &lt; len(self.bigarr) and ooo &gt;= 0:
+            strx = self.bigarr[ooo]
+        else:
+            strx = &#34;Indexerror (%d)&#34; % ooo
+        return strx
+
+    def     _convert(self, arrx, flag = False):
+
+        &#39;&#39;&#39; Convert input to array of offsets / strings &#39;&#39;&#39;
+
+        arr2 = []
+        for ww in arrx:
+            if len (ww) == 0:
+                continue
+            if len (ww) &gt; 1:
+                nn = self.getword (str.lower(ww))
+                if nn != 0:
+                    if ww[1] in string.ascii_uppercase:
+                        nn |= CAPFLAG
+                    elif ww[0] in string.ascii_uppercase:
+                        #print(&#34;bigg&#34;, ww, hex(nn))
+                        nn |= UPPERFLAG
+
+                    arr2.append(nn)
+                    #print(&#34;&#39;&#34; + ww + &#34;&#39;&#34;, hex(nn), end = &#34;; &#34;)
+                else:
+                    arr2.append(ww)
+                    #print(&#34;&#39;&#34; + ww + &#34;&#39;&#34;, hex(nn), end = &#34;; &#34;)
+            else:
+                if len (ww):
+                    arr2.append( ww )
+                    #print(&#34;&#39;&#34; + ww + &#34;&#39; &#34;, hex(nn), end = &#34;&#34;)
+
+        return arr2
+
+    def  enc_dec(self, flag, arrx, passwd):
+
+        &#39;&#39;&#39; Encrypt / Decrypt. Flag is true for encrypt.&#39;&#39;&#39;
+
+        strx = &#34;&#34;;  cnt = 0; passidx = 0;
+
+        if len(passwd) == 0:
+            raise ValueError(&#34;Password Cannot be Empty&#34;)
+
+        #print(arrx)
+        arr2 = self._convert(arrx)
+        #print (arr2)
+
+        for ee in arr2:
+            #print (&#34;cnt&#34;, cnt, &#34;&#34;, end=&#34;&#34;)
+            if type(ee) == str:
+                if self.verbose &gt; 1:
+                    print (&#34;[&#34; + ee + &#34;] &#34;, end=&#34;&#34;)
+                strx +=  ee
+            else:
+                if flag:
+                    if self.verbose &gt; 2:
+                        print (&#34;{&#34; + arrx[cnt] + &#34;} &#34;, end=&#34;&#34;)
+                else:
+                    if self.verbose &gt; 2:
+                        print (&#34;{&#34;, arr2[cnt], &#34;} &#34;, end=&#34;&#34;)
+
+                chh = ord(passwd[passidx])
+
+                #if self.verbose :
+                #    print (&#34;chh &#34;, chh, end=&#34; &#34;)
+
+                passidx += 1
+                if passidx &gt;= len(passwd):
+                    passidx = 0
+
+                ee2 = ee &amp; 0x7ffff
+
+                if self.verbose &gt; 1:
+                    print(&#34;ee =&#34;, ee, &#34; &#34;, end=&#34;&#34;)
+
+                #                               arrlen
+                # ----------|-------------------|---------------------------
+                #                         ^org
+                #                         ------|------
+
+                #print(&#34;adj&#34;, ord(chh) * 500, &#34;&#34;, end=&#34;&#34;)
+
+                offs =  chh * 103
+                if flag:
+                    ee2 += offs
+                    if ee2 &gt; self.arrlen:
+                        ee2 -= self.arrlen
+                else:
+                    ee2 -= offs
+                    if ee2 &lt; 0:
+                        ee2 += self.arrlen
+
+                if self.verbose &gt; 1:
+                    print(&#34;after_ee =&#34;, ee2, &#34;&#34;, end=&#34;&#34;)
+
+                # Reverse conversion
+                nstr = self._revword(ee2)
+                # Apply flags
+                if ee &amp; CAPFLAG:
+                    nstr = nstr.upper()
+                if ee &amp; UPPERFLAG:
+                    nstr = nstr.capitalize()
+                if self.verbose:
+                    print (&#34;$&#34; + nstr + &#34;$&#34;)
+                # Add it to results
+                strx += nstr
+            cnt = cnt + 1
+        return strx
+
+    def calcarrlen(arrx):
+
+        &#39;&#39;&#39; calc array length &#39;&#39;&#39;
+        xlen = 0;
+        for ww in arrx:
+            xlen += len(ww)
+        #print(&#34;xlen&#34;, xlen);
+
+    #def getlen(self):
+    #    if self.verbose &gt; 0:
+    #        print(&#34;Parsed:&#34;, len(self.boundarr), &#34;entries&#34;, len(self.bigarr), &#34;total&#34;)
+    #    return self.arrlen
+
+def pack24(mm):
+    xxx = &#34;&#34;
+    for aa in range(3):
+        xxx += struct.pack(&#34;B&#34;, mm &amp; 0xff )
+        mm = mm &gt;&gt; 8
+    return xxx
+
+def upack24(xxx):
+    uuu = 0
+    for aa in range(3):
+        uu = struct.unpack(&#34;B&#34;, xxx[aa:aa+1] )
+        uuu += uu[0] &lt;&lt;  aa * 8
+    return uuu
+
+# Primitives.
+
+def xsum(passwd):
+    &#39;&#39;&#39; Keep results below 128 by truncation &#39;&#39;&#39;
+    sss = 0
+    for aa in passwd:
+        sss += ord(aa)
+    return chr(sss &amp; 0xff)
+
+def fwstr(passwd):
+    &#39;&#39;&#39; Forward encrypt for pass &#39;&#39;&#39;
+    passwd2 = passwd + &#34; &#34;
+    sss = &#34;&#34;
+    for bb in range(0, len(passwd)):
+        #print (&#34;c&#34;, passwd[bb])
+        sss += chr( (ord(passwd2[bb]) + ord(passwd2[bb+1])) &amp; 0xff)
+    return sss
+
+def xorstr(passwd):
+    &#39;&#39;&#39; xor constant into strings &#39;&#39;&#39;
+    sss = &#34;&#34;
+    for bb in range(0, len(passwd)):
+        #print (&#34;c&#34;, passwd[bb])
+        sss += chr((ord(passwd[bb]) ^ 0x55) &amp; 0xff)
+    return sss
+
+def butter(passwd):
+    &#39;&#39;&#39; merge the two halfs, similar to the butterfly operatopn &#39;&#39;&#39;
+    sss = &#34;&#34;; rrr = &#34;&#34;
+    for bb in range(0, len(passwd)/2):
+        #print (&#34;c&#34;, passwd[bb])
+        sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) &amp; 0xff)
+        rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) &amp; 0xff)
+    return sss + rrr
+
+def bwstr(passwd):
+    &#39;&#39;&#39; Backward encrypt for pass &#39;&#39;&#39;
+    sss = &#34;&#34;
+    for bb in range(len(passwd)-1, -1, -1):
+        #print (&#34;c&#34;, passwd[bb])
+        sss += chr( (ord(passwd[bb]) + ord(passwd[bb-1])) &amp; 0xff)
+    return sss
+
+# ------------------------------------------------------------------------
+# Corrected to handle unicode accidental
+
+ctrlchar = &#34;\n\r| &#34;
+
+def isprint(chh):
+
+    try:
+        if ord(chh) &gt; 127:
+            return False
+        if ord(chh) &lt; 32:
+            return False
+        if chh in ctrlchar:
+            return False
+        if chh in string.ascii_letters:
+            return True
+    except:
+        pass
+
+    return False
+
+
+def hexdump(strx, llen = 16):
+
+    &#39;&#39;&#39; Return a hex dump formatted string &#39;&#39;&#39;
+    lenx = len(strx)
+    outx = &#34;&#34;
+    try:
+        for aa in range(lenx/16):
+            outx += &#34; &#34;
+            for bb in range(16):
+                try:
+                    outx += &#34;%02x &#34; % ord(strx[aa * 16 + bb])
+                except:
+                    pass
+                    out +=  &#34;?? &#34;
+                    #outx += &#34;%02x &#34; % strx[aa * 16 + bb]
+
+            outx += &#34; | &#34;
+            for cc in range(16):
+                chh = strx[aa * 16 + cc]
+                if isprint(chh):
+                    outx += &#34;%c&#34; % chh
+                else:
+                    outx += &#34;.&#34;
+            outx += &#34; | \n&#34;
+
+        # Print remainder on last line
+        remn = lenx % 16 ;   divi = lenx / 16
+        if remn:
+            outx += &#34; &#34;
+            for dd in range(remn):
+                try:
+                    outx += &#34;%02x &#34; % ord(strx[divi * 16 + dd])
+                except:
+                    outx +=  &#34;?? &#34;
+                    pass
+                    #outx += &#34;%02x &#34; % int(strx[divi * 16 + dd])
+
+            outx += &#34; &#34; * ((16 - remn) * 3)
+            outx += &#34; | &#34;
+            for cc in range(remn):
+                chh = strx[divi * 16 + cc]
+                if isprint(chh):
+                    outx += &#34;%c&#34; % chh
+                else:
+                    outx += &#34;.&#34;
+            outx += &#34; &#34; * ((16 - remn))
+            outx += &#34; | \n&#34;
+    except:
+        print(&#34;Error on hexdump&#34;, sys.exc_info())
+        #print_exc(&#34;hexdump&#34;)
+
+    return(outx)
+
+
+def     genpass(passwd):
+
+    &#39;&#39;&#39; Generate password for enc/dec/ &#39;&#39;&#39;
+
+    #print (&#34;&#39;&#34; + prepass + &#34;&#39;&#34; )
+
+    passwd = passwd + prepass + passwd + prepass + passwd
+
+    for aa in range(5):
+
+        passwd = bwstr(passwd)
+        passwd = xorstr(passwd)
+        passwd = fwstr(passwd)
+        passwd = butter(passwd)
+
+    return passwd
+
+# EOF</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-functions">Functions</h2>
+<dl>
+<dt id="spemod.butter"><code class="name flex">
+<span>def <span class="ident">butter</span></span>(<span>passwd)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>merge the two halfs, similar to the butterfly operatopn</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def butter(passwd):
+    &#39;&#39;&#39; merge the two halfs, similar to the butterfly operatopn &#39;&#39;&#39;
+    sss = &#34;&#34;; rrr = &#34;&#34;
+    for bb in range(0, len(passwd)/2):
+        #print (&#34;c&#34;, passwd[bb])
+        sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) &amp; 0xff)
+        rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) &amp; 0xff)
+    return sss + rrr</code></pre>
+</details>
+</dd>
+<dt id="spemod.bwstr"><code class="name flex">
+<span>def <span class="ident">bwstr</span></span>(<span>passwd)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Backward encrypt for pass</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def bwstr(passwd):
+    &#39;&#39;&#39; Backward encrypt for pass &#39;&#39;&#39;
+    sss = &#34;&#34;
+    for bb in range(len(passwd)-1, -1, -1):
+        #print (&#34;c&#34;, passwd[bb])
+        sss += chr( (ord(passwd[bb]) + ord(passwd[bb-1])) &amp; 0xff)
+    return sss</code></pre>
+</details>
+</dd>
+<dt id="spemod.fwstr"><code class="name flex">
+<span>def <span class="ident">fwstr</span></span>(<span>passwd)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Forward encrypt for pass</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def fwstr(passwd):
+    &#39;&#39;&#39; Forward encrypt for pass &#39;&#39;&#39;
+    passwd2 = passwd + &#34; &#34;
+    sss = &#34;&#34;
+    for bb in range(0, len(passwd)):
+        #print (&#34;c&#34;, passwd[bb])
+        sss += chr( (ord(passwd2[bb]) + ord(passwd2[bb+1])) &amp; 0xff)
+    return sss</code></pre>
+</details>
+</dd>
+<dt id="spemod.genpass"><code class="name flex">
+<span>def <span class="ident">genpass</span></span>(<span>passwd)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Generate password for enc/dec/</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def     genpass(passwd):
+
+    &#39;&#39;&#39; Generate password for enc/dec/ &#39;&#39;&#39;
+
+    #print (&#34;&#39;&#34; + prepass + &#34;&#39;&#34; )
+
+    passwd = passwd + prepass + passwd + prepass + passwd
+
+    for aa in range(5):
+
+        passwd = bwstr(passwd)
+        passwd = xorstr(passwd)
+        passwd = fwstr(passwd)
+        passwd = butter(passwd)
+
+    return passwd</code></pre>
+</details>
+</dd>
+<dt id="spemod.hexdump"><code class="name flex">
+<span>def <span class="ident">hexdump</span></span>(<span>strx, llen=16)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a hex dump formatted string</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def hexdump(strx, llen = 16):
+
+    &#39;&#39;&#39; Return a hex dump formatted string &#39;&#39;&#39;
+    lenx = len(strx)
+    outx = &#34;&#34;
+    try:
+        for aa in range(lenx/16):
+            outx += &#34; &#34;
+            for bb in range(16):
+                try:
+                    outx += &#34;%02x &#34; % ord(strx[aa * 16 + bb])
+                except:
+                    pass
+                    out +=  &#34;?? &#34;
+                    #outx += &#34;%02x &#34; % strx[aa * 16 + bb]
+
+            outx += &#34; | &#34;
+            for cc in range(16):
+                chh = strx[aa * 16 + cc]
+                if isprint(chh):
+                    outx += &#34;%c&#34; % chh
+                else:
+                    outx += &#34;.&#34;
+            outx += &#34; | \n&#34;
+
+        # Print remainder on last line
+        remn = lenx % 16 ;   divi = lenx / 16
+        if remn:
+            outx += &#34; &#34;
+            for dd in range(remn):
+                try:
+                    outx += &#34;%02x &#34; % ord(strx[divi * 16 + dd])
+                except:
+                    outx +=  &#34;?? &#34;
+                    pass
+                    #outx += &#34;%02x &#34; % int(strx[divi * 16 + dd])
+
+            outx += &#34; &#34; * ((16 - remn) * 3)
+            outx += &#34; | &#34;
+            for cc in range(remn):
+                chh = strx[divi * 16 + cc]
+                if isprint(chh):
+                    outx += &#34;%c&#34; % chh
+                else:
+                    outx += &#34;.&#34;
+            outx += &#34; &#34; * ((16 - remn))
+            outx += &#34; | \n&#34;
+    except:
+        print(&#34;Error on hexdump&#34;, sys.exc_info())
+        #print_exc(&#34;hexdump&#34;)
+
+    return(outx)</code></pre>
+</details>
+</dd>
+<dt id="spemod.isprint"><code class="name flex">
+<span>def <span class="ident">isprint</span></span>(<span>chh)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def isprint(chh):
+
+    try:
+        if ord(chh) &gt; 127:
+            return False
+        if ord(chh) &lt; 32:
+            return False
+        if chh in ctrlchar:
+            return False
+        if chh in string.ascii_letters:
+            return True
+    except:
+        pass
+
+    return False</code></pre>
+</details>
+</dd>
+<dt id="spemod.pack24"><code class="name flex">
+<span>def <span class="ident">pack24</span></span>(<span>mm)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def pack24(mm):
+    xxx = &#34;&#34;
+    for aa in range(3):
+        xxx += struct.pack(&#34;B&#34;, mm &amp; 0xff )
+        mm = mm &gt;&gt; 8
+    return xxx</code></pre>
+</details>
+</dd>
+<dt id="spemod.upack24"><code class="name flex">
+<span>def <span class="ident">upack24</span></span>(<span>xxx)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def upack24(xxx):
+    uuu = 0
+    for aa in range(3):
+        uu = struct.unpack(&#34;B&#34;, xxx[aa:aa+1] )
+        uuu += uu[0] &lt;&lt;  aa * 8
+    return uuu</code></pre>
+</details>
+</dd>
+<dt id="spemod.xorstr"><code class="name flex">
+<span>def <span class="ident">xorstr</span></span>(<span>passwd)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>xor constant into strings</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def xorstr(passwd):
+    &#39;&#39;&#39; xor constant into strings &#39;&#39;&#39;
+    sss = &#34;&#34;
+    for bb in range(0, len(passwd)):
+        #print (&#34;c&#34;, passwd[bb])
+        sss += chr((ord(passwd[bb]) ^ 0x55) &amp; 0xff)
+    return sss</code></pre>
+</details>
+</dd>
+<dt id="spemod.xsum"><code class="name flex">
+<span>def <span class="ident">xsum</span></span>(<span>passwd)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Keep results below 128 by truncation</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def xsum(passwd):
+    &#39;&#39;&#39; Keep results below 128 by truncation &#39;&#39;&#39;
+    sss = 0
+    for aa in passwd:
+        sss += ord(aa)
+    return chr(sss &amp; 0xff)</code></pre>
+</details>
+</dd>
+</dl>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="spemod.spellencrypt"><code class="flex name class">
+<span>class <span class="ident">spellencrypt</span></span>
+<span>(</span><span>fname='spell.txt')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Encrypt data passed by the caller</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class  spellencrypt():
+
+    &#39;&#39;&#39; Encrypt data passed by the caller &#39;&#39;&#39;
+
+    def __init__(self, fname = &#34;spell.txt&#34;):
+
+        self.verbose = 0
+        self.bigarr = []
+        self.boundsig = []
+        self.boundstr = []
+        self.boundarr = []
+        self.arrlen = 0
+        self.hashlen = 2
+
+        cnt = 0
+        fpi = open(os.path.join(base, fname), &#34;r&#34;)
+
+        # Load to memory
+        for aa in fpi:
+            aa = aa.strip().lower()
+            if len(aa) &gt; 1:
+                self.bigarr.append(aa)
+
+                &#39;&#39;&#39; We filter printable at a later stage
+                uuu = 0
+                for bb in aa:
+                    if ord(bb) &gt; 127:
+                        #print (&#34;Foreign chars&#34;, aa)
+                        uuu = 1
+                &#39;&#39;&#39;
+        fpi.close()
+
+        # Quick index
+        oldchh = &#34;&#34;
+        for aa in self.bigarr:
+            cc =  aa[:self.hashlen]
+            if  oldchh != cc:
+                oldchh = cc
+                #print (&#34;Bound:&#34;, &#34;&#39;&#34;+ aa +&#34;&#39;&#34;)
+                self.boundsig.append(cc)
+                self.boundarr.append(cnt)
+                #self.boundstr.append(aa)
+            cnt += 1;
+        #self.boundstr.append(aa)
+
+        self.arrlen = len(self.bigarr)
+
+        #for iii in range(len(boundarr)-1):
+        #    print (boundarr[iii + 1] - boundarr[iii], boundstr[iii], end=&#34;    &#34; )
+        #    print
+
+    def     getword(self, www):
+
+        ttt = [0, 0, 0]
+        cc =  www[:self.hashlen]
+        cnt2 = 0
+
+        &#39;&#39;&#39;  # brute
+        for dd in range(self.arrlen):
+            if self.bigarr[dd] == www:
+                ttt = cnt2, dd, dd
+                break
+        &#39;&#39;&#39;
+
+        for bb in self.boundsig:
+            if bb == cc:
+                cnt3 = self.boundarr[cnt2]
+                try:
+                    cnt4 = self.boundarr[cnt2+1]
+                except:
+                    cnt4 = cnt3;
+                #print  (&#34;got:&#34;, cc, bb, cnt2, self.bigarr[cnt3], &#34;range:&#34;, cnt4-cnt3)
+                # The dictionary was broken had foreign characters, so we overscanned
+                limx = cnt4-cnt3 + 100
+                if cnt3 + limx &gt; self.arrlen:
+                    limx = self.arrlen - cnt3
+
+                for dd in range(limx):
+                    #print (self.bigarr[cnt3 + dd], end=&#34; &#34;)
+                    if self.bigarr[(cnt3)+ dd] == www:
+                        #print(&#34;Found: &#34;,  self.bigarr[cnt3 + dd], cnt2, dd)
+                        ttt = cnt2, dd, cnt3 + dd
+                        break
+                break
+            cnt2 += 1
+
+        #if ttt[2] == 0:
+        #    print (www, &#34;not found&#34;)
+
+        return ttt[2]
+
+    def     revwcoord(self, xxx, yyy):
+
+        &#39;&#39;&#39; Return a word from coordinates &#39;&#39;&#39;
+
+        #print (&#34;get:&#34; , xxx, yyy)
+
+        strx = &#34;&#34;;
+        cnt3 = self.boundarr[xxx]
+        strx = self.bigarr[cnt3 + yyy]
+        #print(&#34;Got: &#34;,  strx)
+        return strx
+
+    def     _revword(self, ooo):
+
+        &#39;&#39;&#39;  Return a word from ordinal. &#39;&#39;&#39;
+
+        strx = &#34;&#34;;
+        #print(&#34;revword&#34;, ooo)
+        if ooo &lt; len(self.bigarr) and ooo &gt;= 0:
+            strx = self.bigarr[ooo]
+        else:
+            strx = &#34;Indexerror (%d)&#34; % ooo
+        return strx
+
+    def     _convert(self, arrx, flag = False):
+
+        &#39;&#39;&#39; Convert input to array of offsets / strings &#39;&#39;&#39;
+
+        arr2 = []
+        for ww in arrx:
+            if len (ww) == 0:
+                continue
+            if len (ww) &gt; 1:
+                nn = self.getword (str.lower(ww))
+                if nn != 0:
+                    if ww[1] in string.ascii_uppercase:
+                        nn |= CAPFLAG
+                    elif ww[0] in string.ascii_uppercase:
+                        #print(&#34;bigg&#34;, ww, hex(nn))
+                        nn |= UPPERFLAG
+
+                    arr2.append(nn)
+                    #print(&#34;&#39;&#34; + ww + &#34;&#39;&#34;, hex(nn), end = &#34;; &#34;)
+                else:
+                    arr2.append(ww)
+                    #print(&#34;&#39;&#34; + ww + &#34;&#39;&#34;, hex(nn), end = &#34;; &#34;)
+            else:
+                if len (ww):
+                    arr2.append( ww )
+                    #print(&#34;&#39;&#34; + ww + &#34;&#39; &#34;, hex(nn), end = &#34;&#34;)
+
+        return arr2
+
+    def  enc_dec(self, flag, arrx, passwd):
+
+        &#39;&#39;&#39; Encrypt / Decrypt. Flag is true for encrypt.&#39;&#39;&#39;
+
+        strx = &#34;&#34;;  cnt = 0; passidx = 0;
+
+        if len(passwd) == 0:
+            raise ValueError(&#34;Password Cannot be Empty&#34;)
+
+        #print(arrx)
+        arr2 = self._convert(arrx)
+        #print (arr2)
+
+        for ee in arr2:
+            #print (&#34;cnt&#34;, cnt, &#34;&#34;, end=&#34;&#34;)
+            if type(ee) == str:
+                if self.verbose &gt; 1:
+                    print (&#34;[&#34; + ee + &#34;] &#34;, end=&#34;&#34;)
+                strx +=  ee
+            else:
+                if flag:
+                    if self.verbose &gt; 2:
+                        print (&#34;{&#34; + arrx[cnt] + &#34;} &#34;, end=&#34;&#34;)
+                else:
+                    if self.verbose &gt; 2:
+                        print (&#34;{&#34;, arr2[cnt], &#34;} &#34;, end=&#34;&#34;)
+
+                chh = ord(passwd[passidx])
+
+                #if self.verbose :
+                #    print (&#34;chh &#34;, chh, end=&#34; &#34;)
+
+                passidx += 1
+                if passidx &gt;= len(passwd):
+                    passidx = 0
+
+                ee2 = ee &amp; 0x7ffff
+
+                if self.verbose &gt; 1:
+                    print(&#34;ee =&#34;, ee, &#34; &#34;, end=&#34;&#34;)
+
+                #                               arrlen
+                # ----------|-------------------|---------------------------
+                #                         ^org
+                #                         ------|------
+
+                #print(&#34;adj&#34;, ord(chh) * 500, &#34;&#34;, end=&#34;&#34;)
+
+                offs =  chh * 103
+                if flag:
+                    ee2 += offs
+                    if ee2 &gt; self.arrlen:
+                        ee2 -= self.arrlen
+                else:
+                    ee2 -= offs
+                    if ee2 &lt; 0:
+                        ee2 += self.arrlen
+
+                if self.verbose &gt; 1:
+                    print(&#34;after_ee =&#34;, ee2, &#34;&#34;, end=&#34;&#34;)
+
+                # Reverse conversion
+                nstr = self._revword(ee2)
+                # Apply flags
+                if ee &amp; CAPFLAG:
+                    nstr = nstr.upper()
+                if ee &amp; UPPERFLAG:
+                    nstr = nstr.capitalize()
+                if self.verbose:
+                    print (&#34;$&#34; + nstr + &#34;$&#34;)
+                # Add it to results
+                strx += nstr
+            cnt = cnt + 1
+        return strx
+
+    def calcarrlen(arrx):
+
+        &#39;&#39;&#39; calc array length &#39;&#39;&#39;
+        xlen = 0;
+        for ww in arrx:
+            xlen += len(ww)
+        #print(&#34;xlen&#34;, xlen);
+
+    #def getlen(self):
+    #    if self.verbose &gt; 0:
+    #        print(&#34;Parsed:&#34;, len(self.boundarr), &#34;entries&#34;, len(self.bigarr), &#34;total&#34;)
+    #    return self.arrlen</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="spemod.spellencrypt.calcarrlen"><code class="name flex">
+<span>def <span class="ident">calcarrlen</span></span>(<span>arrx)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>calc array length</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def calcarrlen(arrx):
+
+    &#39;&#39;&#39; calc array length &#39;&#39;&#39;
+    xlen = 0;
+    for ww in arrx:
+        xlen += len(ww)
+    #print(&#34;xlen&#34;, xlen);</code></pre>
+</details>
+</dd>
+<dt id="spemod.spellencrypt.enc_dec"><code class="name flex">
+<span>def <span class="ident">enc_dec</span></span>(<span>self, flag, arrx, passwd)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Encrypt / Decrypt. Flag is true for encrypt.</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def  enc_dec(self, flag, arrx, passwd):
+
+    &#39;&#39;&#39; Encrypt / Decrypt. Flag is true for encrypt.&#39;&#39;&#39;
+
+    strx = &#34;&#34;;  cnt = 0; passidx = 0;
+
+    if len(passwd) == 0:
+        raise ValueError(&#34;Password Cannot be Empty&#34;)
+
+    #print(arrx)
+    arr2 = self._convert(arrx)
+    #print (arr2)
+
+    for ee in arr2:
+        #print (&#34;cnt&#34;, cnt, &#34;&#34;, end=&#34;&#34;)
+        if type(ee) == str:
+            if self.verbose &gt; 1:
+                print (&#34;[&#34; + ee + &#34;] &#34;, end=&#34;&#34;)
+            strx +=  ee
+        else:
+            if flag:
+                if self.verbose &gt; 2:
+                    print (&#34;{&#34; + arrx[cnt] + &#34;} &#34;, end=&#34;&#34;)
+            else:
+                if self.verbose &gt; 2:
+                    print (&#34;{&#34;, arr2[cnt], &#34;} &#34;, end=&#34;&#34;)
+
+            chh = ord(passwd[passidx])
+
+            #if self.verbose :
+            #    print (&#34;chh &#34;, chh, end=&#34; &#34;)
+
+            passidx += 1
+            if passidx &gt;= len(passwd):
+                passidx = 0
+
+            ee2 = ee &amp; 0x7ffff
+
+            if self.verbose &gt; 1:
+                print(&#34;ee =&#34;, ee, &#34; &#34;, end=&#34;&#34;)
+
+            #                               arrlen
+            # ----------|-------------------|---------------------------
+            #                         ^org
+            #                         ------|------
+
+            #print(&#34;adj&#34;, ord(chh) * 500, &#34;&#34;, end=&#34;&#34;)
+
+            offs =  chh * 103
+            if flag:
+                ee2 += offs
+                if ee2 &gt; self.arrlen:
+                    ee2 -= self.arrlen
+            else:
+                ee2 -= offs
+                if ee2 &lt; 0:
+                    ee2 += self.arrlen
+
+            if self.verbose &gt; 1:
+                print(&#34;after_ee =&#34;, ee2, &#34;&#34;, end=&#34;&#34;)
+
+            # Reverse conversion
+            nstr = self._revword(ee2)
+            # Apply flags
+            if ee &amp; CAPFLAG:
+                nstr = nstr.upper()
+            if ee &amp; UPPERFLAG:
+                nstr = nstr.capitalize()
+            if self.verbose:
+                print (&#34;$&#34; + nstr + &#34;$&#34;)
+            # Add it to results
+            strx += nstr
+        cnt = cnt + 1
+    return strx</code></pre>
+</details>
+</dd>
+<dt id="spemod.spellencrypt.getword"><code class="name flex">
+<span>def <span class="ident">getword</span></span>(<span>self, www)</span>
+</code></dt>
+<dd>
+<div class="desc"></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def     getword(self, www):
+
+    ttt = [0, 0, 0]
+    cc =  www[:self.hashlen]
+    cnt2 = 0
+
+    &#39;&#39;&#39;  # brute
+    for dd in range(self.arrlen):
+        if self.bigarr[dd] == www:
+            ttt = cnt2, dd, dd
+            break
+    &#39;&#39;&#39;
+
+    for bb in self.boundsig:
+        if bb == cc:
+            cnt3 = self.boundarr[cnt2]
+            try:
+                cnt4 = self.boundarr[cnt2+1]
+            except:
+                cnt4 = cnt3;
+            #print  (&#34;got:&#34;, cc, bb, cnt2, self.bigarr[cnt3], &#34;range:&#34;, cnt4-cnt3)
+            # The dictionary was broken had foreign characters, so we overscanned
+            limx = cnt4-cnt3 + 100
+            if cnt3 + limx &gt; self.arrlen:
+                limx = self.arrlen - cnt3
+
+            for dd in range(limx):
+                #print (self.bigarr[cnt3 + dd], end=&#34; &#34;)
+                if self.bigarr[(cnt3)+ dd] == www:
+                    #print(&#34;Found: &#34;,  self.bigarr[cnt3 + dd], cnt2, dd)
+                    ttt = cnt2, dd, cnt3 + dd
+                    break
+            break
+        cnt2 += 1
+
+    #if ttt[2] == 0:
+    #    print (www, &#34;not found&#34;)
+
+    return ttt[2]</code></pre>
+</details>
+</dd>
+<dt id="spemod.spellencrypt.revwcoord"><code class="name flex">
+<span>def <span class="ident">revwcoord</span></span>(<span>self, xxx, yyy)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>Return a word from coordinates</p></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def     revwcoord(self, xxx, yyy):
+
+    &#39;&#39;&#39; Return a word from coordinates &#39;&#39;&#39;
+
+    #print (&#34;get:&#34; , xxx, yyy)
+
+    strx = &#34;&#34;;
+    cnt3 = self.boundarr[xxx]
+    strx = self.bigarr[cnt3 + yyy]
+    #print(&#34;Got: &#34;,  strx)
+    return strx</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3><a href="#header-functions">Functions</a></h3>
+<ul class="two-column">
+<li><code><a title="spemod.butter" href="#spemod.butter">butter</a></code></li>
+<li><code><a title="spemod.bwstr" href="#spemod.bwstr">bwstr</a></code></li>
+<li><code><a title="spemod.fwstr" href="#spemod.fwstr">fwstr</a></code></li>
+<li><code><a title="spemod.genpass" href="#spemod.genpass">genpass</a></code></li>
+<li><code><a title="spemod.hexdump" href="#spemod.hexdump">hexdump</a></code></li>
+<li><code><a title="spemod.isprint" href="#spemod.isprint">isprint</a></code></li>
+<li><code><a title="spemod.pack24" href="#spemod.pack24">pack24</a></code></li>
+<li><code><a title="spemod.upack24" href="#spemod.upack24">upack24</a></code></li>
+<li><code><a title="spemod.xorstr" href="#spemod.xorstr">xorstr</a></code></li>
+<li><code><a title="spemod.xsum" href="#spemod.xsum">xsum</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="spemod.spellencrypt" href="#spemod.spellencrypt">spellencrypt</a></code></h4>
+<ul class="">
+<li><code><a title="spemod.spellencrypt.calcarrlen" href="#spemod.spellencrypt.calcarrlen">calcarrlen</a></code></li>
+<li><code><a title="spemod.spellencrypt.enc_dec" href="#spemod.spellencrypt.enc_dec">enc_dec</a></code></li>
+<li><code><a title="spemod.spellencrypt.getword" href="#spemod.spellencrypt.getword">getword</a></code></li>
+<li><code><a title="spemod.spellencrypt.revwcoord" href="#spemod.spellencrypt.revwcoord">revwcoord</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc" title="pdoc: Python API documentation generator"><cite>pdoc</cite> 0.10.0</a>.</p>
+</footer>
+</body>
+</html>
