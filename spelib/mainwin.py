@@ -64,7 +64,7 @@ class Spacer(Gtk.Label):
 
 class MainWin():
 
-    def __init__(self):
+    def __init__(self, txt):
 
         self.orig = None;  self.encr = None;  self.decr = None
         self.window = Gtk.Window(type=Gtk.WindowType.TOPLEVEL)
@@ -74,7 +74,6 @@ class MainWin():
         except:
             print ("Cannot load encryption.")
             raise ValueError("Cannot load dictionary.")
-
 
         #os.chdir( os.path.dirname(os.getcwd()) )
 
@@ -122,12 +121,12 @@ class MainWin():
 
         hbox = Gtk.HBox();  hbox2 = Gtk.HBox(); hbox3 = Gtk.VBox()
 
-        hbox2.pack_start( Spacer(1), 0, 0, False)
+        hbox2.pack_start(Spacer(1), 0, 0, False)
         lab3 = Gtk.Label.new_with_mnemonic("  Enter Pa_ssWord: ")
-        hbox2.pack_start( Spacer(1), 0, 0, False)
+        hbox2.pack_start(Spacer(1), 0, 0, False)
         hbox2.pack_start(lab3, 0, 0, False)
         self.entry = Gtk.Entry(); self.entry.set_visibility(False)
-        hbox2.pack_start( Spacer(1), 0, 0, False)
+        hbox2.pack_start(Spacer(1), 0, 0, False)
         hbox2.pack_start(self.entry, 0, 0, 0)
 
         hbox2.pack_start( Spacer(1), 0, 0, False)
@@ -166,6 +165,7 @@ class MainWin():
         self.text1 = Gtk.TextView();    self.text1.set_wrap_mode(True)
         #sc1.add_with_viewport(self.text1)
         sc1.add(self.text1)
+        self.text1.get_buffer().set_text(txt)
 
         hbox5a = Gtk.HBox(); hbox5a.set_spacing(2)
         hbox5a.pack_start(sc1, True, True, True)

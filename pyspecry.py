@@ -30,7 +30,7 @@ version = "0.00"
 def phelp():
 
     print()
-    print( "Usage: " + os.path.basename(sys.argv[0]) + " [options]")
+    print( "Usage: " + os.path.basename(sys.argv[0]) + " [options] [filename]")
     print()
     print( "Options:    -d level  - Debug level 0-10")
     print( "            -p        - Port to use (default: 9999)")
@@ -66,7 +66,14 @@ def mainfunc():
         sys.exit(1)
 
     args = conf.comline(sys.argv[1:])
-    mw = MainWin()
+    #print("args", args)
+
+    txt = ""
+    if args:
+        with open(args[0], "r") as fp:
+            txt = fp.read()
+
+    mw = MainWin(txt)
     Gtk.main()
     sys.exit(0)
 
