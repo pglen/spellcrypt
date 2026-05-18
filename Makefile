@@ -10,7 +10,7 @@ SUB ?= "auto checkin"
 
 git:
 	git add .
-	git commit -m ${SUB}
+	git commit -m "${SUB}"
 	git push
 
 git-local:

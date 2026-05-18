@@ -31,7 +31,7 @@ sys.path.append(os.path.join(
 
 import spemod, spepass, hexdump
 
-VERSION = "1.0.7"
+VERSION = "1.0.8"
 options = None
 args = None
 
