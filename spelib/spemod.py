@@ -10,7 +10,6 @@ __doc__ = \
 '''
 spellcrypt main module
 '''
-prepass   = string.ascii_letters * 4
 
 UPPERFLAG   = 0x80000
 CAPFLAG     = 0x100000
@@ -28,16 +27,11 @@ class  spellencrypt():
 
     def __init__(self, fname = "spell.txt"):
 
-        self.verbose = 0
-        self.bigarr = []
-        self.boundsig = []
-        self.boundstr = []
-        self.boundarr = []
-        self.arrlen = 0
-        self.hashlen = 2
-
+        self.verbose = 0 ; self.arrlen = 0
+        self.hashlen = 2    # Optimum
+        self.boundarr = [] ; self.bigarr = []
+        self.boundsig = [] ; self.boundstr = []
         #print("base:", base, fname)
-
         cnt = 0
         with open(os.path.join(base, fname), "r", encoding="utf-8") as fpi:
             # Load to memory
@@ -54,7 +48,6 @@ class  spellencrypt():
                             uuu = 1
                     '''
                 #fpi.close()
-
         # Quick index
         oldchh = ""
         for aa in self.bigarr:
@@ -69,7 +62,6 @@ class  spellencrypt():
         #self.boundstr.append(aa)
 
         self.arrlen = len(self.bigarr)
-
         #for iii in range(len(boundarr)-1):
         #    print (boundarr[iii + 1] - boundarr[iii], boundstr[iii], end="    " )
         #    print
@@ -270,121 +262,10 @@ def upack24(xxx):
         uuu += uu[0] <<  aa * 8
     return uuu
 
-# Primitives.
-
-def xsum(passwd):
-    ''' Keep results below 128 by truncation '''
-    sss = 0
-    for aa in passwd:
-        sss += ord(aa)
-    return chr(sss & 0xff)
-
-def fwstr(passwd):
-    ''' Forward encrypt for pass '''
-    passwd2 = passwd + " "
-    sss = ""
-    for bb in range(0, len(passwd)):
-        #print ("c", passwd[bb])
-        sss += chr( (ord(passwd2[bb]) + ord(passwd2[bb+1])) & 0xff)
-    return sss
-
-def xorstr(passwd):
-    ''' xor constant into strings '''
-    sss = ""
-    for bb in passwd:
-        #print ("c", passwd[bb])
-        sss += chr((ord(bb) ^ 0x55) & 0xff)
-    return sss
-
-def butter(passwd):
-    ''' merge the two halfs, similar to the butterfly operatopn '''
-    sss = ""; rrr = ""
-    for bb in range(0, len(passwd)/2):
-        #print ("c", passwd[bb])
-        sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
-        rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
-    return sss + rrr
-
-def bwstr(passwd):
-    ''' Backward encrypt for pass '''
-    sss = ""
-    for bb in range(len(passwd)-1, -1, -1):
-        #print ("c", passwd[bb])
-        sss += chr( (ord(passwd[bb]) + ord(passwd[bb-1])) & 0xff)
-    return sss
-
 # ------------------------------------------------------------------------
 # Corrected to handle unicode accidental
 
 ctrlchar = "\n\r| "
-
-def isprint(chh):
-
-    try:
-        if ord(chh) > 127:
-            return False
-        if ord(chh) < 32:
-            return False
-        if chh in ctrlchar:
-            return False
-        if chh in string.ascii_letters:
-            return True
-    except:
-        pass
-
-    return False
-
-
-def hexdump(strx):
-
-    ''' Return a hex dump formatted string '''
-    lenx = len(strx)
-    outx = ""
-    try:
-        for aa in range(lenx/16):
-            outx += " "
-            for bb in range(16):
-                try:
-                    outx += "%02x " % ord(strx[aa * 16 + bb])
-                except:
-                    out +=  "?? "
-                    #outx += "%02x " % strx[aa * 16 + bb]
-
-            outx += " | "
-            for cc in range(16):
-                chh = strx[aa * 16 + cc]
-                if isprint(chh):
-                    outx += "%c" % chh
-                else:
-                    outx += "."
-            outx += " | \n"
-
-        # Print remainder on last line
-        remn = lenx % 16 ;   divi = lenx / 16
-        if remn:
-            outx += " "
-            for dd in range(remn):
-                try:
-                    outx += "%02x " % ord(strx[divi * 16 + dd])
-                except:
-                    outx +=  "?? "
-                    #outx += "%02x " % int(strx[divi * 16 + dd])
-
-            outx += " " * ((16 - remn) * 3)
-            outx += " | "
-            for cc in range(remn):
-                chh = strx[divi * 16 + cc]
-                if isprint(chh):
-                    outx += "%c" % chh
-                else:
-                    outx += "."
-            outx += " " * ((16 - remn))
-            outx += " | \n"
-    except:
-        print("Error on hexdump", sys.exc_info())
-        #print_exc("hexdump")
-
-    return outx
 
 def ascsplit(strx):
 

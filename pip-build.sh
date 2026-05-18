@@ -1,3 +1,4 @@
+#!/bin/bash
 mkdir -p dist
 rm -rf dist/*
 #python setup.py build

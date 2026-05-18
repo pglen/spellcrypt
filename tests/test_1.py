@@ -1,7 +1,11 @@
 #!/usr/bin/env python
 
-import spelib.spemod
-mod = spelib.spemod.spellencrypt()
+import os, sys
+base = os.path.dirname(os.path.realpath(__file__))
+sys.path.append(os.path.join(base, "../spelib"))
+
+import spemod
+mod = spemod.spellencrypt()
 
 def test_one():
     assert mod

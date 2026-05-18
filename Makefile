@@ -16,8 +16,12 @@ git:
 git-local:
 	git push local
 
+pip-up:
+	./pip-build.sh
+	./pip-upload.sh
+
 tests:
-	pytest tests/test_1.py
+	pytest tests/test_*.py
 
 test:
 	@echo Testing ... diff should be silent
@@ -31,6 +35,7 @@ testall:
 
 clean:
 	@rm -f  aa* bb* cc* dd*
+	@rm -f  Makefile.enc Makefile.dec
 	@rm -rf __pycache__/
 	@rm -rf build/* dist/* spellcrypt.egg-info/*
 	@rm -rf gui/__pycache__

@@ -6,7 +6,8 @@
 # pylint: disable=C0116
 # pylint: disable=C0114
 
-import string
+import sys, string
+import pgutil
 
 __doc__ = \
 '''
@@ -14,11 +15,79 @@ Password generation support
 '''
 
 debug = 0
+prepass   = string.ascii_letters * 4
 
 def wrap(strs, delim = "'", delim2 = ''):
     if not delim2:
         return delim + strs + delim
     return delim + strs + delim2
+
+def isprint(chh):
+
+    try:
+        if ord(chh) > 127:
+            return False
+        if ord(chh) < 32:
+            return False
+        if chh in ctrlchar:
+            return False
+        if chh in string.ascii_letters:
+            return True
+    except:
+        pass
+
+    return False
+
+def hexdump(strx):
+
+    ''' Return a hex dump formatted string '''
+    lenx = len(strx)
+    outx = ""
+    try:
+        for aa in range(lenx//16):
+            outx += " "
+            for bb in range(16):
+                try:
+                    outx += "%02x " % ord(strx[aa * 16 + bb])
+                except:
+                    out +=  "?? "
+                    #outx += "%02x " % strx[aa * 16 + bb]
+
+            outx += " | "
+            for cc in range(16):
+                chh = strx[aa * 16 + cc]
+                if isprint(chh):
+                    outx += "%c" % chh
+                else:
+                    outx += "."
+            outx += " | \n"
+
+        # Print remainder on last line
+        remn = lenx % 16 ;   divi = lenx // 16
+        if remn:
+            outx += " "
+            for dd in range(remn):
+                try:
+                    outx += "%02x " % ord(strx[divi * 16 + dd])
+                except:
+                    outx +=  "?? "
+                    #outx += "%02x " % int(strx[divi * 16 + dd])
+
+            outx += " " * ((16 - remn) * 3)
+            outx += " | "
+            for cc in range(remn):
+                chh = strx[divi * 16 + cc]
+                if isprint(chh):
+                    outx += "%c" % chh
+                else:
+                    outx += "."
+            outx += " " * ((16 - remn))
+            outx += " | \n"
+    except:
+        print("Error on hexdump", sys.exc_info())
+        pgutil.print_exception("hexdump")
+
+    return outx
 
 class Primi():
 
@@ -106,10 +175,9 @@ class Primi():
             sss += chr( (ord(passwd[bb]) + ord(passwd[bb-1])) & 0xff)
         return sss
 
-# ------------------------------------------------------------------------
-
 def testpass(passwd):
 
+    ''' Deliver some statics '''
     testarr = [];   numarr = []
     for cc in range(256):
         testarr.append(0)
@@ -125,9 +193,52 @@ def testpass(passwd):
 
     return testarr
 
+# Primitives. (Obsolete)
+
+def xsum(passwd):
+    ''' Keep results below 128 by truncation '''
+    sss = 0
+    for aa in passwd:
+        sss += ord(aa)
+    return chr(sss & 0xff)
+
+def fwstr(passwd):
+    ''' Forward encrypt for pass '''
+    passwd2 = passwd + " "
+    sss = ""
+    for bb in range(0, len(passwd)):
+        #print ("c", passwd[bb])
+        sss += chr( (ord(passwd2[bb]) + ord(passwd2[bb+1])) & 0xff)
+    return sss
+
+def xorstr(passwd):
+    ''' xor constant into strings '''
+    sss = ""
+    for bb in passwd:
+        #print ("c", passwd[bb])
+        sss += chr((ord(bb) ^ 0x55) & 0xff)
+    return sss
+
+def butter(passwd):
+    ''' merge the two halfs, similar to the butterfly operatopn '''
+    sss = ""; rrr = ""
+    for bb in range(0, len(passwd)//2):
+        #print ("c", passwd[bb])
+        sss += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
+        rrr += chr((ord(passwd[bb]) + ord(passwd[2*bb]) ) & 0xff)
+    return sss + rrr
+
+def bwstr(passwd):
+    ''' Backward encrypt for pass '''
+    sss = ""
+    for bb in range(len(passwd)-1, -1, -1):
+        #print ("c", passwd[bb])
+        sss += chr( (ord(passwd[bb]) + ord(passwd[bb-1])) & 0xff)
+    return sss
+
 def     genpass(passwd):
 
-    ''' Generate password for enc/dec/ '''
+    ''' Generate password for enc/dec/ Obsolete. '''
 
     #print ("'" + prepass + "'" )
 
