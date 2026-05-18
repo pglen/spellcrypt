@@ -107,81 +107,6 @@ class Primi():
         return sss
 
 # ------------------------------------------------------------------------
-# Split ONE line into array
-
-def ascsplit(strx):
-
-    if debug > 1:
-        print("ascsplit()", "'"+strx+"'")
-
-    arr = [] ;  cumm = ""; cumm2 = ""
-    mode = 0; old_mode = 0
-
-    for aa in strx:
-        if aa == "\n":
-            mode = 0
-        elif aa == " " or aa == '\t':
-            mode = 1
-        elif aa in string.punctuation or ord(aa) > 255:
-            mode = 2
-        elif aa in string.ascii_letters:
-            mode = 3
-        elif aa in string.digits:
-            mode = 4
-        else:
-            mode = 5
-
-        if mode == 0:
-            if old_mode != mode:
-                if cumm:
-                    arr.append(cumm); cumm = ""
-            # Always add
-            arr.append(aa)
-
-        if mode == 1:
-            if old_mode != mode:
-                if cumm:
-                    arr.append(cumm);  cumm = ""
-            # Always add
-            arr.append(aa)
-
-        if mode == 2:
-            if old_mode != mode:
-                if cumm:
-                    arr.append(cumm);  cumm = ""
-            # Always add
-            arr.append(aa)
-
-        if mode == 3:
-            cumm += aa
-            if old_mode != mode:
-                if cumm2:
-                    arr.append(cumm2);  cumm2 = ""
-
-        if mode == 4:
-            cumm += aa
-            if old_mode != mode:
-                if cumm2:
-                    arr.append(cumm2);    cumm2 = ""
-
-        if mode == 5:
-            cumm2 += aa
-            if old_mode != mode:
-                if cumm:
-                    arr.append(cumm);    cumm = ""
-
-        old_mode = mode
-
-    # Flush the rest, if any
-    if cumm2:
-        arr.append(cumm2)
-    if cumm:
-        arr.append(cumm)
-    if debug > 2:
-        print("acsplit() ret:", arr)
-    return arr
-
-# ------------------------------------------------------------------------
 
 def testpass(passwd):
 
@@ -199,5 +124,20 @@ def testpass(passwd):
     #    print(numarr[bb], testarr[bb])
 
     return testarr
+
+def     genpass(passwd):
+
+    ''' Generate password for enc/dec/ '''
+
+    #print ("'" + prepass + "'" )
+
+    passwd = passwd + prepass + passwd + prepass + passwd
+
+    for _ in range(5):
+        passwd = bwstr(passwd)
+        passwd = xorstr(passwd)
+        passwd = fwstr(passwd)
+        passwd = butter(passwd)
+    return passwd
 
 # EOF

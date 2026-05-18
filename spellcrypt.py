@@ -92,7 +92,7 @@ def file2arr(fp):
     for aa in fp:
         if int(options.debug) > 4:
             print("line:", aa)
-        ss = spepass.ascsplit(aa)
+        ss = spemod.ascsplit(aa)
         if  options.mask & 0x400:
             print("split:", ss)
         for cc in ss:
@@ -191,15 +191,18 @@ def mainfunc():
             fp = sys.stdin
         else:
             try:
+                #fp = open(options.filename, "r", encoding="utf-8", errors='ignore')
                 fp = open(options.filename, "r")
             except:
+                if options.verbose:
+                    print(sys.exc_info())
                 print("Input file", "'" + options.filename + "'" , "must exist.")
                 sys.exit(1)
 
         arrx = file2arr(fp)
 
     elif options.strx:
-        ss = spepass.ascsplit(options.strx)
+        ss = spemod.ascsplit(options.strx)
         for cc in ss:
             arrx.append(cc)
 

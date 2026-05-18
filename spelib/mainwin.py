@@ -342,7 +342,7 @@ class MainWin():
             aa = buff.get_text(iterx, iter2, False)
             #print ("buff", , "eee")
 
-            ss = spepass.ascsplit(aa) #.strip())
+            ss = spemod.ascsplit(aa) #.strip())
             for cc in ss:
                 #print("cc=", ("'"+cc+"'", end=" ")
                 arrx.append(cc)
@@ -376,7 +376,7 @@ class MainWin():
             #print ("buff", , "eee")
 
             #aa = aa.strip()
-            ss = spepass.ascsplit(aa)
+            ss = spemod.ascsplit(aa)
             for cc in ss:
                 #print("cc=", ("'"+cc+"'", end=" ")
                 arrx.append(cc)
