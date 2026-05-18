@@ -50,7 +50,7 @@ def respath(fname):
     return None
 
 # ------------------------------------------------------------------------
-# An N pixel vertical spacer. Default to 5.
+# An N pixel spacer. Default to 5.
 
 class Spacer(Gtk.Label):
 
@@ -59,6 +59,12 @@ class Spacer(Gtk.Label):
         #sp *= 1000
         #self.set_markup("<span  size=\"" + str(sp) + "\"> </span>")
         self.set_text(" " * sp)
+
+class vSpacer(Gtk.VBox):
+
+    def __init__(self, sp = 5):
+        GObject.GObject.__init__(self)
+        self.set_size_request(sp, sp)
 
 # ------------------------------------------------------------------------
 
@@ -117,52 +123,56 @@ class MainWin():
             pass
 
         vbox = Gtk.VBox()
-        vbox.pack_start( Spacer(1), 0, 0, 0)
+        #vbox.pack_start( Spacer(1), 0, 0, 0)
 
-        hbox = Gtk.HBox();  hbox2 = Gtk.HBox(); hbox3 = Gtk.VBox()
+        hbox = Gtk.HBox()  ;  hbox2 = Gtk.HBox()
+        hbox3 = Gtk.VBox() ;  hbox2a = Gtk.HBox()
 
-        hbox2.pack_start(Spacer(1), 0, 0, False)
+        #hbox2.pack_start(Spacer(1), 0, 0, False)
         lab3 = Gtk.Label.new_with_mnemonic("  Enter Pa_ssWord: ")
         hbox2.pack_start(Spacer(1), 0, 0, False)
         hbox2.pack_start(lab3, 0, 0, False)
         self.entry = Gtk.Entry(); self.entry.set_visibility(False)
-        hbox2.pack_start(Spacer(1), 0, 0, False)
+        #hbox2.pack_start(Spacer(1), 0, 0, False)
         hbox2.pack_start(self.entry, 0, 0, 0)
 
         hbox2.pack_start( Spacer(1), 0, 0, False)
         butt3 = Gtk.Button.new_with_mnemonic(" _Reveal Pass")
         butt3.connect("clicked", self.reveal, self.window)
         hbox2.pack_start(butt3, 0, 0, False)
-
         hbox2.pack_start(Spacer(1), 0, 0, False)
+
+        hbox2a.pack_start(Spacer(1), 0, 0, False)
         butt3f = Gtk.Button.new_with_mnemonic(" Load _File ")
         butt3f.connect("clicked", self.load, self.window, 0)
-        hbox2.pack_start(butt3f, 0, 0, False)
+        hbox2a.pack_start(butt3f, 0, 0, False)
 
-        hbox2.pack_start( Spacer(1), 0, 0, False)
+        hbox2a.pack_start( Spacer(1), 0, 0, False)
         butt3e = Gtk.Button.new_with_mnemonic(" _Encrypt ")
         butt3e.connect("clicked", self.encrypt, self.window)
-        hbox2.pack_start(butt3e, 0, 0, False)
+        hbox2a.pack_start(butt3e, 0, 0, False)
 
-        hbox2.pack_start( Spacer(1), 0, 0, False)
+        hbox2a.pack_start( Spacer(1), 0, 0, False)
         butt3e = Gtk.Button.new_with_mnemonic(" _Decrypt ")
         butt3e.connect("clicked", self.decrypt, self.window)
-        hbox2.pack_start(butt3e, 0, 0, False)
+        hbox2a.pack_start(butt3e, 0, 0, False)
 
-        hbox2.pack_start( Spacer(1), 0, 0, False)
+        hbox2a.pack_start( Spacer(1), 0, 0, False)
         butt3f = Gtk.Button.new_with_mnemonic(" _Check ")
         butt3f.connect("clicked", self.check, self.window)
-        hbox2.pack_start(butt3f, 0, 0, False)
+        hbox2a.pack_start(butt3f, 0, 0, False)
 
-        hbox2.pack_start( Spacer(1), 0, 0, False)
+        hbox2a.pack_start( Spacer(1), 0, 0, False)
         butt2 = Gtk.Button.new_with_mnemonic(" E_xit ")
         butt2.connect("clicked", self.OnExit, self.window)
-        hbox2.pack_start(butt2, 1, 1, True)
+        hbox2a.pack_start(butt2, 1, 1, True)
 
-        lab4 = Gtk.Label(label="  ");   hbox2.pack_start(lab4, 0,0, False)
+        lab4 = Gtk.Label(label="  ")
+        hbox2a.pack_start(lab4, 0, 0, False)
 
         sc1 = Gtk.ScrolledWindow()
-        self.text1 = Gtk.TextView();    self.text1.set_wrap_mode(True)
+        self.text1 = Gtk.TextView()
+        self.text1.set_wrap_mode(True)
         #sc1.add_with_viewport(self.text1)
         sc1.add(self.text1)
         self.text1.get_buffer().set_text(txt)
@@ -175,7 +185,8 @@ class MainWin():
         hbox3.pack_start(hbox5a, True, True, True)
 
         sc2 = Gtk.ScrolledWindow()
-        self.text2 = Gtk.TextView();    self.text2.set_wrap_mode(True)
+        self.text2 = Gtk.TextView()
+        self.text2.set_wrap_mode(True)
         #sc2.add_with_viewport(self.text2)
         sc2.add(self.text2)
         hbox6a = Gtk.HBox(); hbox6a.set_spacing(2)
@@ -185,7 +196,8 @@ class MainWin():
         hbox3.pack_start(hbox6a, True, True, padding = 2)
 
         sc3 = Gtk.ScrolledWindow()
-        self.text3 = Gtk.TextView();    self.text3.set_wrap_mode(True)
+        self.text3 = Gtk.TextView()
+        self.text3.set_wrap_mode(True)
         #sc3.add_with_viewport(self.text3)
         sc3.add(self.text3)
         hbox7a = Gtk.HBox(); hbox7a.set_spacing(2)
@@ -194,14 +206,20 @@ class MainWin():
         #hbox7a.pack_start(self.buttcol(2), 0, 0, 0)
         hbox3.pack_start(hbox7a, True, True, padding = 2)
 
-        lab1 = Gtk.Label(label="");  hbox.pack_start(lab1, True, True, 0)
-        lab2 = Gtk.Label(label="");  hbox.pack_start(lab2, True, True, 0)
+        lab1 = Gtk.Label(label="")
+        hbox.pack_start(lab1, True, True, 0)
+        lab2 = Gtk.Label(label="")
+        hbox.pack_start(lab2, True, True, 0)
 
-        vbox.pack_start( Spacer(1), 0,0, False)
-        vbox.pack_start(hbox2, 0,0, False)
-        vbox.pack_start(Spacer(1), 0, 0, 0)
+        vbox.pack_start( vSpacer(), 0, 0, False)
+        vbox.pack_start(hbox2, 0, 0, False)
+        vbox.pack_start( vSpacer(), 0, 0, False)
 
         vbox.pack_start(hbox3, True, True, 0)
+
+        vbox.pack_start(vSpacer(), 0, 0, 0)
+        vbox.pack_start(hbox2a, 0, 0, False)
+        vbox.pack_start(vSpacer(), 0, 0, 0)
 
         hbox8 = Gtk.HBox()
         lab1a = Gtk.Label(label="")
@@ -265,7 +283,10 @@ class MainWin():
 
         #print ("check", self.orig)
 
-        if not self.orig:
+        buf = self.text1.get_buffer()
+        ttt = buf.get_text(buf.get_start_iter(), buf.get_end_iter(), False)
+        #if not self.orig:
+        if not ttt:
             message("No text loaded")
             return
 
@@ -278,20 +299,24 @@ class MainWin():
             return
 
         #s1 = spemod.rmspace(self.orig); s2 = spemod.rmspace(self.decr)
-        if  self.orig == self.decr:
+        #if  self.orig == self.decr:
+        if ttt == self.decr:
             message("Original and decrypted texts match.", title="Match")
         else:
             offs = 0
-            for aa in range(len(self.orig)):
-                if self.orig[aa] != self.decr[aa]:
+            for aa in range(len(ttt)):
+                if ttt[aa] != self.decr[aa]:
                     offs = aa
                     break
 
-            message("Error on decryption. DIFF at offset %d" % aa, title="Mismatch")
+            ddd1 = self.orig[offs:offs+3]
+            ddd2 = self.decr[offs:offs+3]
             print()
-            print("orig:", "'" + self.orig[offs-13:offs+13] + "'\n")
-            print("decr:", "'" + self.decr[offs-13:offs+13] + "'\n")
+            print("orig:", "'" + ddd1 + "'\n")
+            print("decr:", "'" + ddd2 + "'\n")
             print()
+            message("Error on decryption. DIFF at offset %d\n%s\nvs.\n%s" % \
+                    (aa, ddd1, ddd2), title="Mismatch")
 
     # --------------------------------------------------------------------
 

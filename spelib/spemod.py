@@ -185,10 +185,10 @@ class  spellencrypt():
                 strx +=  ee
             else:
                 if flag:
-                    if self.verbose > 2:
+                    if self.verbose > 3:
                         print ("{" + arrx[cnt] + "} ", end="")
                 else:
-                    if self.verbose > 2:
+                    if self.verbose > 3:
                         print ("{", arr2[cnt], "} ", end="")
 
                 chh = ord(passwd[passidx])
@@ -233,7 +233,7 @@ class  spellencrypt():
                 if ee & UPPERFLAG:
                     nstr = nstr.capitalize()
                 if self.verbose:
-                    print ("$" + nstr + "$")
+                    print ("[" + nstr + "]")
                 # Add it to results
                 strx += nstr
             cnt = cnt + 1

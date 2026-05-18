@@ -27,7 +27,7 @@ sys.path.append("spelib")
 
 import spemod, spepass, hexdump
 
-VERSION = "1.0.4"
+VERSION = "1.0.5"
 options = None
 args = None
 
@@ -68,7 +68,7 @@ def cmdline():
                   help="print fewer status messages")
 
     xparse.add_option("-v", "--verbose", dest="verbose", default=0,
-                  action="store_true",
+                  action="count",
                   help="status message verbosity")
 
     xparse.add_option("-V", "--version", dest="version", default=0,

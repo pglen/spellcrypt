@@ -120,7 +120,7 @@ def ascsplit(strx):
     for aa in strx:
         if aa == "\n":
             mode = 0
-        elif aa == " ":
+        elif aa == " " or aa == '\t':
             mode = 1
         elif aa in string.punctuation or ord(aa) > 255:
             mode = 2
@@ -178,7 +178,7 @@ def ascsplit(strx):
     if cumm:
         arr.append(cumm)
     if debug > 2:
-        print("acsplit ret:", arr)
+        print("acsplit() ret:", arr)
     return arr
 
 # ------------------------------------------------------------------------
