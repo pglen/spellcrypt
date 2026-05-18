@@ -1,6 +1,6 @@
 # Use to build modules
 
-.PHONY: test tests testall clean docs git
+.PHONY: test testall clean docs git
 
 all:
 	@echo Targets: git test testall clean docs  \
@@ -16,9 +16,6 @@ git:
 git-local:
 	git push local
 
-tests:
-	pytest tests/test_1.py
-
 test:
 	@echo Testing ... diff should be silent
 	@./spellcrypt.py -e -i sayings.txt -f -o sayings.tmp
@@ -27,7 +24,7 @@ test:
 	@rm -f sayings.tmp sayings.dec
 
 testall:
-	@cd alltests ; ./testall.sh
+	@cd tests ; ./testall.sh
 
 clean:
 	@rm -f  aa* bb* cc* dd*

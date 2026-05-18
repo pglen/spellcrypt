@@ -23,11 +23,15 @@ __doc__ = \
 base = os.path.dirname(os.path.abspath(__file__))
 #print("base", base)
 sys.path.append(os.path.join(base, "spelib"))
-sys.path.append("spelib")
+
+import site
+#print("site", site.USER_SITE)
+sys.path.append(os.path.join(
+        site.USER_SITE,"spelib"))
 
 import spemod, spepass, hexdump
 
-VERSION = "1.0.5"
+VERSION = "1.0.6"
 options = None
 args = None
 
@@ -87,6 +91,8 @@ def cmdline():
 
     return xparse
 
+# UnicodeEncodeError UnicodeDecodeError
+
 def file2arr(fp):
     arrx = []
     for aa in fp:
@@ -105,10 +111,6 @@ def file2arr(fp):
 def mainfunc():
 
     global options, args
-
-    if sys.version_info[0] < 3:
-        print("This program was meant to run on python 3.x or later.")
-        sys.exit(1)
 
     parser = cmdline()
     options, args = parser.parse_args()
@@ -155,11 +157,11 @@ def mainfunc():
         pass
 
     if options.enc and options.dec:
-        print("Conflicting options: both enc / dec specified.")
+        print("Conflicting options: both enc / dec specified.", file=sys.stderr)
         sys.exit(2)
 
     if (not options.enc) and (not options.dec):
-        print("Missing option: one of -e (--encrypt) or -d (--decrypt) must be specified.")
+        print("Missing option: one of -e (--encrypt) or -d (--decrypt) must be specified.", file=sys.stderr)
         sys.exit(2)
 
     #print("pass in:", len(options.passwd), options.passwd)
@@ -168,7 +170,7 @@ def mainfunc():
 
     if options.zoo:
         print("Password head:\n" + hexdump.HexDump(newpass)[:300], "....")
-        print ("Frequency distribution:")
+        print("Frequency distribution:")
         print(spepass.testpass(newpass))
         sys.exit(0)
 
@@ -191,12 +193,13 @@ def mainfunc():
             fp = sys.stdin
         else:
             try:
-                #fp = open(options.filename, "r", encoding="utf-8", errors='ignore')
-                fp = open(options.filename, "r")
+                # , errors='ignore'
+                fp = open(options.filename, "r", encoding="utf-8")
+                #fp = open(options.filename, "r")
             except:
                 if options.verbose:
                     print(sys.exc_info())
-                print("Input file", "'" + options.filename + "'" , "must exist.")
+                print("Input file", "'" + options.filename + "'" , "must exist.", file=sys.stderr)
                 sys.exit(1)
 
         arrx = file2arr(fp)
@@ -207,23 +210,23 @@ def mainfunc():
             arrx.append(cc)
 
     else:
-        print("Must use input file option or pass command line file arguments.")
+        print("Must use input file option or pass command line file arguments.", file=sys.stderr)
         sys.exit(0)
 
     wfp = None
     if options.outname:
         if os.access(options.outname, os.R_OK):
             if not options.force:
-                print ("Cannot overwrite file:", options.outname," use -f to force")
+                print("Cannot overwrite file:", options.outname," use -f to force", file=sys.stderr)
                 sys.exit(1)
             try:
                 os.remove(options.outname)
             except:
-                print("Warn: cannot remove old file:", options.outname, sys.exc_info()[1])
+                print("Warn: cannot remove old file:", options.outname, sys.exc_info()[1], file=sys.stderr)
         try:
             wfp = open(options.outname, "w")
         except:
-            print ("Cannot create outfile:", "'" + options.outname + "'", sys.exc_info()[1])
+            print("Cannot create outfile:", "'" + options.outname + "'", sys.exc_info()[1], file=sys.stderr)
             sys.exit(2)
 
     if  options.mask & 0x100:
@@ -240,10 +243,11 @@ def mainfunc():
         #for aa in arrx:
         #    strx += aa
     else:
-        print("Bad command ")
+        print("Bad command option.", file=sys.stderr)
 
     if  options.mask & 0x100:
         print("strx:", strx)
+
     if wfp:
         wfp.write(strx)
         wfp.close()

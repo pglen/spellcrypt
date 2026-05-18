@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 
-from __future__ import absolute_import
 from __future__ import print_function
 
-import os, sys, glob, getopt, time, string, signal, stat, shutil
-import traceback
-import warnings;
-
-#warnings.simplefilter("ignore");
-#import gtk; warnings.simplefilter("default")
+import os, sys, getopt, time, traceback
 
 # ------------------------------------------------------------------------
 # Handle command line. Interpret optarray and decorate the class
@@ -105,14 +99,14 @@ def cmp(aa, bb):
     else:
         if aaa == bbb:
             return 0
-        elif aaa < bbb:
+        if aaa < bbb:
             return -1
-        elif aaa > bbb:
+        if aaa > bbb:
             return 1
         else:
             #print( "crap")
             pass
-
+    return 0
 # ------------------------------------------------------------------------
 # Show a regular message:
 
@@ -121,8 +115,6 @@ def message(strx, title = None, icon = None):
     icon = Gtk.STOCK_INFO
     dialog = Gtk.MessageDialog(None, None,
                    Gtk.MessageType.INFO, Gtk.ButtonsType.CLOSE, strx)
-
-
     if title:
         dialog.set_title(title)
     else:
@@ -162,84 +154,10 @@ def withps(func, opt = None):
     return ret
 
 # ------------------------------------------------------------------------
-# Find
-
-def find(self):
-
-    head = "Find in text"
-
-    dialog = Gtk.Dialog(head,
-                   None,
-                   Gtk.DialogFlags.MODAL | Gtk.DialogFlags.DESTROY_WITH_PARENT,
-                   (Gtk.STOCK_CANCEL, Gtk.ResponseType.REJECT,
-                    Gtk.STOCK_OK, Gtk.ResponseType.ACCEPT))
-    dialog.set_default_response(Gtk.ResponseType.ACCEPT)
-
-    try:
-        dialog.set_icon_from_file("epub.png")
-    except:
-        print( "Cannot load find dialog icon", sys.exc_info())
-
-    self.dialog = dialog
-
-    # Spacers
-    label1 = Gtk.Label(label="   ");  label2 = Gtk.Label(label="   ")
-    label3 = Gtk.Label(label="   ");  label4 = Gtk.Label(label="   ")
-    label5 = Gtk.Label(label="   ");  label6 = Gtk.Label(label="   ")
-    label7 = Gtk.Label(label="   ");  label8 = Gtk.Label(label="   ")
-
-    warnings.simplefilter("ignore")
-    entry = Gtk.Entry();
-    warnings.simplefilter("default")
-    entry.set_text(self.oldfind)
-
-    entry.set_activates_default(True)
-
-    dialog.vbox.pack_start(label4, True, True, 0)
-
-    hbox2 = Gtk.HBox()
-    hbox2.pack_start(label6, False)
-    hbox2.pack_start(entry, True, True, 0)
-    hbox2.pack_start(label7, False)
-
-    dialog.vbox.pack_start(hbox2, True, True, 0)
-
-    dialog.checkbox = Gtk.CheckButton("Search _Backwards")
-    dialog.checkbox2 = Gtk.CheckButton("Case In_sensitive")
-    dialog.vbox.pack_start(label5, True, True, 0)
-
-    hbox = Gtk.HBox()
-    #hbox.pack_start(label1, True, True, 0);  hbox.pack_start(dialog.checkbox, True, True, 0)
-    #hbox.pack_start(label2, True, True, 0);  hbox.pack_start(dialog.checkbox2, True, True, 0)
-    hbox.pack_start(label3, True, True, 0);
-    dialog.vbox.pack_start(hbox, True, True, 0)
-    dialog.vbox.pack_start(label8, True, True, 0)
-
-    label32 = Gtk.Label(label="   ");  label33 = Gtk.Label(label="   ")
-    label34 = Gtk.Label(label="   ");  label35 = Gtk.Label(label="   ")
-
-    hbox4 = Gtk.HBox()
-
-    hbox4.pack_start(label32, True, True, 0);
-    dialog.vbox.pack_start(hbox4, True, True, 0)
-
-    dialog.show_all()
-    response = dialog.run()
-    self.srctxt = entry.get_text()
-
-    dialog.destroy()
-
-    if response != Gtk.ResponseType.ACCEPT:
-        return None
-
-    return self.srctxt, dialog.checkbox.get_active(), \
-                dialog.checkbox2.get_active()
-
-# ------------------------------------------------------------------------
 # Count lead spaces
 
 def leadspace(strx):
-    cnt = 0;
+    cnt = 0
     for aa in range(len(strx)):
         bb = strx[aa]
         if bb == " ":

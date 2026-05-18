@@ -36,6 +36,8 @@ class  spellencrypt():
         self.arrlen = 0
         self.hashlen = 2
 
+        #print("base:", base, fname)
+
         cnt = 0
         with open(os.path.join(base, fname), "r", encoding="utf-8") as fpi:
             # Load to memory
